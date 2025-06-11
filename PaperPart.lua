@@ -41,15 +41,17 @@ end
 
 function GetPartBluePrint(part, skeleton)
     -- use part.BlueprintIndex
+    return skeleton.PartBluePrints[part.BluePrintIndex]
 end
 
-function GetParent(part, skeleton)
+function GetParent(part, frame)
     -- return this part's parent
     -- use part.ParentIndex
+    return frame.Parts[part.ParentIndex]
 end
 
-function UpdatePartFrame(part, skeleton)
-    local parent = GetParent(part, skeleton)
+function UpdatePartFrame(part, frame, skeleton)
+    local parent = GetParent(part, frame)
     local blueprint = GetPartBluePrint(part, skeleton)
 
     if(parent == nil) then
@@ -75,10 +77,25 @@ function UpdatePartFrame(part, skeleton)
 
 end
 
-function MovePart(dx, dy)
-    -- move a part's on-screen position, taking inherited rotation into account
+function GetPartSprite(part, spriteSet)
+    return spriteSet[part.SpriteIndex]
 end
 
-function ApplyIK(part, skeleton)
+function MovePart(dx, dy)
+    -- move a part's on-screen position, taking inherited rotation into account
+    -- effectively, we want CX and CY to change by these values next update
+end
 
+function ApplyIK(part, frame)
+    -- for now, we can assume IK always goes two bones back
+    -- we also assume IK controllers (hands and feet) completely hijack the scale of their two previous bones
+    -- we want p1xoffset*cos(p1angle) + p2xoffset*cos(p2angle) = IK target X
+    local parent1 = GetParent(part, frame) -- the nearer parent
+    local parent2 = GetParent(parent1, frame) -- the farther parent
+    -- at first, we assume we can only change their rotations
+end
+
+function FlipIK(part, skeleton)
+    -- there are two valid rotations for any IK that's not fully extended
+    -- so we want to be able to swap between them
 end
