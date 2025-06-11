@@ -40,11 +40,12 @@ function PartFrame(blueprintIndex, spriteIndex, rotation, x, y, layer)
 end
 
 function GetPartBluePrint(part, skeleton)
-
+    -- use part.BlueprintIndex
 end
 
 function GetParent(part, skeleton)
-    -- return this part's parent 
+    -- return this part's parent
+    -- use part.ParentIndex
 end
 
 function UpdatePartFrame(part, skeleton)
@@ -59,5 +60,25 @@ function UpdatePartFrame(part, skeleton)
     end
 
     -- look at parent rotation and position
+    local px = parent.CX
+    local py = parent.CY
+    local prot = parent.CRotation
+
+    local pxscale = parent.ScaleX
+    local pyscale = parent.ScaleY
+
+    -- add parent rotation and modulo to keep within 0 and 2pi
+    part.CRotation = (prot + part.Rotation + 2*math.pi) % math.pi
+
+    part.CX = px + (blueprint.ParentOffsetX + part.X)*math.cos(prot)*pxscale
+    part.CX = px + (blueprint.ParentOffsetY + part.Y)*math.sin(prot)*pyscale
+
+end
+
+function MovePart(dx, dy)
+    -- move a part's on-screen position, taking inherited rotation into account
+end
+
+function ApplyIK(part, skeleton)
 
 end
