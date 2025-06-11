@@ -7,6 +7,7 @@
 
 function PaperSkeleton()
     return {
+        Name = "",
         PartBluePrints = {}, -- full of PartBluePrints
         Animations = {}
     }

@@ -5,6 +5,8 @@
 -- ik flag (for hands and feet that can drag limbs)
 -- position lock flag (for elbows and stuff that can't be moved from anchor)
 
+-- TODO: add hit balls to part blueprints
+
 function PartBlueprint(parentIndex, parentOffsetX, parentOffsetY, defSpriteIndex, ik, positionLock)
     return {
         ParentIndex = parentIndex,
@@ -20,6 +22,8 @@ end
 -- current sprite index,
 -- rotation, position
 -- stretch (for arms and legs, defined by ik)
+
+-- TODO: add hit ball type for current part for current frame (hittable, unhittable, active+hitabble, active+unhittable (disjoint))
 
 function PartFrame(blueprintIndex, spriteIndex, rotation, x, y, layer)
     return {
