@@ -13,6 +13,7 @@ function PartBlueprint(parentIndex, parentOffsetX, parentOffsetY, defSpriteIndex
         ParentOffsetX = parentOffsetX,
         ParentOffsetY = parentOffsetY,
         DefSpriteIndex = defSpriteIndex,
+        DefLayer = 0,
         IK = ik,
         PositionLock = positionLock
     }
