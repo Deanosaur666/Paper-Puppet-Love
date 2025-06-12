@@ -22,13 +22,26 @@ function PaperSpriteEditor()
     prog.Scale = 0.5
     prog.OffsetX = 100
     prog.OffsetY = 100
+    prog.SheetIndex = 2
+
+    -- mapping sprites to names/indexes
+    prog.SpriteSet = {}
+    prog.TotalSprites = 0
+    prog.CurrentSprite = 0
 
     prog.Draw = function ()
         local lg = love.graphics
         lg.push("all")
+
+        local str = "Current Sheet: " .. SpriteSheetFiles[prog.SheetIndex]
+        lg.print(str, 10, 0)
+
+        str = "Current Sprite: " .. tostring(prog.CurrentSprite) .. "/" .. tostring(prog.TotalSprites)
+        lg.print(str, 10, 20)
+
         lg.scale(prog.Scale, prog.Scale)
         lg.translate(prog.OffsetX, prog.OffsetY)
-        local sheet = SpriteSheets[2]
+        local sheet = SpriteSheets[prog.SheetIndex]
         love.graphics.draw(sheet, 10, 10)
 
         lg.rectangle("line", 0, 0, sheet:getWidth(), sheet:getHeight())

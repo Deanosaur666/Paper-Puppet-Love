@@ -19,6 +19,9 @@ function  love.load()
 
     LoadSprites()
 
+    Font_K = love.graphics.newFont("fonts/KOMTIT.ttf", 20)
+    love.graphics.setFont(Font_K)
+
     --CurrentProgram = BlankProgram()
     CurrentProgram = PaperSpriteEditor()
 
