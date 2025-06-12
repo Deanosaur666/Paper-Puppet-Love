@@ -7,6 +7,19 @@
 
 -- TODO: add hit balls to part blueprints
 
+-- hitball flags
+HITBALL_HITTABLE = 1
+HITBALL_ACTIVE = 2
+
+function Hitball(x, y, radius, defFlags)
+    return {
+        X = x,
+        Y = y,
+        Radius = radius,
+        DefFlags = defFlags
+    }
+end
+
 function PartBlueprint(parentIndex, parentOffsetX, parentOffsetY, defSpriteIndex, ik, positionLock)
     return {
         ParentIndex = parentIndex,
@@ -15,7 +28,8 @@ function PartBlueprint(parentIndex, parentOffsetX, parentOffsetY, defSpriteIndex
         DefSpriteIndex = defSpriteIndex,
         DefLayer = 0,
         IK = ik,
-        PositionLock = positionLock
+        PositionLock = positionLock,
+        Hitballs = {}
     }
 end
 
@@ -40,7 +54,10 @@ function PartFrame(blueprintIndex, spriteIndex, rotation, x, y, layer)
         CY = y,
         ScaleX = 1,
         ScaleY = 1,
-        Layer = layer
+        Layer = layer,
+
+        HitballFlags = {}, -- changing hit balls from inactive to active, for example
+        HitballScaling = {} -- changing the size of a hit ball for an attack
     }
 end
 
