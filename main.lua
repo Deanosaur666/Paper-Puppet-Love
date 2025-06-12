@@ -1,4 +1,6 @@
 require "sprites"
+require "Screens"
+require "PaperSprite"
 
 if arg[#arg] == "vsc_debug" then 
     require("lldebugger").start()
@@ -16,15 +18,22 @@ function  love.load()
     love.window.setTitle("Paper Puppet Editor")
 
     LoadSprites()
+
+    --CurrentProgram = BlankProgram()
+    CurrentProgram = PaperSpriteEditor()
+
+    CurrentProgram.Load()
 end
 
 
 function love.draw()
 
     -- just for fun/testing purposes
-    if(#SpriteSheets >= 3) then
-        love.graphics.draw(SpriteSheets[2], 10, 10)
-    end
+    --if(#SpriteSheets >= 3) then
+    --    love.graphics.draw(SpriteSheets[2], 10, 10)
+    --end
+
+    CurrentProgram.Draw()
 end
 
 function love.keypressed(key, scancode, isrepeat)
@@ -32,6 +41,6 @@ function love.keypressed(key, scancode, isrepeat)
 end
 
 function love.update(dt)
-
+    CurrentProgram.Update()
 end
 
