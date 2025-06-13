@@ -10,6 +10,10 @@ if arg[#arg] == "vsc_debug" then
 
 end
 
+MouseDownPrev = { [1] = false, [2] = false }
+MouseDown = { [1] = false, [2] = false }
+MousePressed = { [1] = false, [2] = false }
+
 function love.conf(t)
 	t.console = true
     love.filesystem.setIdentity("Paper_Puppets_Love")
@@ -28,19 +32,44 @@ function  love.load()
     --CurrentProgram = BlankProgram()
     CurrentProgram = EditorProgram
 
-    CurrentProgram.Load()
+    CurrentProgram:Load()
 end
 
 
 function love.draw()
-    CurrentProgram.Draw()
+    CurrentProgram:Draw()
 end
 
 function love.keypressed(key, scancode, isrepeat)
-    
+    CurrentProgram:KeyPressed(key, scancode, isrepeat)
 end
 
 function love.update(dt)
-    CurrentProgram.Update()
+    MouseDown[1] = love.mouse.isDown(1)
+    MouseDown[2] = love.mouse.isDown(2)
+
+    MousePressed[1] = MouseDown[1] and not MouseDownPrev[1]
+    MousePressed[2] = MouseDown[2] and not MouseDownPrev[2]
+
+    if(MousePressed[1]) then
+        CurrentProgram:MousePressed(1)
+    elseif(MouseDown[1]) then
+        CurrentProgram:MouseHeld(1)
+    elseif(MouseDownPrev[1]) then
+        CurrentProgram:MouseReleased(1)
+    end
+
+    if(MousePressed[2]) then
+        CurrentProgram:MousePressed(2)
+    elseif(MouseDown[2]) then
+        CurrentProgram:MouseHeld(2)
+    elseif(MouseDownPrev[2]) then
+        CurrentProgram:MouseReleased(2)
+    end
+
+    CurrentProgram:Update()
+
+    MouseDownPrev[1] = MouseDown[1]
+    MouseDownPrev[2] = MouseDown[2]
 end
 

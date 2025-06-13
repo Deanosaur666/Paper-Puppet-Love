@@ -1,15 +1,31 @@
 function BlankProgram()
     local prog = {}
 
-    prog.Load = function ()
+    function prog:Load()
         -- nothing
     end
 
-    prog.Update = function ()
+    function prog:Update()
         -- nothing
     end
 
-    prog.Draw = function ()
+    function prog:Draw()
+        -- nothing
+    end
+
+    function prog:KeyPressed(key, scancode, isrepeat)
+        -- nothing
+    end
+
+    function prog:MousePressed(mb)
+        -- nothing
+    end
+
+    function prog:MouseHeld(mb)
+        -- nothing
+    end
+
+    function prog:MouseReleased(mb)
         -- nothing
     end
 
