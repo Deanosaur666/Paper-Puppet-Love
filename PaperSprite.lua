@@ -41,6 +41,9 @@ function PaperSpriteEditor()
     prog.SpriteSetIndex = nil
     prog.SpriteIndex = 0
 
+    prog.MouseDragX = 0
+    prog.MouseDragY = 0
+
     function prog:Draw()
         local lg = love.graphics
         lg.push("all")
@@ -61,6 +64,12 @@ function PaperSpriteEditor()
         lg.rectangle("line", 0, 0, sheet:getWidth(), sheet:getHeight())
 
         local mx, my = GetRelativeMouse(prog.Scale, prog.OffsetX, prog.OffsetY)
+
+        if(MouseDown[1]) then
+            lg.setColor(1, 0, 0)
+            lg.rectangle("line", MouseDragX, MouseDragY, mx - MouseDragX, my - MouseDragY)
+            lg.setColor(1, 1, 1)
+        end
 
         lg.circle("line", mx, my, 5)
 
@@ -117,6 +126,19 @@ function PaperSpriteEditor()
         end
     end
 
+    function prog:MousePressed(mb)
+        if(mb == 1) then
+            MouseDragX, MouseDragY = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
+        end
+    end
+
+    function prog:MouseReleased(mb)
+        if(mb == 1) then
+            local mx, my = GetRelativeMouse(prog.Scale, prog.OffsetX, prog.OffsetY)
+            self:DefineQuad(MouseDragX, MouseDragY, mx - MouseDragX, my - MouseDragY)
+        end
+    end
+
     function prog:CurrentSpriteSet()
         return SpriteSets[self.SpriteSetIndex]
     end
@@ -144,7 +166,7 @@ function PaperSpriteEditor()
     end
 
     function prog:DefineQuad(x, y, w, h)
-        local texture = SpriteSheets[self.SheetIndex]
+        local texture = SpriteSheets[SpriteSheetFiles[prog.SheetIndex]]
         local quad = love.graphics.newQuad(x, y, w, h, texture)
         local sprite = self:CurrentSprite()
         sprite.Quad = quad
