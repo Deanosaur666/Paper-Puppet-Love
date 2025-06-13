@@ -77,17 +77,19 @@ function PaperSpriteEditor()
         local dx = sheet:getWidth() + 10
         local dy = 10
         for i, sprite in ipairs(spriteSet) do
-            local w, h = 0, 0
+            local w, h = 200, 100
 
             if(sprite.Quad ~= nil) then
                 DrawPaperSprite(sprite, dx, dy)
                 _, _, w, h = sprite.Quad:getViewport()
             end
 
-            w = math.max(w, 200)
-            h = math.max(h, 100)
-
             if(i == self.SpriteIndex) then
+                if(sprite.Quad ~= nil) then
+                    lg.setColor(1, 1, 1)
+                    local x, y, w, h = sprite.Quad:getViewport()
+                    lg.rectangle("line", x, y, w, h)
+                end
                 lg.setColor(1, 0, 0)
             end
             lg.print(tostring(i), dx + 10, dy + 10)
@@ -135,7 +137,11 @@ function PaperSpriteEditor()
     function prog:MouseReleased(mb)
         if(mb == 1) then
             local mx, my = GetRelativeMouse(prog.Scale, prog.OffsetX, prog.OffsetY)
-            self:DefineQuad(MouseDragX, MouseDragY, mx - MouseDragX, my - MouseDragY)
+            local x1 = math.min(MouseDragX, mx)
+            local x2 = math.max(MouseDragX, mx)
+            local y1 = math.min(MouseDragY, my)
+            local y2 = math.max(MouseDragY, my)
+            self:DefineQuad(x1, y1, x2 - x1, y2 - y1)
         end
     end
 
