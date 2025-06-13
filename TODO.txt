@@ -12,9 +12,8 @@ Sprite edit screen
     View all textures
     Select texture file, quad, anchor
     Save by name (a unique key)
-
-SpriteSet edit screen
-    Select sprites. Assign them to keys
+    Create sprite set
+    Assign sprite to sprite set
 
 Skeleton edit screen
     Create skeleton and give it a name

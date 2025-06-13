@@ -2,6 +2,9 @@ require "sprites"
 require "Screens"
 require "PaperSprite"
 
+-- in the future, should depend on if we load in editor mode
+require "EditorProgram"
+
 if arg[#arg] == "vsc_debug" then 
     require("lldebugger").start()
 
@@ -23,19 +26,13 @@ function  love.load()
     love.graphics.setFont(Font_K)
 
     --CurrentProgram = BlankProgram()
-    CurrentProgram = PaperSpriteEditor()
+    CurrentProgram = EditorProgram
 
     CurrentProgram.Load()
 end
 
 
 function love.draw()
-
-    -- just for fun/testing purposes
-    --if(#SpriteSheets >= 3) then
-    --    love.graphics.draw(SpriteSheets[2], 10, 10)
-    --end
-
     CurrentProgram.Draw()
 end
 

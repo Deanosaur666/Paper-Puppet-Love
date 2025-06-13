@@ -15,7 +15,7 @@ function LoadSprites()
     for index, value in ipairs(files) do
         print(value)
         local spr = love.graphics.newImage(dir .. "/" ..value)
-        table.insert(SpriteSheets, spr)
+        SpriteSheets[value] = spr
         table.insert(SpriteSheetFiles, value)
     end
 
