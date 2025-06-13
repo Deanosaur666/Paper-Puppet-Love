@@ -3,7 +3,7 @@
 
 function LoadSprites()
 
-    local dir  = "sprites"
+    local dir  = "sprites/sheets"
 
     local files = love.filesystem.getDirectoryItems( dir)
 
