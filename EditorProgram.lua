@@ -34,6 +34,8 @@ end
 
 EditorProgram = BlankProgram()
 CurrentScreen = PaperSpriteEditor()
+CurrentScreen:CreateSpriteSet()
+CurrentScreen:CreateSprite()
 
 function EditorProgram:Draw()
     if(CurrentScreen ~= nil) then
@@ -48,14 +50,20 @@ function EditorProgram:Update()
 end
 
 function EditorProgram:KeyPressed(key, scancode, isrepeat)
-    if(CurrentScreen ~= nil) then
-        CurrentScreen:KeyPressed(key, scancode, isrepeat)
+    -- screen change
+    -- we return so the screen won't receive this input
+    if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
+        if(key == "1") then
+            CurrentScreen = PaperSpriteEditor()
+            return
+        elseif(key == "2") then
+            CurrentScreen = PartBlueprintEditor()
+            return
+        end
     end
 
-    if(key == "1") then
-        CurrentScreen = PaperSpriteEditor()
-    elseif(key == "2") then
-        CurrentScreen = PartBlueprintEditor()
+    if(CurrentScreen ~= nil) then
+        CurrentScreen:KeyPressed(key, scancode, isrepeat)
     end
 end
 

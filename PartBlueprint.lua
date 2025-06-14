@@ -39,7 +39,11 @@ function PartBlueprintEditor()
     prog.OffsetX = 100
     prog.OffsetY = 100
 
-    prog.PartIndex = nil
+    prog.BlueprintIndex = nil
+    local skeleton = CurrentSkeleton()
+    if(#skeleton.PartBlueprints > 0) then
+        prog.BlueprintIndex = 1
+    end
 
     function prog:Draw()
         local lg = love.graphics
@@ -52,7 +56,7 @@ function PartBlueprintEditor()
 
         local skeleton = CurrentSkeleton()
 
-        str = "Current Part Blueprint: " .. tostring(self.PartIndex or 0) .. "/" .. tostring(#skeleton.PartBlueprints)
+        str = "Current Part Blueprint: " .. tostring(self.BlueprintIndex or 0) .. "/" .. tostring(#skeleton.PartBlueprints)
         lg.print(str, 10, 20)
 
         lg.scale(self.Scale, self.Scale)
@@ -68,6 +72,50 @@ function PartBlueprintEditor()
 
         lg.circle("line", mx, my, 5)
 
+        local blueprints = skeleton.PartBlueprints
+        local currentBP = self:CurrentBlueprint()
+        local spriteSet = CurrentSpriteSet()
+        local dx = sheet:getWidth() + 10
+        local dy = 10
+        local maxX = 0
+        for i, bp in ipairs(blueprints) do
+            local w, h = 200, 100
+            if(dy + h > screenHeight) then
+                dy = 10
+                dx = maxX + 10
+            end
+
+            local sprite = spriteSet[bp.DefSpriteIndex]
+
+            if(sprite.Quad ~= nil) then
+                _, _, w, h = sprite.Quad:getViewport()
+                if(dy + h > screenHeight) then
+                    dy = 10
+                    dx = maxX + 10
+                end
+                DrawPaperSprite(sprite, CurrentTexture(), dx - sprite.AnchorX, dy - sprite.AnchorY)
+            end
+
+            if(i == self.BlueprintIndex) then
+                if(sprite.Quad ~= nil) then
+                    lg.setColor(0, 1, 0)
+                end
+                lg.setColor(1, 0, 0)
+            end
+            if(i == currentBP.ParentIndex) then
+                lg.setColor(0, 1, 0)
+                lg.print("P", dx + 10, dy + 40)
+            end
+            lg.print(tostring(i), dx + 10, dy + 10)
+            lg.rectangle("line", dx, dy, w, h)
+            lg.circle("line", dx + sprite.AnchorX, dy + sprite.AnchorY, 5)
+            maxX = math.max(maxX, dx + w)
+
+            lg.setColor(1, 1, 1)
+
+            dy = dy + h + 2
+        end
+
         lg.pop()
         
         
@@ -77,7 +125,51 @@ function PartBlueprintEditor()
     
     end
 
+    function prog:CurrentBlueprint()
+        if(self.BlueprintIndex == nil) then
+            return nil
+        end
+        local skeleton = CurrentSkeleton()
+        return skeleton.PartBlueprints[self.BlueprintIndex]
+    end
+
+    function prog:CreateBlueprint()
+        local skeleton = CurrentSkeleton()
+        self.BlueprintIndex = #skeleton.PartBlueprints + 1
+        skeleton.PartBlueprints[self.BlueprintIndex] = PartBlueprint(nil, 0, 0, 1)
+    end
+
     function prog:KeyPressed(key, scancode, isrepeat)
+        local skeleton = CurrentSkeleton()
+        local bluePrint = self:CurrentBlueprint()
+        local spriteSet = CurrentSpriteSet()
+        if(key == "n") then
+            self:CreateBlueprint()
+        elseif(key == "left" and bluePrint ~= nil) then
+            bluePrint.DefSpriteIndex = ((bluePrint.DefSpriteIndex - 2) % #spriteSet) + 1
+        elseif(key == "right" and bluePrint ~= nil) then
+            bluePrint.DefSpriteIndex = (bluePrint.DefSpriteIndex % #spriteSet) + 1
+        elseif(key == "up" and self.BlueprintIndex ~= nil) then
+            self.BlueprintIndex = ((self.BlueprintIndex - 2) % #skeleton.PartBlueprints) + 1
+        elseif(key == "down" and self.BlueprintIndex ~= nil) then
+            self.BlueprintIndex = (self.BlueprintIndex % #skeleton.PartBlueprints) + 1
+        elseif(key == "s") then
+            if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
+                Skeletons[#Skeletons + 1] = PaperSkeleton()
+            end
+            SkeletonIndex = (SkeletonIndex % #Skeletons) + 1
+        elseif(tonumber(key) and bluePrint ~= nil) then
+            local keyNum = tonumber(key)
+            local pIndex = bluePrint.ParentIndex or 0
+            local newIndex = tonumber(tostring(pIndex) .. key)
+            if(newIndex == 0 or newIndex > #skeleton.PartBlueprints) then
+                bluePrint.ParentIndex = nil
+                print(newIndex .. " bad")
+            else
+                bluePrint.ParentIndex = newIndex
+                print(newIndex .. " blueprints: " .. #skeleton.PartBlueprints)
+            end
+        end
 
     end
 
