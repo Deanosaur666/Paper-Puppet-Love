@@ -129,12 +129,25 @@ function PaperSpriteEditor()
     end
 
     function prog:MousePressed(mb)
+        local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
+        local sprite = self:CurrentSprite()
+        if(sprite == nil) then
+            return
+        end
         if(mb == 1) then
             MouseDragX, MouseDragY = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
+        elseif(mb == 2)then
+            local x, y, w, h = sprite.Quad:getViewport()
+            self:DefineAnchor()
         end
+            
     end
 
     function prog:MouseReleased(mb)
+        local sprite = self:CurrentSprite()
+        if(sprite == nil) then
+            return
+        end
         if(mb == 1) then
             local mx, my = GetRelativeMouse(prog.Scale, prog.OffsetX, prog.OffsetY)
             local x1 = math.min(MouseDragX, mx)
