@@ -8,7 +8,7 @@
 function PaperSkeleton()
     return {
         Name = "",
-        PartBluePrints = {}, -- full of PartBluePrints
+        PartBlueprints = {}, -- full of PartBluePrints
         Animations = {}
     }
 end

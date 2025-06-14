@@ -1,38 +1,3 @@
-
--- paper part blueprint has:
--- parent (a hand is parented to an arm, which is parented to upper arm, which is parented to body)
--- parent offset ()
--- ik flag (for hands and feet that can drag limbs)
--- position lock flag (for elbows and stuff that can't be moved from anchor)
-
--- TODO: add hit balls to part blueprints
-
--- hitball flags
-HITBALL_HITTABLE = 1
-HITBALL_ACTIVE = 2
-
-function Hitball(x, y, radius, defFlags)
-    return {
-        X = x,
-        Y = y,
-        Radius = radius,
-        DefFlags = defFlags
-    }
-end
-
-function PartBlueprint(parentIndex, parentOffsetX, parentOffsetY, defSpriteIndex, ik, positionLock)
-    return {
-        ParentIndex = parentIndex,
-        ParentOffsetX = parentOffsetX,
-        ParentOffsetY = parentOffsetY,
-        DefSpriteIndex = defSpriteIndex,
-        DefLayer = 0,
-        IK = ik,
-        PositionLock = positionLock,
-        Hitballs = {}
-    }
-end
-
 -- paper part frame has:
 -- current sprite index,
 -- rotation, position
@@ -77,8 +42,8 @@ function UpdatePartFrame(part, frame, skeleton)
     local blueprint = GetPartBluePrint(part, skeleton)
 
     if(parent == nil) then
-        part.CX = part.X
-        part.CY = part.Y
+        part.CX = part.X + blueprint.X
+        part.CY = part.Y + blueprint.Y
         part.CRotation = part.Rotation;
         return
     end
@@ -94,8 +59,8 @@ function UpdatePartFrame(part, frame, skeleton)
     -- add parent rotation and modulo to keep within 0 and 2pi
     part.CRotation = (prot + part.Rotation + 2*math.pi) % math.pi
 
-    part.CX = px + (blueprint.ParentOffsetX + part.X)*math.cos(prot)*pxscale
-    part.CX = px + (blueprint.ParentOffsetY + part.Y)*math.sin(prot)*pyscale
+    part.CX = px + (blueprint.X + part.X)*math.cos(prot)*pxscale
+    part.CX = px + (blueprint.Y + part.Y)*math.sin(prot)*pyscale
 
 end
 

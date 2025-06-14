@@ -1,4 +1,8 @@
 require "PaperSprite"
+require "PaperSkeleton"
+require "PartBlueprint"
+require "PartFrame"
+require "PaperAnimation"
 
 CurrentScreen = nil
 -- contains all sprite sets
@@ -8,8 +12,13 @@ SpriteSets = {}
 Skeletons = {}
 
 -- what sheet we're using for drawing
-SheetIndex = 2
+SheetIndex = 1
 SpriteSetIndex = nil
+
+-- skeletons
+-- SCARY!
+Skeletons = { PaperSkeleton() }
+SkeletonIndex = 1
 
 function CurrentTexture()
     return SpriteSheets[SpriteSheetFiles[SheetIndex]]
@@ -17,6 +26,10 @@ end
 
 function CurrentSpriteSet()
     return SpriteSets[SpriteSetIndex]
+end
+
+function CurrentSkeleton()
+   return Skeletons[SkeletonIndex]
 end
 
 EditorProgram = BlankProgram()
@@ -37,6 +50,12 @@ end
 function EditorProgram:KeyPressed(key, scancode, isrepeat)
     if(CurrentScreen ~= nil) then
         CurrentScreen:KeyPressed(key, scancode, isrepeat)
+    end
+
+    if(key == "1") then
+        CurrentScreen = PaperSpriteEditor()
+    elseif(key == "2") then
+        CurrentScreen = PartBlueprintEditor()
     end
 end
 
