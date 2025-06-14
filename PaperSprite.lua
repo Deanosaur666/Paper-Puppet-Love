@@ -80,7 +80,7 @@ function PaperSpriteEditor()
             local w, h = 200, 100
 
             if(sprite.Quad ~= nil) then
-                DrawPaperSprite(sprite, dx, dy)
+                DrawPaperSprite(sprite, dx - sprite.AnchorX, dy - sprite.AnchorY)
                 _, _, w, h = sprite.Quad:getViewport()
             end
 
@@ -89,11 +89,14 @@ function PaperSpriteEditor()
                     lg.setColor(1, 1, 1)
                     local x, y, w, h = sprite.Quad:getViewport()
                     lg.rectangle("line", x, y, w, h)
+                    lg.setColor(0, 1, 0)
+                    lg.circle("line", x + sprite.AnchorX, y + sprite.AnchorY, 5)
                 end
                 lg.setColor(1, 0, 0)
             end
             lg.print(tostring(i), dx + 10, dy + 10)
             lg.rectangle("line", dx, dy, w, h)
+            lg.circle("line", dx + sprite.AnchorX, dy + sprite.AnchorY, 5)
 
             lg.setColor(1, 1, 1)
 
@@ -130,15 +133,18 @@ function PaperSpriteEditor()
 
     function prog:MousePressed(mb)
         local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
+        if(mb == 1) then
+            MouseDragX, MouseDragY = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
+        end
+
         local sprite = self:CurrentSprite()
         if(sprite == nil) then
             return
         end
-        if(mb == 1) then
-            MouseDragX, MouseDragY = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
-        elseif(mb == 2)then
+        
+        if(mb == 2)then
             local x, y, w, h = sprite.Quad:getViewport()
-            self:DefineAnchor()
+            self:DefineAnchor(mx - x, my - y)
         end
             
     end
@@ -164,6 +170,9 @@ function PaperSpriteEditor()
 
     function prog:CurrentSprite()
         local spriteSet = SpriteSets[self.SpriteSetIndex]
+        if(spriteSet == nil) then
+            return nil
+        end
         return spriteSet[self.SpriteIndex]
     end
 
