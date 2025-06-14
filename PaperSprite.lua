@@ -4,20 +4,19 @@
 
 -- a sprite set is a collection of sprites with keys, mapped to a skeleton
 
-function PaperSprite(textureIndex, quad, anchorX, anchorY)
-    return {TextureIndex = textureIndex, Quad = quad, AnchorX = anchorX, AnchorY = anchorY}
+function PaperSprite(quad, anchorX, anchorY)
+    return {Quad = quad, AnchorX = anchorX, AnchorY = anchorY}
 end
 
 -- texture override exists so we can swap out sprites easily enough
 -- needs rotation and scale
-function DrawPaperSprite(sprite, x, y, rot, xscale, yscale, texture_override)
-    local tex = texture_override or SpriteSheets[sprite.TextureIndex]
+function DrawPaperSprite(sprite, texture, x, y, rot, xscale, yscale)
 
     xscale = xscale or 1
     yscale = yscale or 1
     rot = rot or 0
     -- needs to use rotation and scale
-    love.graphics.draw(tex, sprite.Quad, x + sprite.AnchorX, y + sprite.AnchorY)
+    love.graphics.draw(texture, sprite.Quad, x + sprite.AnchorX, y + sprite.AnchorY)
 end
 
 
@@ -35,10 +34,9 @@ function PaperSpriteEditor()
     prog.Scale = 0.5
     prog.OffsetX = 100
     prog.OffsetY = 100
-    prog.SheetIndex = 2
 
     -- mapping sprites to names/indexes
-    prog.SpriteSetIndex = nil
+    
     prog.SpriteIndex = 0
 
     prog.MouseDragX = 0
@@ -48,22 +46,30 @@ function PaperSpriteEditor()
         local lg = love.graphics
         lg.push("all")
 
-        local str = "Current Sheet: " .. prog.SheetIndex
+        lg.clear(0.4, 0.4, 0.4)
+
+        local str = "Current Sheet: " .. SheetIndex
         lg.print(str, 10, 0)
 
-        local spriteSet = self:CurrentSpriteSet() or {}
+        local spriteSet = CurrentSpriteSet() or {}
 
-        str = "Current Sprite: " .. tostring(prog.SpriteIndex) .. "/" .. tostring(#spriteSet)
+        str = "Current Sprite: " .. tostring(self.SpriteIndex) .. "/" .. tostring(#spriteSet)
         lg.print(str, 10, 20)
 
-        lg.scale(prog.Scale, prog.Scale)
-        lg.translate(prog.OffsetX, prog.OffsetY)
-        local sheet = SpriteSheets[SpriteSheetFiles[prog.SheetIndex]]
+        str = "Current SpriteSet: " .. tostring(SpriteSetIndex or 0) .. "/" .. tostring(#SpriteSets)
+        lg.print(str, 700, 20)
+
+        lg.scale(self.Scale, self.Scale)
+        lg.translate(self.OffsetX, self.OffsetY)
+
+        local screenHeight = ScreenHeight/self.Scale - self.OffsetY*2
+
+        local sheet = CurrentTexture()
         love.graphics.draw(sheet, 10, 10)
 
         lg.rectangle("line", 0, 0, sheet:getWidth(), sheet:getHeight())
 
-        local mx, my = GetRelativeMouse(prog.Scale, prog.OffsetX, prog.OffsetY)
+        local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
 
         if(MouseDown[1]) then
             lg.setColor(1, 0, 0)
@@ -73,15 +79,24 @@ function PaperSpriteEditor()
 
         lg.circle("line", mx, my, 5)
 
-        local spriteSet = SpriteSets[prog.SpriteSetIndex] or {}
+        local spriteSet = SpriteSets[SpriteSetIndex] or {}
         local dx = sheet:getWidth() + 10
         local dy = 10
+        local maxX = 0
         for i, sprite in ipairs(spriteSet) do
             local w, h = 200, 100
+            if(dy + h > screenHeight) then
+                dy = 10
+                dx = maxX + 10
+            end
 
             if(sprite.Quad ~= nil) then
-                DrawPaperSprite(sprite, dx - sprite.AnchorX, dy - sprite.AnchorY)
                 _, _, w, h = sprite.Quad:getViewport()
+                if(dy + h > screenHeight) then
+                    dy = 10
+                    dx = maxX + 10
+                end
+                DrawPaperSprite(sprite, CurrentTexture(), dx - sprite.AnchorX, dy - sprite.AnchorY)
             end
 
             if(i == self.SpriteIndex) then
@@ -97,6 +112,7 @@ function PaperSpriteEditor()
             lg.print(tostring(i), dx + 10, dy + 10)
             lg.rectangle("line", dx, dy, w, h)
             lg.circle("line", dx + sprite.AnchorX, dy + sprite.AnchorY, 5)
+            maxX = math.max(maxX, dx + w)
 
             lg.setColor(1, 1, 1)
 
@@ -113,21 +129,28 @@ function PaperSpriteEditor()
     end
 
     function prog:KeyPressed(key, scancode, isrepeat)
-        local spriteSet = SpriteSets[self.SpriteSetIndex] or {}
+        local spriteSet = CurrentSpriteSet() or {}
         if(key == "n") then
-            if(self.SpriteSetIndex == nil) then
+            if(SpriteSetIndex == nil) then
                 self:CreateSpriteSet()
-                spriteSet = SpriteSets[self.SpriteSetIndex]
+                spriteSet = CurrentSpriteSet()
             end
             self:CreateSprite()
         elseif(key == "left") then
-            self.SheetIndex = ((self.SheetIndex - 2) % #SpriteSheetFiles) + 1
+            SheetIndex = ((SheetIndex - 2) % #SpriteSheetFiles) + 1
         elseif(key == "right") then
-            self.SheetIndex = (self.SheetIndex % #SpriteSheetFiles) + 1
+            SheetIndex = (SheetIndex % #SpriteSheetFiles) + 1
         elseif(key == "up") then
             self.SpriteIndex = ((self.SpriteIndex - 2) % #spriteSet) + 1
         elseif(key == "down") then
             self.SpriteIndex = (self.SpriteIndex % #spriteSet) + 1
+        elseif(key == "s") then
+            SpriteSetIndex = SpriteSetIndex or 0
+            if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
+                self:CreateSpriteSet()
+            else
+                SpriteSetIndex = (SpriteSetIndex % #SpriteSets) + 1
+            end
         end
     end
 
@@ -164,12 +187,8 @@ function PaperSpriteEditor()
         end
     end
 
-    function prog:CurrentSpriteSet()
-        return SpriteSets[self.SpriteSetIndex]
-    end
-
     function prog:CurrentSprite()
-        local spriteSet = SpriteSets[self.SpriteSetIndex]
+        local spriteSet = CurrentSpriteSet()
         if(spriteSet == nil) then
             return nil
         end
@@ -178,23 +197,23 @@ function PaperSpriteEditor()
 
     function prog:CreateSpriteSet()
         -- new sprite set
-        self.SpriteSetIndex = #SpriteSets + 1
+        SpriteSetIndex = #SpriteSets + 1
         local spriteSet = {}
-        SpriteSets[self.SpriteSetIndex] = spriteSet
+        SpriteSets[SpriteSetIndex] = spriteSet
     end
 
     function prog:CreateSprite()
-        local spriteSet = SpriteSets[self.SpriteSetIndex]
+        local spriteSet = CurrentSpriteSet()
         if(spriteSet == nil) then
             return false
         end
         -- create an empty sprite
         self.SpriteIndex = #spriteSet + 1
-        spriteSet[self.SpriteIndex] = PaperSprite(SpriteSheetFiles[self.SheetIndex], nil, 0, 0)
+        spriteSet[self.SpriteIndex] = PaperSprite(nil, 0, 0)
     end
 
     function prog:DefineQuad(x, y, w, h)
-        local texture = SpriteSheets[SpriteSheetFiles[prog.SheetIndex]]
+        local texture = CurrentTexture()
         local quad = love.graphics.newQuad(x, y, w, h, texture)
         local sprite = self:CurrentSprite()
         sprite.Quad = quad

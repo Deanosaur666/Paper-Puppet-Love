@@ -7,6 +7,18 @@ SpriteSets = {}
 -- contains all skeletons
 Skeletons = {}
 
+-- what sheet we're using for drawing
+SheetIndex = 2
+SpriteSetIndex = nil
+
+function CurrentTexture()
+    return SpriteSheets[SpriteSheetFiles[SheetIndex]]
+end
+
+function CurrentSpriteSet()
+    return SpriteSets[SpriteSetIndex]
+end
+
 EditorProgram = BlankProgram()
 CurrentScreen = PaperSpriteEditor()
 

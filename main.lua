@@ -21,7 +21,8 @@ end
 
 function  love.load()
 
-    love.window.setMode( 1440, 810 )
+    ScreenWidth, ScreenHeight = 1440, 810
+    love.window.setMode( ScreenWidth, ScreenHeight )
     love.window.setTitle("Paper Puppet Editor")
 
     LoadSprites()
