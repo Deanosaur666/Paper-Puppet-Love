@@ -8,11 +8,12 @@ Sprite editor:
     n:                      create new sprite
     shift + s:              create new spriteset
     s:                      toggle spriteset
+    ctrl + s:               save current spriteset
 
 Part blueprint editor:
     arrows left/right:      change current blueprint's sprite index
     arrows up/down:         change current blueprint
-    shift+s:                create new skeleton
+    shift + s:              create new skeleton
     s:                      toggle skeleton
     i:                      toggle current blueprint's IK flag
     p:                      toggle current blueprint's position lock flag
