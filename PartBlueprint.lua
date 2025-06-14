@@ -106,7 +106,13 @@ function PartBlueprintEditor()
                 lg.setColor(0, 1, 0)
                 lg.print("P", dx + 10, dy + 40)
             end
-            lg.print(tostring(i), dx + 10, dy + 10)
+            lg.print(tostring(i) .. " - L " .. bp.DefLayer, dx + 10, dy + 10)
+            if(bp.IK) then
+                lg.print("IK", dx + 10, dy + 60)
+            end
+            if(bp.PositionLock) then
+                lg.print("PL", dx + 10, dy + 80)
+            end
             lg.rectangle("line", dx, dy, w, h)
             lg.circle("line", dx + sprite.AnchorX, dy + sprite.AnchorY, 5)
             maxX = math.max(maxX, dx + w)
@@ -158,6 +164,14 @@ function PartBlueprintEditor()
                 Skeletons[#Skeletons + 1] = PaperSkeleton()
             end
             SkeletonIndex = (SkeletonIndex % #Skeletons) + 1
+        elseif(key == "i" and bluePrint ~= nil) then
+            bluePrint.IK = not bluePrint.IK
+        elseif(key == "p" and bluePrint ~= nil) then
+            bluePrint.PositionLock = not bluePrint.PositionLock
+        elseif(key == "," and bluePrint ~= nil) then
+            bluePrint.DefLayer = bluePrint.DefLayer - 1
+        elseif(key == "." and bluePrint ~= nil) then
+            bluePrint.DefLayer = bluePrint.DefLayer + 1
         elseif(tonumber(key) and bluePrint ~= nil) then
             local keyNum = tonumber(key)
             local pIndex = bluePrint.ParentIndex or 0
