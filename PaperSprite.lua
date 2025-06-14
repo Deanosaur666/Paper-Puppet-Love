@@ -1,8 +1,32 @@
+require "tables"
 
 -- paper sprite has:
 -- texture, quad, anchor
 
 -- a sprite set is a collection of sprites with keys, mapped to a skeleton
+
+function SaveSpriteSet(spriteSet, name)
+    local path = love.filesystem.getSourceBaseDirectory()
+    local filepath = path .. "/spritesets/" .. name
+    print("Saved spriteset to: " .. filepath)
+    local file = io.open("spritesets/"..name, "w")
+
+    for _, sprite in ipairs(spriteSet) do
+        local line = PaperSpriteToString(sprite)
+        file:write(line .. "\n")
+    end
+    
+    io.close(file)
+end
+
+function LoadSpriteSet(filename)
+    filename = "spritesets/" .. filename
+    local spriteSet = {}
+    for line in love.filesystem.lines(filename) do
+		table.insert(spriteSet, PaperSpriteFromString(line))
+	end
+    return spriteSet
+end
 
 function PaperSprite(quad, anchorX, anchorY)
     return {Quad = quad, AnchorX = anchorX, AnchorY = anchorY}
@@ -20,12 +44,19 @@ function DrawPaperSprite(sprite, texture, x, y, rot, xscale, yscale)
 end
 
 
-function PaperSpriteToString(paperSprite)
+function PaperSpriteToString(sprite)
+    local qx, qy, qw, qh = sprite.Quad:getViewport()
+    local sw, sh = sprite.Quad:getTextureDimensions( )
 
+    return stringjoin({qx, qy, qw, qh, sw, sh, sprite.AnchorX, sprite.AnchorY}, ":")
 end
 
 function PaperSpriteFromString(str)
-
+    local split = stringsplit(str, ":")
+    local qx, qy, qw, qh, sw, sh, ax, ay =
+        split[1], split[2], split[3], split[4], split[5], split[6], split[7], split[8]
+    
+    return PaperSprite(love.graphics.newQuad(qx, qy, qw, qh, sw, sh), ax, ay)
 end
 
 
@@ -65,7 +96,7 @@ function PaperSpriteEditor()
         local screenHeight = ScreenHeight/self.Scale - self.OffsetY*2
 
         local sheet = CurrentTexture()
-        love.graphics.draw(sheet, 10, 10)
+        love.graphics.draw(sheet, 0, 0)
 
         lg.rectangle("line", 0, 0, sheet:getWidth(), sheet:getHeight())
 
@@ -148,6 +179,8 @@ function PaperSpriteEditor()
             SpriteSetIndex = SpriteSetIndex or 0
             if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
                 self:CreateSpriteSet()
+            elseif((love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) and #spriteSet > 0) then
+                SaveSpriteSet(spriteSet, tostring(SpriteSetIndex))
             else
                 SpriteSetIndex = (SpriteSetIndex % #SpriteSets) + 1
             end

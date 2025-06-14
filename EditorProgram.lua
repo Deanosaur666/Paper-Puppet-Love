@@ -34,8 +34,6 @@ end
 
 EditorProgram = BlankProgram()
 CurrentScreen = PaperSpriteEditor()
-CurrentScreen:CreateSpriteSet()
-CurrentScreen:CreateSprite()
 
 function EditorProgram:Draw()
     if(CurrentScreen ~= nil) then

@@ -1,11 +1,13 @@
 -- load all sprites in the sprite folder and store them in a table for
 -- easy access by key (for convenient serialization of things that reference sprites)
 
+require "PaperSprite"
+
 function LoadSprites()
 
     local dir  = "sprites/sheets"
 
-    local files = love.filesystem.getDirectoryItems( dir)
+    local files = love.filesystem.getDirectoryItems(dir)
 
     -- these are the textures we will use for creating part sprites
     SpriteSheets = {}
@@ -19,6 +21,15 @@ function LoadSprites()
         table.insert(SpriteSheetFiles, value)
     end
 
+    dir  = "spritesets"
 
+    files = love.filesystem.getDirectoryItems(dir)
+    for _, value in ipairs(files) do
+        SpriteSets[tonumber(value)] = LoadSpriteSet(value)
+    end
+
+    if(#SpriteSets > 0) then
+        SpriteSetIndex = 1
+    end
 
 end
