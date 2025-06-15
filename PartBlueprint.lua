@@ -68,6 +68,8 @@ function PartBlueprintEditor()
     prog.MouseDragX = 0
     prog.MouseDragY = 0
 
+    prog.SkeletonFrame = nil
+
     function prog:Draw()
         local lg = love.graphics
         lg.push("all")
@@ -226,13 +228,24 @@ function PartBlueprintEditor()
     function prog:DrawSkeleton(x, y)
         local skeleton = CurrentSkeleton()
         local frame = DefaultFrame(skeleton)
+
+        if(self.SkeletonFrame ~= nil and #self.SkeletonFrame.PartFrames == #frame.PartFrames) then
+            frame = self.SkeletonFrame
+        end
+
+        self.SkeletonFrame = frame
+
+        local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
+        local partFrame = frame.PartFrames[self.BlueprintIndex]
+
         if(love.keyboard.isDown("lalt") or love.keyboard.isDown("lalt")) then
-            local partFrame = frame.PartFrames[self.BlueprintIndex]
-            local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
             partFrame.Rotation = math.atan2(my - prog.ViewCenterY, mx - prog.ViewCenterX)
+        end
+        if(love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
             partFrame.XScale = (mx - prog.ViewCenterX) / 500
             partFrame.YScale = (my - prog.ViewCenterY) / 500
         end
+
         UpdateFrame(frame, skeleton)
         DrawFrame(frame, skeleton, CurrentSpriteSet(), CurrentTexture(), x, y)
     end
