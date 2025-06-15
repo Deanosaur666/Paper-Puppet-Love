@@ -143,7 +143,7 @@ function PaperSpriteEditor()
                     dy = 10
                     dx = maxX + 10
                 end
-                DrawPaperSprite(sprite, CurrentTexture(), dx - sprite.AnchorX, dy - sprite.AnchorY)
+                DrawPaperSprite(sprite, CurrentTexture(), dx + sprite.AnchorX, dy + sprite.AnchorY)
             end
 
             if(i == self.SpriteIndex) then

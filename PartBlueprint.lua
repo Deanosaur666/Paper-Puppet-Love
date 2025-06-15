@@ -111,7 +111,7 @@ function PartBlueprintEditor()
                     dx = maxX + 10
                 end
                 local xsc, ysc = GetBlueprintScale(bp)
-                DrawPaperSprite(sprite, CurrentTexture(), dx - sprite.AnchorX, dy - sprite.AnchorY, 0, xsc, ysc)
+                DrawPaperSprite(sprite, CurrentTexture(), dx + sprite.AnchorX, dy + sprite.AnchorY, 0, xsc, ysc)
             end
 
             if(i == self.BlueprintIndex) then
@@ -162,7 +162,7 @@ function PartBlueprintEditor()
             lg.rectangle("line", self.CurrentBlueprintX, self.CurrentBlueprintY, self.CurrentBlueprintW, self.CurrentBlueprintH)
             lg.setColor(1, 1, 1)
             local xsc, ysc = GetBlueprintScale(self:CurrentBlueprint())
-            DrawPaperSprite(sprite, CurrentTexture(), self.CurrentBlueprintX - sprite.AnchorX, self.CurrentBlueprintY - sprite.AnchorY, 0, xsc, ysc)
+            DrawPaperSprite(sprite, CurrentTexture(), self.CurrentBlueprintX + sprite.AnchorX, self.CurrentBlueprintY + sprite.AnchorY, 0, xsc, ysc)
 
 
             DrawPaperSprite(sprite, CurrentTexture(), mx, my, 0, xsc, ysc)
