@@ -214,9 +214,11 @@ function PartBlueprintEditor()
     function prog:DrawSkeleton(x, y)
         local skeleton = CurrentSkeleton()
         local frame = DefaultFrame(skeleton)
-        PointyPart = self.BlueprintIndex
-        local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
-        PointRotation = math.atan2(my - prog.ViewCenterY, mx - prog.ViewCenterX)
+        if(love.keyboard.isDown("lalt") or love.keyboard.isDown("lalt")) then
+            local partFrame = frame.PartFrames[self.BlueprintIndex]
+            local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
+            partFrame.Rotation = math.atan2(my - prog.ViewCenterY, mx - prog.ViewCenterX)
+        end
         UpdateFrame(frame, skeleton)
         DrawFrame(frame, skeleton, CurrentSpriteSet(), CurrentTexture(), x, y)
     end

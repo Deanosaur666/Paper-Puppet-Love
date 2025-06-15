@@ -22,9 +22,6 @@ end
 function UpdateFrame(frame, skeleton)
     for i, pf in ipairs(frame.PartFrames) do
         UpdatePartFrame(pf, frame, skeleton)
-        if(i == PointyPart) then
-            pf.CRotation = PointRotation
-        end
     end
 end
 
