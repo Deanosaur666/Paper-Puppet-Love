@@ -7,6 +7,8 @@ Sort part update order based on parenting, rather than manually ordered...
 
 Hit balls (ow)
 
+Weirdness on edges between sprites
+
 
 Part Blueprint editor
     Set part hit balls
