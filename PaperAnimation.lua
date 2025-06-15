@@ -25,6 +25,8 @@ end
 function UpdateFrame(frame, skeleton)
     for i, pf in ipairs(frame.PartFrames) do
         UpdatePartFrame(pf, frame, skeleton)
+        pf.CX = pf.CX + (frame.X or 0)
+        pf.CY = pf.CY + (frame.Y or 0)
     end
 end
 
@@ -57,6 +59,30 @@ function DrawFrame(frame, skeleton, spriteset, texture, x, y, rot, xscale, yscal
         local sprite = GetPartSprite(part, blueprint, spriteset)
         local xsc, ysc = GetBlueprintScale(blueprint)
         DrawPaperSprite(sprite, texture, part.CX, part.CY, part.CRotation, part.XScale * xsc, part.YScale * ysc)
+    end
+
+    lg.pop()
+end
+
+function DrawFrameHitballs(frame, skeleton, x, y, rot, xscale, yscale)
+    xscale = xscale or 1
+    yscale = yscale or 1
+    rot = rot or 0
+    
+    local lg = love.graphics
+
+    lg.push("all")
+    lg.translate(x + (skeleton.X or 0) + (frame.X or 0), y + (skeleton.Y or 0) + (frame.Y or 0))
+    lg.scale(xscale, yscale)
+    lg.rotate(rot)
+
+    for _, part in pairs(frame.PartFrames) do
+        local blueprint = GetPartBluePrint(part, skeleton)
+        local xsc, ysc = GetBlueprintScale(blueprint)
+        for i, _ in ipairs(blueprint.Hitballs) do
+            local hitball = HitballFromFrame(skeleton, part, i)
+            DrawHitBall(hitball.X, hitball.Y, hitball.Radius, hitball.Flags)
+        end
     end
 
     lg.pop()

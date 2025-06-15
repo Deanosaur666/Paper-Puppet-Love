@@ -24,7 +24,7 @@ function PartFrame(blueprintIndex, spriteIndex, rotation, x, y, layer)
         Layer = layer,
 
         HitballFlags = {}, -- changing hit balls from inactive to active, for example
-        HitballScaling = {} -- changing the size of a hit ball for an attack
+        HitballScale = {} -- changing the size of a hit ball for an attack
     }
 end
 

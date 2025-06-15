@@ -7,17 +7,58 @@
 
 -- TODO: add hit balls to part blueprints
 
+bit = require 'bit'
+require "Math"
+
 -- hitball flags
 HITBALL_HITTABLE = 1
 HITBALL_ACTIVE = 2
 
-function Hitball(x, y, radius, defFlags)
+function Hitball(x, y, radius, flags)
     return {
         X = x,
         Y = y,
         Radius = radius,
-        DefFlags = defFlags
+        Flags = flags
     }
+end
+
+function HitballFromFrame(skeleton, partframe, ballnum)
+    local blueprint = GetPartBluePrint(partframe, skeleton)
+    local hitball = blueprint.Hitballs[ballnum]
+    local scale = math.min(partframe.XScale, partframe.YScale)
+    
+    local x, y = hitball.X * scale, hitball.Y * scale
+    x, y = RotatePoint(x, y, partframe.CRotation)
+
+    x = x + partframe.CX
+    y = y + partframe.CY
+
+    local radius = hitball.Radius * scale * (partframe.HitballScale[ballnum] or 1)
+    local flags = partframe.HitballFlags[ballnum] or hitball.Flags
+
+    print(flags)
+    return Hitball(x, y, radius, flags)
+end
+
+function DrawHitBall(x, y, radius, flags)
+    local lg = love.graphics
+    lg.push("all")
+    if(bit.band(flags, HITBALL_HITTABLE) ~= 0) then
+        if(bit.band(flags, HITBALL_ACTIVE) ~= 0) then
+            lg.setColor(1, 0, 0)
+        else
+            lg.setColor(0, 0, 1)
+        end
+    else
+        if(bit.band(flags, HITBALL_ACTIVE) ~= 0) then
+            lg.setColor(1, 0, 1)
+        else
+            lg.setColor(0.5, 0.5, 0.5)
+        end
+    end
+    lg.circle("line", x, y, radius)
+    lg.pop()
 end
 
 function PartBlueprint(parentIndex, x, y, defSpriteIndex)
@@ -193,6 +234,10 @@ function PartBlueprintEditor()
             local xsc, ysc = GetBlueprintScale(self:CurrentBlueprint())
             DrawPaperSprite(sprite, CurrentTexture(), self.CurrentBlueprintX + sprite.AnchorX, self.CurrentBlueprintY + sprite.AnchorY, 0, xsc, ysc)
 
+            for _, ball in ipairs(currentBP.Hitballs) do
+                DrawHitBall(self.CurrentBlueprintX + sprite.AnchorX + ball.X, self.CurrentBlueprintY + sprite.AnchorY + ball.Y, ball.Radius, ball.Flags)
+            end
+
         end
 
         -- draws the parent below it
@@ -204,6 +249,13 @@ function PartBlueprintEditor()
             lg.setColor(1, 1, 1)
             DrawPaperSprite(sprite, CurrentTexture(), self.ParentBlueprintX + sprite.AnchorX, self.ParentBlueprintY + sprite.AnchorY)
 
+        end
+
+        -- ball creation
+        if(MouseDown[2]) then
+            lg.setColor(1, 1, 0)
+            lg.circle("line", MouseDragX, MouseDragY, PointDistance(MouseDragX, MouseDragY, mx, my))
+            lg.setColor(1, 1, 1)
         end
 
         lg.pop()
@@ -248,6 +300,7 @@ function PartBlueprintEditor()
 
         UpdateFrame(frame, skeleton)
         DrawFrame(frame, skeleton, CurrentSpriteSet(), CurrentTexture(), x, y)
+        DrawFrameHitballs(frame, skeleton, x, y)
     end
 
     function prog:Update()
@@ -361,6 +414,41 @@ function PartBlueprintEditor()
                 skeleton.X = mx - self.ViewCenterX
                 skeleton.Y = my - self.ViewH
             end
+        elseif(mb == 2) then
+            MouseDragX = mx
+            MouseDragY = my
+        end
+            
+    end
+
+    function prog:MouseReleased(mb)
+        local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
+        local skeleton = CurrentSkeleton()
+        local currentBP = self:CurrentBlueprint()
+        if(mb == 2) then
+            local spriteSet = CurrentSpriteSet()
+            local sprite = spriteSet[currentBP.DefSpriteIndex]
+            local _, _, sw, sh = sprite.Quad:getViewport()
+            local clickX = MouseDragX - self.CurrentBlueprintX - sprite.AnchorX
+            local clickY = MouseDragY - self.CurrentBlueprintY - sprite.AnchorY
+            local radius = math.max(PointDistance(MouseDragX, MouseDragY, mx, my), math.min(sw, sh)/4)
+            local deleted = false
+
+            local i = 1
+            while(i <= #currentBP.Hitballs) do
+                local ball = currentBP.Hitballs[i]
+                if(PointDistance(ball.X, ball.Y, clickX, clickY) <= math.min(sw, sh)/4) then
+                    table.remove(currentBP.Hitballs, i)
+                    i = i - 1
+                    deleted = true
+                end
+                i = i + 1
+            end
+
+            if(not deleted) then
+                table.insert(currentBP.Hitballs, Hitball(clickX, clickY, radius, HITBALL_HITTABLE))
+            end
+
         end
     end
 

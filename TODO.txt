@@ -7,23 +7,8 @@ Sort part update order based on parenting, rather than manually ordered...
 
 Hit balls (ow)
 
-Sprite edit screen
-    View all textures
-    Select texture file, quad, anchor
-    Save by name (a unique key)
-    Create sprite set
-    Assign sprite to sprite set
-
-Skeleton edit screen
-    Create skeleton and give it a name
-    Select current SpriteSet for display
-    Sub screens: part blueprint editor, animation/frame editor
 
 Part Blueprint editor
-    Parts blueprints are part of a skeleton (a skeleton must be created first)
-    Set part default sprite index (display with this for convenience in editor)
-    Set part default layer
-    Set part parent, offset, IK, position lock
     Set part hit balls
 
 Animation editor
