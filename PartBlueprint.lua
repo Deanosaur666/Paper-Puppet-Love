@@ -9,57 +9,7 @@
 
 bit = require 'bit'
 require "Math"
-
--- hitball flags
-HITBALL_HITTABLE = 1
-HITBALL_ACTIVE = 2
-
-function Hitball(x, y, radius, flags)
-    return {
-        X = x,
-        Y = y,
-        Radius = radius,
-        Flags = flags
-    }
-end
-
-function HitballFromPart(skeleton, partframe, ballnum)
-    local blueprint = GetPartBluePrint(partframe, skeleton)
-    local hitball = blueprint.Hitballs[ballnum]
-    local scale = math.min(partframe.XScale, partframe.YScale)
-    
-    local x, y = hitball.X * scale, hitball.Y * scale
-    x, y = RotatePoint(x, y, partframe.CRotation)
-
-    x = x + partframe.CX
-    y = y + partframe.CY
-
-    local radius = hitball.Radius * scale * (partframe.HitballScale[ballnum] or 1)
-    local flags = partframe.HitballFlags[ballnum] or hitball.Flags
-
-    print(flags)
-    return Hitball(x, y, radius, flags)
-end
-
-function DrawHitBall(x, y, radius, flags)
-    local lg = love.graphics
-    lg.push("all")
-    if(bit.band(flags, HITBALL_HITTABLE) ~= 0) then
-        if(bit.band(flags, HITBALL_ACTIVE) ~= 0) then
-            lg.setColor(1, 0, 0)
-        else
-            lg.setColor(0, 0, 1)
-        end
-    else
-        if(bit.band(flags, HITBALL_ACTIVE) ~= 0) then
-            lg.setColor(1, 0, 1)
-        else
-            lg.setColor(0.5, 0.5, 0.5)
-        end
-    end
-    lg.circle("line", x, y, radius)
-    lg.pop()
-end
+require "Hitballs"
 
 function PartBlueprint(parentIndex, x, y, defSpriteIndex)
     return {
@@ -110,6 +60,10 @@ function PartBlueprintEditor()
     MouseDragY = nil
 
     prog.SkeletonFrame = nil
+    prog.SkeletonX = 0
+    prog.SkeletonY = 0
+    prog.CurrentPart = nil
+    prog.CurrentHitball = nil
 
     function prog:Draw()
         local lg = love.graphics
@@ -141,11 +95,11 @@ function PartBlueprintEditor()
         lg.line(0, self.ViewCenterY, self.ViewW, self.ViewCenterY)
         lg.line(self.ViewCenterX, 0, self.ViewCenterX, self.ViewH)
 
-        local skeletonX, skeletonY = self.ViewCenterX, self.ViewCenterY
-        if(skeletonX ~= nil) then
-            skeletonX, skeletonY = self.ViewCenterX, self.ViewH
+        self.SkeletonX, self.SkeletonY = self.ViewCenterX, self.ViewCenterY
+        if(skeleton.X ~= nil) then
+            self.SkeletonX, self.SkeletonY = self.ViewCenterX, self.ViewH
         end
-        self:DrawSkeleton(skeletonX, skeletonY)
+        self:DrawSkeleton(self.SkeletonX, self.SkeletonY)
 
         local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
 
@@ -303,6 +257,7 @@ function PartBlueprintEditor()
     end 
 
     function prog:DrawSkeleton(x, y)
+        local lg = love.graphics
         local skeleton = CurrentSkeleton()
         local frame = Pose(skeleton)
 
@@ -326,6 +281,23 @@ function PartBlueprintEditor()
         UpdatePose(frame, skeleton)
         DrawPose(frame, skeleton, CurrentSpriteSet(), CurrentTexture(), x, y)
         DrawPoseHitballs(frame, skeleton, x, y)
+
+        if(not MouseDown[1]) then
+            local hitballs = GetPoseHitballs(frame, skeleton)
+            local ball = HitballAtPoint(hitballs, mx - x, my - y, 0)
+            if(ball ~= nil) then
+                self.CurrentBall = ball
+                self.CurrentPart = ball.Part
+            else
+                self.CurrentPart = nil
+                self.CurrentHitball = nil
+            end
+        end
+
+        if(self.CurrentBall ~= nil) then
+            lg.setColor(1, 1, 0)
+            lg.circle("line", self.CurrentBall.X + x, self.CurrentBall.Y + y, self.CurrentBall.Radius)
+        end
     end
 
     function prog:Update()

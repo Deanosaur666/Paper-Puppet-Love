@@ -64,7 +64,7 @@ function DrawPose(frame, skeleton, spriteset, texture, x, y, rot, xscale, yscale
     lg.pop()
 end
 
-function DrawPoseHitballs(frame, skeleton, x, y, rot, xscale, yscale)
+function DrawPoseHitballs(pose, skeleton, x, y, rot, xscale, yscale)
     xscale = xscale or 1
     yscale = yscale or 1
     rot = rot or 0
@@ -72,13 +72,12 @@ function DrawPoseHitballs(frame, skeleton, x, y, rot, xscale, yscale)
     local lg = love.graphics
 
     lg.push("all")
-    lg.translate(x + (skeleton.X or 0) + (frame.X or 0), y + (skeleton.Y or 0) + (frame.Y or 0))
+    lg.translate(x + (skeleton.X or 0) + (pose.X or 0), y + (skeleton.Y or 0) + (pose.Y or 0))
     lg.scale(xscale, yscale)
     lg.rotate(rot)
 
-    for _, part in pairs(frame.PartFrames) do
+    for _, part in pairs(pose.PartFrames) do
         local blueprint = GetPartBluePrint(part, skeleton)
-        local xsc, ysc = GetBlueprintScale(blueprint)
         for i, _ in ipairs(blueprint.Hitballs) do
             local hitball = HitballFromPart(skeleton, part, i)
             DrawHitBall(hitball.X, hitball.Y, hitball.Radius, hitball.Flags)
