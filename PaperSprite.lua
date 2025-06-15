@@ -52,7 +52,7 @@ function DrawPaperSprite(sprite, texture, x, y, rot, xscale, yscale)
     
 
     -- needs to use rotation and scale
-    love.graphics.draw(texture, sprite.Quad, x + (sprite.AnchorX*xscale), y + (sprite.AnchorY*yscale))
+    love.graphics.draw(texture, sprite.Quad, x - (sprite.AnchorX*xscale), y - (sprite.AnchorY*yscale))
 
     lg.pop()
 end
