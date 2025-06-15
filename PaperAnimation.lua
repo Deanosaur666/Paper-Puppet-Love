@@ -1,6 +1,6 @@
 PriorityQueue = require "PriorityQueue"
 
-function Frame()
+function BlankPose()
     return {
         Duration = 0,
         PartFrames = {},
@@ -10,27 +10,27 @@ function Frame()
     }
 end
 
-function DefaultFrame(skeleton)
+function Pose(skeleton)
     
-    local frame = Frame()
+    local frame = BlankPose()
     local partFrames = frame.PartFrames
     local blueprints = skeleton.PartBlueprints
     for i, bp in ipairs(blueprints) do
-        partFrames[i] = PartFrame(i, nil, 0, 0, 0, nil) -- default values, take from blueprint's defaults
+        partFrames[i] = PartPose(i, nil, 0, 0, 0, nil) -- default values, take from blueprint's defaults
     end
 
     return frame
 end
 
-function UpdateFrame(frame, skeleton)
+function UpdatePose(frame, skeleton)
     for i, pf in ipairs(frame.PartFrames) do
-        UpdatePartFrame(pf, frame, skeleton)
+        UpdatePartPose(pf, frame, skeleton)
         pf.CX = pf.CX + (frame.X or 0)
         pf.CY = pf.CY + (frame.Y or 0)
     end
 end
 
-function DrawFrame(frame, skeleton, spriteset, texture, x, y, rot, xscale, yscale)
+function DrawPose(frame, skeleton, spriteset, texture, x, y, rot, xscale, yscale)
     
     xscale = xscale or 1
     yscale = yscale or 1
@@ -64,7 +64,7 @@ function DrawFrame(frame, skeleton, spriteset, texture, x, y, rot, xscale, yscal
     lg.pop()
 end
 
-function DrawFrameHitballs(frame, skeleton, x, y, rot, xscale, yscale)
+function DrawPoseHitballs(frame, skeleton, x, y, rot, xscale, yscale)
     xscale = xscale or 1
     yscale = yscale or 1
     rot = rot or 0
@@ -80,7 +80,7 @@ function DrawFrameHitballs(frame, skeleton, x, y, rot, xscale, yscale)
         local blueprint = GetPartBluePrint(part, skeleton)
         local xsc, ysc = GetBlueprintScale(blueprint)
         for i, _ in ipairs(blueprint.Hitballs) do
-            local hitball = HitballFromFrame(skeleton, part, i)
+            local hitball = HitballFromPart(skeleton, part, i)
             DrawHitBall(hitball.X, hitball.Y, hitball.Radius, hitball.Flags)
         end
     end

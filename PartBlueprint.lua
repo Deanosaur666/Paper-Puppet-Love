@@ -23,7 +23,7 @@ function Hitball(x, y, radius, flags)
     }
 end
 
-function HitballFromFrame(skeleton, partframe, ballnum)
+function HitballFromPart(skeleton, partframe, ballnum)
     local blueprint = GetPartBluePrint(partframe, skeleton)
     local hitball = blueprint.Hitballs[ballnum]
     local scale = math.min(partframe.XScale, partframe.YScale)
@@ -304,7 +304,7 @@ function PartBlueprintEditor()
 
     function prog:DrawSkeleton(x, y)
         local skeleton = CurrentSkeleton()
-        local frame = DefaultFrame(skeleton)
+        local frame = Pose(skeleton)
 
         if(self.SkeletonFrame ~= nil and #self.SkeletonFrame.PartFrames == #frame.PartFrames) then
             frame = self.SkeletonFrame
@@ -323,9 +323,9 @@ function PartBlueprintEditor()
             partFrame.YScale = (my - prog.ViewCenterY) / 500
         end
 
-        UpdateFrame(frame, skeleton)
-        DrawFrame(frame, skeleton, CurrentSpriteSet(), CurrentTexture(), x, y)
-        DrawFrameHitballs(frame, skeleton, x, y)
+        UpdatePose(frame, skeleton)
+        DrawPose(frame, skeleton, CurrentSpriteSet(), CurrentTexture(), x, y)
+        DrawPoseHitballs(frame, skeleton, x, y)
     end
 
     function prog:Update()

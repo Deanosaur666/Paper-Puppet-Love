@@ -7,7 +7,7 @@ require "Math"
 
 -- TODO: add hit ball type for current part for current frame (hittable, unhittable, active+hitabble, active+unhittable (disjoint))
 
-function PartFrame(blueprintIndex, spriteIndex, rotation, x, y, layer)
+function PartPose(blueprintIndex, spriteIndex, rotation, x, y, layer)
     return {
         BlueprintIndex = blueprintIndex,
         SpriteIndex = spriteIndex,
@@ -43,7 +43,7 @@ function GetParent(part, blueprint, frame)
     return frame.PartFrames[blueprint.ParentIndex]
 end
 
-function UpdatePartFrame(part, frame, skeleton)
+function UpdatePartPose(part, frame, skeleton)
     local blueprint = GetPartBluePrint(part, skeleton)
     local parent = GetParent(part, blueprint, frame)
 
