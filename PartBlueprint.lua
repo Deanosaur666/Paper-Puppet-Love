@@ -402,15 +402,6 @@ function PartBlueprintEditor()
             else
                 bluePrint.DefLayer = bluePrint.DefLayer + 1
             end
-        elseif(tonumber(key) and bluePrint ~= nil) then
-            local keyNum = tonumber(key)
-            local pIndex = bluePrint.ParentIndex or 0
-            local newIndex = tonumber(tostring(pIndex) .. key)
-            if(newIndex == 0 or newIndex > #skeleton.PartBlueprints) then
-                bluePrint.ParentIndex = nil
-            else
-                bluePrint.ParentIndex = newIndex
-            end
         end
 
     end
