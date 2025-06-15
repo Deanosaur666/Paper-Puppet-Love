@@ -29,7 +29,9 @@ function PartBlueprint(parentIndex, x, y, defSpriteIndex)
         DefLayer = 0,
         IK = false,
         PositionLock = false,
-        Hitballs = {}
+        Hitballs = {},
+        FlippedX = false,
+        FlippedY = false,
     }
 end
 
@@ -130,6 +132,16 @@ function PartBlueprintEditor()
             if(bp.PositionLock) then
                 lg.print("PL", dx + 10, dy + 80)
             end
+            if(bp.FlippedX or bp.FlippedY) then
+                local str = "Flipped "
+                if(bp.FlippedX) then
+                    str = str .. "X"
+                end
+                if(bp.FlippedY) then
+                    str = str .. "Y"
+                end
+                lg.print(str, dx + 10, dy + 100)
+            end
             lg.rectangle("line", dx, dy, w, h)
             lg.circle("line", dx + sprite.AnchorX, dy + sprite.AnchorY, 5)
             maxX = math.max(maxX, dx + w)
@@ -204,6 +216,14 @@ function PartBlueprintEditor()
             bluePrint.IK = not bluePrint.IK
         elseif(key == "p" and bluePrint ~= nil) then
             bluePrint.PositionLock = not bluePrint.PositionLock
+        -- flip X or Y (with shift held)
+         elseif(key == "f") then
+            if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
+                 bluePrint.FlippedY = not bluePrint.FlippedY
+            else
+                bluePrint.FlippedX = not bluePrint.FlippedX
+            end
+            
         elseif(key == "," and bluePrint ~= nil) then
             bluePrint.DefLayer = bluePrint.DefLayer - 1
         elseif(key == "." and bluePrint ~= nil) then
