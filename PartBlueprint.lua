@@ -164,6 +164,9 @@ function PartBlueprintEditor()
             local xsc, ysc = GetBlueprintScale(self:CurrentBlueprint())
             DrawPaperSprite(sprite, CurrentTexture(), self.CurrentBlueprintX - sprite.AnchorX, self.CurrentBlueprintY - sprite.AnchorY, 0, xsc, ysc)
 
+
+            DrawPaperSprite(sprite, CurrentTexture(), mx, my, 0, xsc, ysc)
+
         end
 
         lg.pop()
