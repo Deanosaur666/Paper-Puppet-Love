@@ -19,5 +19,5 @@ Part blueprint editor:
     i:                      toggle current blueprint's IK flag
     p:                      toggle current blueprint's position lock flag
     f:                      flip current blueprint (X)
-    comma (,)/period (.):   change current blueprint's layer
+    comma (,)/period (.):   change current blueprint's layer (shift is for .1 increments)
     number keys:            set current blueprint's parent (enter 0 or invalid number for nil)

@@ -1,7 +1,5 @@
 Screens:
 
-
-
 Sprite edit screen
     View all textures
     Select texture file, quad, anchor
