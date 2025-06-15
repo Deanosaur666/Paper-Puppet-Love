@@ -35,15 +35,15 @@ function GetPartBluePrint(part, skeleton)
     return skeleton.PartBlueprints[part.BlueprintIndex]
 end
 
-function GetParent(part, frame)
+function GetParent(part, blueprint, frame)
     -- return this part's parent
     -- use part.ParentIndex
-    return frame.PartFrames[part.ParentIndex]
+    return frame.PartFrames[blueprint.ParentIndex]
 end
 
 function UpdatePartFrame(part, frame, skeleton)
-    local parent = GetParent(part, frame)
     local blueprint = GetPartBluePrint(part, skeleton)
+    local parent = GetParent(part, blueprint, frame)
 
     if(parent == nil) then
         part.CX = part.X + blueprint.X
@@ -62,9 +62,8 @@ function UpdatePartFrame(part, frame, skeleton)
 
     -- add parent rotation and modulo to keep within 0 and 2pi
     part.CRotation = (prot + part.Rotation + 2*math.pi) % math.pi
-
-    part.CX = px + (blueprint.X + part.X)*math.cos(prot)*pxscale
-    part.CX = px + (blueprint.Y + part.Y)*math.sin(prot)*pyscale
+    part.CX = px + (blueprint.X + part.X)*(math.cos(prot) - math.sin(prot))*pxscale
+    part.CY = py + (blueprint.Y + part.Y)*(math.sin(prot) + math.cos(prot))*pyscale 
 
 end
 

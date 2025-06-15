@@ -52,6 +52,11 @@ function PartBlueprintEditor()
     prog.CurrentBlueprintW = 0
     prog.CurrentBlueprintH = 0
 
+    prog.ParentBluePrintX = nil
+    prog.ParentBlueprintY = 0
+    prog.ParentBlueprintW = 0
+    prog.ParentBlueprintH = 0
+
     prog.SkeletonX = 0
     prog.SkeletonY = 0
 
@@ -89,6 +94,7 @@ function PartBlueprintEditor()
 
         local blueprints = skeleton.PartBlueprints
         local currentBP = self:CurrentBlueprint()
+        self.ParentBluePrintX = nil
         local spriteSet = CurrentSpriteSet()
         local dx = sheet:getWidth() + 10
         local dy = 10
@@ -127,6 +133,11 @@ function PartBlueprintEditor()
             if(i == currentBP.ParentIndex) then
                 lg.setColor(0, 1, 0)
                 lg.print("P", dx + 10, dy + 40)
+
+                self.ParentBlueprintX = screenWidth - w
+                self.ParentBlueprintY = self.CurrentBlueprintY + self.CurrentBlueprintH + 10
+                self.ParentBlueprintW = w
+                self.ParentBlueprintH = h
             end
             lg.print(tostring(i) .. " - L " .. bp.DefLayer, dx + 10, dy + 10)
             if(bp.IK) then
@@ -164,8 +175,16 @@ function PartBlueprintEditor()
             local xsc, ysc = GetBlueprintScale(self:CurrentBlueprint())
             DrawPaperSprite(sprite, CurrentTexture(), self.CurrentBlueprintX + sprite.AnchorX, self.CurrentBlueprintY + sprite.AnchorY, 0, xsc, ysc)
 
+        end
 
-            DrawPaperSprite(sprite, CurrentTexture(), mx, my, 0, xsc, ysc)
+        -- draws the parent below it
+        if(self.ParentBlueprintX ~= nil and blueprints[currentBP.ParentIndex] ~= nil) then
+            local sprite = spriteSet[blueprints[currentBP.ParentIndex].DefSpriteIndex]
+
+            lg.setColor(0, 0, 1)
+            lg.rectangle("line", self.ParentBlueprintX, self.ParentBlueprintY, self.ParentBlueprintW, self.ParentBlueprintH)
+            lg.setColor(1, 1, 1)
+            DrawPaperSprite(sprite, CurrentTexture(), self.ParentBlueprintX + sprite.AnchorX, self.ParentBlueprintY + sprite.AnchorY)
 
         end
 
@@ -261,7 +280,25 @@ function PartBlueprintEditor()
     end
 
     function prog:MousePressed(mb)
-
+        local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
+        local skeleton = CurrentSkeleton()
+        local currentBP = self:CurrentBlueprint()
+        local parent = nil
+        if(currentBP ~= nil) then
+            parent = skeleton.PartBlueprints[currentBP.ParentIndex]
+        end
+        if(mb == 1) then
+            local spriteSet = CurrentSpriteSet()
+            if(parent ~= nil) then
+                local sprite = spriteSet[parent.DefSpriteIndex]
+                currentBP.X = mx - self.ParentBlueprintX - sprite.AnchorX
+                currentBP.Y = my - self.ParentBlueprintY - sprite.AnchorY
+            else
+                local sprite = spriteSet[currentBP.DefSpriteIndex]
+                currentBP.X = mx - self.CurrentBlueprintX - sprite.AnchorX
+                currentBP.Y = my - self.CurrentBlueprintY - sprite.AnchorY
+            end
+        end
     end
 
     return prog
