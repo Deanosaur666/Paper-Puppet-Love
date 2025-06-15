@@ -249,10 +249,20 @@ function PartBlueprintEditor()
             else
                 bluePrint.FlippedX = not bluePrint.FlippedX
             end
+        -- shift + . or , will fine-tune the layering
         elseif(key == "," and bluePrint ~= nil) then
-            bluePrint.DefLayer = bluePrint.DefLayer - 1
+            if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
+                bluePrint.DefLayer = bluePrint.DefLayer - 0.1
+            else
+                bluePrint.DefLayer = bluePrint.DefLayer - 1
+            end
+            
         elseif(key == "." and bluePrint ~= nil) then
-            bluePrint.DefLayer = bluePrint.DefLayer + 1
+            if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
+                bluePrint.DefLayer = bluePrint.DefLayer + 0.1
+            else
+                bluePrint.DefLayer = bluePrint.DefLayer + 1
+            end
         elseif(tonumber(key) and bluePrint ~= nil) then
             local keyNum = tonumber(key)
             local pIndex = bluePrint.ParentIndex or 0
