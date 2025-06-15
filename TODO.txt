@@ -1,5 +1,11 @@
 Screens:
 
+Sort part update order based on parenting, rather than manually ordered...
+    Parts with no parents first,
+    Then, parts parented to that part,
+    Etc...
+    
+
 Sprite edit screen
     View all textures
     Select texture file, quad, anchor
