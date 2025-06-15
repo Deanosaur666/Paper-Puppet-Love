@@ -101,14 +101,15 @@ function PartBlueprintEditor()
             end
 
             local sprite = spriteSet[bp.DefSpriteIndex]
-
+            -- draws an individual blueprint
             if(sprite.Quad ~= nil) then
                 _, _, w, h = sprite.Quad:getViewport()
                 if(dy + h > screenHeight) then
                     dy = 10
                     dx = maxX + 10
                 end
-                DrawPaperSprite(sprite, CurrentTexture(), dx - sprite.AnchorX, dy - sprite.AnchorY)
+                local xsc, ysc = GetBlueprintScale(bp)
+                DrawPaperSprite(sprite, CurrentTexture(), dx - sprite.AnchorX, dy - sprite.AnchorY, 0, xsc, ysc)
             end
 
             if(i == self.BlueprintIndex) then
@@ -151,13 +152,15 @@ function PartBlueprintEditor()
             dy = dy + h + 2
         end
 
+        -- draws the current blueprint in the top right
         if(self.CurrentBlueprintX ~= nil) then
             local sprite = spriteSet[self:CurrentBlueprint().DefSpriteIndex]
 
             lg.setColor(0, 1, 1)
             lg.rectangle("line", self.CurrentBlueprintX, self.CurrentBlueprintY, self.CurrentBlueprintW, self.CurrentBlueprintH)
             lg.setColor(1, 1, 1)
-            DrawPaperSprite(sprite, CurrentTexture(), self.CurrentBlueprintX - sprite.AnchorX, self.CurrentBlueprintY - sprite.AnchorY)
+            local xsc, ysc = GetBlueprintScale(self:CurrentBlueprint())
+            DrawPaperSprite(sprite, CurrentTexture(), self.CurrentBlueprintX - sprite.AnchorX, self.CurrentBlueprintY - sprite.AnchorY, 0, xsc, ysc)
 
         end
 
@@ -165,6 +168,20 @@ function PartBlueprintEditor()
         
         
     end
+
+    -- this is just used for flipping
+    function GetBlueprintScale(bp)
+        local xsc = 1
+        local ysc = 1
+        if(bp.FlippedX) then
+            xsc = -1
+        end
+        if(bp.FlippedY) then
+            ysc = -1
+        end
+
+        return xsc, ysc
+    end 
 
     function prog:DrawSkeleton()
         local skeleton = CurrentSkeleton()
@@ -217,13 +234,12 @@ function PartBlueprintEditor()
         elseif(key == "p" and bluePrint ~= nil) then
             bluePrint.PositionLock = not bluePrint.PositionLock
         -- flip X or Y (with shift held)
-         elseif(key == "f") then
+        elseif(key == "f") then
             if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
-                 bluePrint.FlippedY = not bluePrint.FlippedY
+                    bluePrint.FlippedY = not bluePrint.FlippedY
             else
                 bluePrint.FlippedX = not bluePrint.FlippedX
             end
-            
         elseif(key == "," and bluePrint ~= nil) then
             bluePrint.DefLayer = bluePrint.DefLayer - 1
         elseif(key == "." and bluePrint ~= nil) then
