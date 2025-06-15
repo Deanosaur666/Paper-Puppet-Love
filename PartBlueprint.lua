@@ -255,10 +255,16 @@ function PartBlueprintEditor()
         elseif(key == "s") then
             if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
                 Skeletons[#Skeletons + 1] = PaperSkeleton()
+                prog.CurrentBlueprintX = nil
+                prog.ParentBlueprintX = nil
+                SkeletonIndex = (SkeletonIndex % #Skeletons) + 1
             elseif(love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
                 SaveSkeleton(skeleton, SkeletonIndex)
+            else
+                prog.CurrentBlueprintX = nil
+                prog.ParentBlueprintX = nil
+                SkeletonIndex = (SkeletonIndex % #Skeletons) + 1
             end
-            SkeletonIndex = (SkeletonIndex % #Skeletons) + 1
         elseif(key == "i" and bluePrint ~= nil) then
             bluePrint.IK = not bluePrint.IK
         elseif(key == "p" and bluePrint ~= nil) then
