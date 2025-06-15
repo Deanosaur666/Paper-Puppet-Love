@@ -19,8 +19,8 @@ function PartFrame(blueprintIndex, spriteIndex, rotation, x, y, layer)
         -- current x and y values after offset by parent
         CX = x,
         CY = y,
-        ScaleX = 1,
-        ScaleY = 1,
+        XScale = 1,
+        YScale = 1,
         Layer = layer,
 
         HitballFlags = {}, -- changing hit balls from inactive to active, for example
@@ -59,8 +59,8 @@ function UpdatePartFrame(part, frame, skeleton)
     local py = parent.CY
     local prot = parent.CRotation
 
-    local pxscale = parent.ScaleX
-    local pyscale = parent.ScaleY
+    local pxscale = parent.XScale
+    local pyscale = parent.YScale
 
     -- add parent rotation and modulo to keep within 0 and 2pi
     part.CRotation = prot + part.Rotation

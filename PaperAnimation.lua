@@ -56,7 +56,7 @@ function DrawFrame(frame, skeleton, spriteset, texture, x, y, rot, xscale, yscal
         local blueprint = GetPartBluePrint(part, skeleton)
         local sprite = GetPartSprite(part, blueprint, spriteset)
         local xsc, ysc = GetBlueprintScale(blueprint)
-        DrawPaperSprite(sprite, texture, part.CX, part.CY, part.CRotation, part.ScaleX * xsc, part.ScaleY * ysc)
+        DrawPaperSprite(sprite, texture, part.CX, part.CY, part.CRotation, part.XScale * xsc, part.YScale * ysc)
     end
 
     lg.pop()

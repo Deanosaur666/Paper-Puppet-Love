@@ -40,19 +40,21 @@ function DrawPaperSprite(sprite, texture, x, y, rot, xscale, yscale)
     -- we need to use the anchors for rotation and scale
     local lg = love.graphics
     lg.push("all")
+    
     lg.translate(x, y)
     
     lg.rotate(rot)
 
-    lg.translate(sprite.AnchorX, sprite.AnchorY)
-
     lg.scale(xscale, yscale)
 
-    lg.translate(-sprite.AnchorX - x, -sprite.AnchorY - y)
+    lg.translate(-sprite.AnchorX, -sprite.AnchorY)
+
+    --lg.translate(sprite.AnchorX, sprite.AnchorY)
     
 
     -- needs to use rotation and scale
-    love.graphics.draw(texture, sprite.Quad, x - (sprite.AnchorX*xscale), y - (sprite.AnchorY*yscale))
+    -- love.graphics.draw(texture, sprite.Quad, x - (sprite.AnchorX*xscale), y - (sprite.AnchorY*yscale))
+    love.graphics.draw(texture, sprite.Quad, 0, 0)
 
     lg.pop()
 end

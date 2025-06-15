@@ -230,6 +230,8 @@ function PartBlueprintEditor()
             local partFrame = frame.PartFrames[self.BlueprintIndex]
             local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
             partFrame.Rotation = math.atan2(my - prog.ViewCenterY, mx - prog.ViewCenterX)
+            partFrame.XScale = (mx - prog.ViewCenterX) / 500
+            partFrame.YScale = (my - prog.ViewCenterY) / 500
         end
         UpdateFrame(frame, skeleton)
         DrawFrame(frame, skeleton, CurrentSpriteSet(), CurrentTexture(), x, y)
