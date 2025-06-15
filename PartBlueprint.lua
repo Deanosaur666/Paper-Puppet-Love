@@ -77,6 +77,8 @@ function PartBlueprintEditor()
 
         lg.rectangle("line", 0, 0, sheet:getWidth(), sheet:getHeight())
 
+        self:DrawSkeleton(sheet:getWidth()/2, sheet:getHeight()/2)
+
         local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
 
         lg.circle("line", mx, my, 5)
@@ -150,13 +152,11 @@ function PartBlueprintEditor()
         
     end
 
-    function prog:DrawSkeleton()
+    function prog:DrawSkeleton(x, y)
         local skeleton = CurrentSkeleton()
-        local blueprints = {}
-        for _, bp in pairs(skeleton.PartBlueprints) do
-            table.insert(blueprints, bp)
-        end
-        table.sort(blueprints, function(a, b) return a.DefLayer > b.DefLayer end)
+        local frame = DefaultFrame(skeleton)
+        UpdateFrame(frame, skeleton)
+        DrawFrame(frame, skeleton, CurrentSpriteSet(), CurrentTexture(), x, y)
     end
 
     function prog:Update()

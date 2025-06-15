@@ -13,7 +13,7 @@ function PartFrame(blueprintIndex, spriteIndex, rotation, x, y, layer)
         -- current rotation after rotation by parent
         CRotation = rotation,
         X = x,
-        y = y,
+        Y = y,
         -- current x and y values after offset by parent
         CX = x,
         CY = y,
@@ -26,15 +26,19 @@ function PartFrame(blueprintIndex, spriteIndex, rotation, x, y, layer)
     }
 end
 
+function GetPartSprite(part, blueprint, spriteSet)
+    return spriteSet[part.SpriteIndex or blueprint.DefSpriteIndex]
+end
+
 function GetPartBluePrint(part, skeleton)
     -- use part.BlueprintIndex
-    return skeleton.PartBluePrints[part.BluePrintIndex]
+    return skeleton.PartBlueprints[part.BlueprintIndex]
 end
 
 function GetParent(part, frame)
     -- return this part's parent
     -- use part.ParentIndex
-    return frame.Parts[part.ParentIndex]
+    return frame.PartFrames[part.ParentIndex]
 end
 
 function UpdatePartFrame(part, frame, skeleton)
@@ -62,10 +66,6 @@ function UpdatePartFrame(part, frame, skeleton)
     part.CX = px + (blueprint.X + part.X)*math.cos(prot)*pxscale
     part.CX = px + (blueprint.Y + part.Y)*math.sin(prot)*pyscale
 
-end
-
-function GetPartSprite(part, spriteSet)
-    return spriteSet[part.SpriteIndex]
 end
 
 function MovePart(dx, dy)
