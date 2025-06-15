@@ -64,6 +64,8 @@ function PartBlueprintEditor()
 
         local skeleton = CurrentSkeleton()
 
+        lg.setFont(Font_K)
+
         str = "Current Part Blueprint: " .. tostring(self.BlueprintIndex or 0) .. "/" .. tostring(#skeleton.PartBlueprints)
         lg.print(str, 10, 20)
 
@@ -88,6 +90,8 @@ function PartBlueprintEditor()
         local dy = 10
         local maxX = 0
         for i, bp in ipairs(blueprints) do
+            lg.setFont(Font_KBig)
+            
             local w, h = 200, 100
             if(dy + h > screenHeight) then
                 dy = 10

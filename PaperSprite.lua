@@ -79,6 +79,8 @@ function PaperSpriteEditor()
 
         lg.clear(0.4, 0.4, 0.4)
 
+        lg.setFont(Font_K)
+
         local str = "Current Sheet: " .. SheetIndex
         lg.print(str, 10, 0)
 
@@ -140,6 +142,8 @@ function PaperSpriteEditor()
                 end
                 lg.setColor(1, 0, 0)
             end
+
+            lg.setFont(Font_KBig)
             lg.print(tostring(i), dx + 10, dy + 10)
             lg.rectangle("line", dx, dy, w, h)
             lg.circle("line", dx + sprite.AnchorX, dy + sprite.AnchorY, 5)

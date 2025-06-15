@@ -28,6 +28,7 @@ function  love.load()
     LoadSprites()
 
     Font_K = love.graphics.newFont("fonts/KOMTIT.ttf", 20)
+    Font_KBig = love.graphics.newFont("fonts/KOMTIT.ttf", 35)
     love.graphics.setFont(Font_K)
 
     --CurrentProgram = BlankProgram()
