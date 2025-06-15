@@ -18,5 +18,6 @@ Part blueprint editor:
     s:                      toggle skeleton
     i:                      toggle current blueprint's IK flag
     p:                      toggle current blueprint's position lock flag
+    f:                      flip current blueprint (X)
     comma (,)/period (.):   change current blueprint's layer
     number keys:            set current blueprint's parent (enter 0 or invalid number for nil)

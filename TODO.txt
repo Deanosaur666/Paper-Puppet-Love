@@ -1,11 +1,5 @@
 Screens:
 
-"Modes" or "Programs"
-    Use polymorphism -_-
-    Load, Update, Draw Methods for whatever the loaded "program" is...
-        (No big IF/Switch statements...)
-    Command line args can select the starting "program"
-    
 
 
 Sprite edit screen

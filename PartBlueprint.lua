@@ -29,7 +29,9 @@ function PartBlueprint(parentIndex, x, y, defSpriteIndex)
         DefLayer = 0,
         IK = false,
         PositionLock = false,
-        Hitballs = {}
+        Hitballs = {},
+        FlippedX = false,
+        FlippedY = false,
     }
 end
 
@@ -64,6 +66,8 @@ function PartBlueprintEditor()
 
         local skeleton = CurrentSkeleton()
 
+        lg.setFont(Font_K)
+
         str = "Current Part Blueprint: " .. tostring(self.BlueprintIndex or 0) .. "/" .. tostring(#skeleton.PartBlueprints)
         lg.print(str, 10, 20)
 
@@ -90,6 +94,8 @@ function PartBlueprintEditor()
         local dy = 10
         local maxX = 0
         for i, bp in ipairs(blueprints) do
+            lg.setFont(Font_KBig)
+            
             local w, h = 200, 100
             if(dy + h > screenHeight) then
                 dy = 10
@@ -97,14 +103,15 @@ function PartBlueprintEditor()
             end
 
             local sprite = spriteSet[bp.DefSpriteIndex]
-
+            -- draws an individual blueprint
             if(sprite.Quad ~= nil) then
                 _, _, w, h = sprite.Quad:getViewport()
                 if(dy + h > screenHeight) then
                     dy = 10
                     dx = maxX + 10
                 end
-                DrawPaperSprite(sprite, CurrentTexture(), dx - sprite.AnchorX, dy - sprite.AnchorY)
+                local xsc, ysc = GetBlueprintScale(bp)
+                DrawPaperSprite(sprite, CurrentTexture(), dx - sprite.AnchorX, dy - sprite.AnchorY, 0, xsc, ysc)
             end
 
             if(i == self.BlueprintIndex) then
@@ -128,6 +135,16 @@ function PartBlueprintEditor()
             if(bp.PositionLock) then
                 lg.print("PL", dx + 10, dy + 80)
             end
+            if(bp.FlippedX or bp.FlippedY) then
+                local str = "Flipped "
+                if(bp.FlippedX) then
+                    str = str .. "X"
+                end
+                if(bp.FlippedY) then
+                    str = str .. "Y"
+                end
+                lg.print(str, dx + 10, dy + 100)
+            end
             lg.rectangle("line", dx, dy, w, h)
             lg.circle("line", dx + sprite.AnchorX, dy + sprite.AnchorY, 5)
             maxX = math.max(maxX, dx + w)
@@ -137,13 +154,15 @@ function PartBlueprintEditor()
             dy = dy + h + 2
         end
 
+        -- draws the current blueprint in the top right
         if(self.CurrentBlueprintX ~= nil) then
             local sprite = spriteSet[self:CurrentBlueprint().DefSpriteIndex]
 
             lg.setColor(0, 1, 1)
             lg.rectangle("line", self.CurrentBlueprintX, self.CurrentBlueprintY, self.CurrentBlueprintW, self.CurrentBlueprintH)
             lg.setColor(1, 1, 1)
-            DrawPaperSprite(sprite, CurrentTexture(), self.CurrentBlueprintX - sprite.AnchorX, self.CurrentBlueprintY - sprite.AnchorY)
+            local xsc, ysc = GetBlueprintScale(self:CurrentBlueprint())
+            DrawPaperSprite(sprite, CurrentTexture(), self.CurrentBlueprintX - sprite.AnchorX, self.CurrentBlueprintY - sprite.AnchorY, 0, xsc, ysc)
 
         end
 
@@ -151,6 +170,20 @@ function PartBlueprintEditor()
         
         
     end
+
+    -- this is just used for flipping
+    function GetBlueprintScale(bp)
+        local xsc = 1
+        local ysc = 1
+        if(bp.FlippedX) then
+            xsc = -1
+        end
+        if(bp.FlippedY) then
+            ysc = -1
+        end
+
+        return xsc, ysc
+    end 
 
     function prog:DrawSkeleton(x, y)
         local skeleton = CurrentSkeleton()
@@ -200,6 +233,13 @@ function PartBlueprintEditor()
             bluePrint.IK = not bluePrint.IK
         elseif(key == "p" and bluePrint ~= nil) then
             bluePrint.PositionLock = not bluePrint.PositionLock
+        -- flip X or Y (with shift held)
+        elseif(key == "f") then
+            if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
+                    bluePrint.FlippedY = not bluePrint.FlippedY
+            else
+                bluePrint.FlippedX = not bluePrint.FlippedX
+            end
         elseif(key == "," and bluePrint ~= nil) then
             bluePrint.DefLayer = bluePrint.DefLayer - 1
         elseif(key == "." and bluePrint ~= nil) then

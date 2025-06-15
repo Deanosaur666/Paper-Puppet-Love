@@ -39,8 +39,22 @@ function DrawPaperSprite(sprite, texture, x, y, rot, xscale, yscale)
     xscale = xscale or 1
     yscale = yscale or 1
     rot = rot or 0
+
+    -- we need to use the anchors for rotation and scale
+    local lg = love.graphics
+    lg.push("all")
+    lg.translate(sprite.AnchorX + x, sprite.AnchorY + y)
+    
+    lg.rotate(rot)
+    lg.scale(xscale, yscale)
+
+    lg.translate(-sprite.AnchorX - x, -sprite.AnchorY - y)
+    
+
     -- needs to use rotation and scale
-    love.graphics.draw(texture, sprite.Quad, x + sprite.AnchorX, y + sprite.AnchorY)
+    love.graphics.draw(texture, sprite.Quad, x + (sprite.AnchorX*xscale), y + (sprite.AnchorY*yscale))
+
+    lg.pop()
 end
 
 
@@ -78,6 +92,8 @@ function PaperSpriteEditor()
         lg.push("all")
 
         lg.clear(0.4, 0.4, 0.4)
+
+        lg.setFont(Font_K)
 
         local str = "Current Sheet: " .. SheetIndex
         lg.print(str, 10, 0)
@@ -140,6 +156,8 @@ function PaperSpriteEditor()
                 end
                 lg.setColor(1, 0, 0)
             end
+
+            lg.setFont(Font_KBig)
             lg.print(tostring(i), dx + 10, dy + 10)
             lg.rectangle("line", dx, dy, w, h)
             lg.circle("line", dx + sprite.AnchorX, dy + sprite.AnchorY, 5)
