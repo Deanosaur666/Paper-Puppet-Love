@@ -21,7 +21,10 @@ function PaperSkeleton()
     return {
         Name = "",
         PartBlueprints = {}, -- full of PartBluePrints
-        Animations = {}
+        Animations = {},
+        -- global offset so that 0,0 can be their feet, for example
+        X = nil,
+        Y = nil
     }
 end
 
@@ -29,13 +32,5 @@ function Animation(name)
     return {
         Name = name,
         Frames = {},
-    }
-end
-
-function Frame()
-    return {
-        Duration = 0,
-        Parts = {} -- a collection of PartFrames
-        -- more like FartPrames
     }
 end

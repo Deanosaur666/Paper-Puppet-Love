@@ -62,6 +62,12 @@ function PartBlueprintEditor()
     prog.ViewCenterX = 0
     prog.ViewCenterY = 0
 
+    prog.ViewW = 0
+    prog.ViewH = 0
+
+    prog.MouseDragX = 0
+    prog.MouseDragY = 0
+
     function prog:Draw()
         local lg = love.graphics
         lg.push("all")
@@ -86,11 +92,17 @@ function PartBlueprintEditor()
 
         local sheet = CurrentTexture()
 
-        self.ViewCenterX, self.ViewCenterY = sheet:getWidth()/2, sheet:getHeight()/2
+        self.ViewCenterX, self.ViewCenterY, self.ViewW, self.ViewH = sheet:getWidth()/2, sheet:getHeight()/2, sheet:getWidth(), sheet:getHeight()
 
         lg.rectangle("line", 0, 0, sheet:getWidth(), sheet:getHeight())
+        lg.line(0, self.ViewCenterY, self.ViewW, self.ViewCenterY)
+        lg.line(self.ViewCenterX, 0, self.ViewCenterX, self.ViewH)
 
-        self:DrawSkeleton(self.ViewCenterX, self.ViewCenterY)
+        local skeletonX, skeletonY = self.ViewCenterX, self.ViewCenterY
+        if(skeletonX ~= nil) then
+            skeletonX, skeletonY = self.ViewCenterX, self.ViewH
+        end
+        self:DrawSkeleton(skeletonX, skeletonY)
 
         local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
 
@@ -319,15 +331,20 @@ function PartBlueprintEditor()
             parent = skeleton.PartBlueprints[currentBP.ParentIndex]
         end
         if(mb == 1) then
-            local spriteSet = CurrentSpriteSet()
-            if(parent ~= nil) then
-                local sprite = spriteSet[parent.DefSpriteIndex]
-                currentBP.X = mx - self.ParentBlueprintX - sprite.AnchorX
-                currentBP.Y = my - self.ParentBlueprintY - sprite.AnchorY
+            if(mx > self.ViewW) then
+                local spriteSet = CurrentSpriteSet()
+                if(parent ~= nil) then
+                    local sprite = spriteSet[parent.DefSpriteIndex]
+                    currentBP.X = mx - self.ParentBlueprintX - sprite.AnchorX
+                    currentBP.Y = my - self.ParentBlueprintY - sprite.AnchorY
+                else
+                    local sprite = spriteSet[currentBP.DefSpriteIndex]
+                    currentBP.X = mx - self.CurrentBlueprintX - sprite.AnchorX
+                    currentBP.Y = my - self.CurrentBlueprintY - sprite.AnchorY
+                end
             else
-                local sprite = spriteSet[currentBP.DefSpriteIndex]
-                currentBP.X = mx - self.CurrentBlueprintX - sprite.AnchorX
-                currentBP.Y = my - self.CurrentBlueprintY - sprite.AnchorY
+                skeleton.X = mx - self.ViewCenterX
+                skeleton.Y = my - self.ViewH
             end
         end
     end

@@ -3,7 +3,10 @@ PriorityQueue = require "PriorityQueue"
 function Frame()
     return {
         Duration = 0,
-        PartFrames = {}
+        PartFrames = {},
+        -- frame specific offset for the whole body
+        X = nil,
+        Y = nil,
     }
 end
 
@@ -34,7 +37,7 @@ function DrawFrame(frame, skeleton, spriteset, texture, x, y, rot, xscale, yscal
     local lg = love.graphics
 
     lg.push("all")
-    lg.translate(x, y)
+    lg.translate(x + (skeleton.X or 0) + (frame.X or 0), y + (skeleton.Y or 0) + (frame.Y or 0))
     lg.scale(xscale, yscale)
     lg.rotate(rot)
 
