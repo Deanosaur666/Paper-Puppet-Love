@@ -52,7 +52,8 @@ function DrawFrame(frame, skeleton, spriteset, texture, x, y, rot, xscale, yscal
         local part = partqueue:dequeue()
         local blueprint = GetPartBluePrint(part, skeleton)
         local sprite = GetPartSprite(part, blueprint, spriteset)
-        DrawPaperSprite(sprite, texture, part.CX, part.CY, part.CRotation, part.ScaleX, part.ScaleY)
+        local xsc, ysc = GetBlueprintScale(blueprint)
+        DrawPaperSprite(sprite, texture, part.CX, part.CY, part.CRotation, part.ScaleX * xsc, part.ScaleY * ysc)
     end
 
     lg.pop()
