@@ -9,6 +9,7 @@ Sprite editor:
     shift + s:              create new spriteset
     s:                      toggle spriteset
     ctrl + s:               save current spriteset
+    delete:                 delete current sprite
 
 Part blueprint editor:
     arrows left/right:      change current blueprint's sprite index

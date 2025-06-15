@@ -45,6 +45,14 @@ function PartBlueprintEditor()
         prog.BlueprintIndex = 1
     end
 
+    prog.CurrentBlueprintX = nil
+    prog.CurrentBlueprintY = 0
+    prog.CurrentBlueprintW = 0
+    prog.CurrentBlueprintH = 0
+
+    prog.SkeletonX = 0
+    prog.SkeletonY = 0
+
     function prog:Draw()
         local lg = love.graphics
         lg.push("all")
@@ -62,6 +70,7 @@ function PartBlueprintEditor()
         lg.scale(self.Scale, self.Scale)
         lg.translate(self.OffsetX, self.OffsetY)
 
+        local screenWidth = ScreenWidth/self.Scale - self.OffsetX*2
         local screenHeight = ScreenHeight/self.Scale - self.OffsetY*2
 
         local sheet = CurrentTexture()
@@ -99,6 +108,10 @@ function PartBlueprintEditor()
             if(i == self.BlueprintIndex) then
                 if(sprite.Quad ~= nil) then
                     lg.setColor(0, 1, 0)
+
+                    self.CurrentBlueprintX = screenWidth - w
+                    self.CurrentBlueprintW = w
+                    self.CurrentBlueprintH = h
                 end
                 lg.setColor(1, 0, 0)
             end
@@ -122,9 +135,28 @@ function PartBlueprintEditor()
             dy = dy + h + 2
         end
 
+        if(self.CurrentBlueprintX ~= nil) then
+            local sprite = spriteSet[self:CurrentBlueprint().DefSpriteIndex]
+
+            lg.setColor(0, 1, 1)
+            lg.rectangle("line", self.CurrentBlueprintX, self.CurrentBlueprintY, self.CurrentBlueprintW, self.CurrentBlueprintH)
+            lg.setColor(1, 1, 1)
+            DrawPaperSprite(sprite, CurrentTexture(), self.CurrentBlueprintX - sprite.AnchorX, self.CurrentBlueprintY - sprite.AnchorY)
+
+        end
+
         lg.pop()
         
         
+    end
+
+    function prog:DrawSkeleton()
+        local skeleton = CurrentSkeleton()
+        local blueprints = {}
+        for _, bp in pairs(skeleton.PartBlueprints) do
+            table.insert(blueprints, bp)
+        end
+        table.sort(blueprints, function(a, b) return a.DefLayer > b.DefLayer end)
     end
 
     function prog:Update()
@@ -178,10 +210,8 @@ function PartBlueprintEditor()
             local newIndex = tonumber(tostring(pIndex) .. key)
             if(newIndex == 0 or newIndex > #skeleton.PartBlueprints) then
                 bluePrint.ParentIndex = nil
-                print(newIndex .. " bad")
             else
                 bluePrint.ParentIndex = newIndex
-                print(newIndex .. " blueprints: " .. #skeleton.PartBlueprints)
             end
         end
 

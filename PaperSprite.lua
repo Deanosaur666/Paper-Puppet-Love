@@ -184,7 +184,10 @@ function PaperSpriteEditor()
             else
                 SpriteSetIndex = (SpriteSetIndex % #SpriteSets) + 1
             end
+        elseif(key == "delete") then
+            table.remove(spriteSet, self.SpriteIndex)
         end
+            
     end
 
     function prog:MousePressed(mb)
