@@ -14,7 +14,7 @@ function LoadSprites()
     -- the names of the files, saved just in case
     SpriteSheetFiles = {}
 
-    for index, value in ipairs(files) do
+    for _, value in ipairs(files) do
         print(value)
         local spr = love.graphics.newImage(dir .. "/" ..value)
         SpriteSheets[value] = spr

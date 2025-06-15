@@ -26,6 +26,7 @@ function  love.load()
     love.window.setTitle("Paper Puppet Editor")
 
     LoadSprites()
+    LoadSkeletons()
 
     Font_K = love.graphics.newFont("fonts/KOMTIT.ttf", 20)
     Font_KBig = love.graphics.newFont("fonts/KOMTIT.ttf", 35)

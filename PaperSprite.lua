@@ -6,9 +6,6 @@ require "tables"
 -- a sprite set is a collection of sprites with keys, mapped to a skeleton
 
 function SaveSpriteSet(spriteSet, name)
-    local path = love.filesystem.getSourceBaseDirectory()
-    local filepath = path .. "/spritesets/" .. name
-    print("Saved spriteset to: " .. filepath)
     local file = io.open("spritesets/"..name, "w")
 
     for _, sprite in ipairs(spriteSet) do

@@ -15,3 +15,25 @@ function stringjoin(t, sep)
 
     return string.sub(str, 1, -2)
 end
+
+json = require "json"
+
+function jsonDecodeFile(filename)
+    if(love.filesystem.getInfo(filename) == nil) then
+        return nil
+    end
+    local str = ""
+    for line in love.filesystem.lines(filename) do
+        str = str .. line
+    end
+
+    return json.decode(str)
+end
+
+function jsonEncodeFile(t, filename)
+  local file = io.open(filename, "w")
+
+  file:write(json.encode(t))
+
+  io.close(file)
+end

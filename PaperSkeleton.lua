@@ -4,6 +4,18 @@
 -- paper parts
 -- animations, which have:
 --      frames, which are collections of parts
+require "tables"
+
+function SaveSkeleton(skeleton, name)
+    jsonEncodeFile(skeleton, "skeletons/" .. name)
+end
+
+function LoadSkeletons()
+    local files = love.filesystem.getDirectoryItems("skeletons")
+    for _, value in ipairs(files) do
+        Skeletons[tonumber(value)] = jsonDecodeFile("skeletons/" .. value)
+    end
+end
 
 function PaperSkeleton()
     return {
