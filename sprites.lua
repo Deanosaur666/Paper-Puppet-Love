@@ -17,6 +17,7 @@ function LoadSprites()
     for _, value in ipairs(files) do
         print(value)
         local spr = love.graphics.newImage(dir .. "/" ..value)
+        spr:setFilter("nearest", "nearest")
         SpriteSheets[value] = spr
         table.insert(SpriteSheetFiles, value)
     end

@@ -106,8 +106,8 @@ function PartBlueprintEditor()
     prog.ViewW = 0
     prog.ViewH = 0
 
-    prog.MouseDragX = 0
-    prog.MouseDragY = 0
+    MouseDragX = nil
+    MouseDragY = nil
 
     prog.SkeletonFrame = nil
 
@@ -148,6 +148,11 @@ function PartBlueprintEditor()
         self:DrawSkeleton(skeletonX, skeletonY)
 
         local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
+
+        local button = ClickableButton(0, 0, self.ViewW, self.ViewH, {
+            RHeld = self.SetSkeletonXY
+        })
+        CheckClickableButton(self, button, mx, my)
 
         lg.circle("line", mx, my, 5)
 
@@ -190,8 +195,10 @@ function PartBlueprintEditor()
                 lg.setColor(1, 0, 0)
             end
             if(i == currentBP.ParentIndex) then
-                lg.setColor(0, 1, 0)
+                lg.setColor(1, 1, 0)
                 lg.print("P", dx + 10, dy + 40)
+                lg.rectangle("line", dx + w/3, dy + h/3, w/3, h/3)
+                lg.setColor(1, 1, 1)
 
                 self.ParentBlueprintX = screenWidth - w
                 self.ParentBlueprintY = self.CurrentBlueprintY + self.CurrentBlueprintH + 10
@@ -221,6 +228,13 @@ function PartBlueprintEditor()
 
             lg.setColor(1, 1, 1)
 
+            local button = ClickableButton(dx, dy, w, h, {
+                Index = i,
+                LPressed = self.SelectBlueprint,
+                RPressed = self.SelectParent
+            })
+            CheckClickableButton(self, button, mx, my)
+
             dy = dy + h + 2
         end
 
@@ -238,6 +252,12 @@ function PartBlueprintEditor()
                 DrawHitBall(self.CurrentBlueprintX + sprite.AnchorX + ball.X, self.CurrentBlueprintY + sprite.AnchorY + ball.Y, ball.Radius, ball.Flags)
             end
 
+            local button = ClickableButton(self.CurrentBlueprintX, self.CurrentBlueprintY, self.CurrentBlueprintW, self.CurrentBlueprintH, {
+                LPressed = self.SetOffset,
+                RPressed = self.StartHitball,
+            })
+            CheckClickableButton(self, button, mx, my)
+
         end
 
         -- draws the parent below it
@@ -249,10 +269,15 @@ function PartBlueprintEditor()
             lg.setColor(1, 1, 1)
             DrawPaperSprite(sprite, CurrentTexture(), self.ParentBlueprintX + sprite.AnchorX, self.ParentBlueprintY + sprite.AnchorY)
 
+            local button = ClickableButton(self.ParentBlueprintX, self.ParentBlueprintY, self.ParentBlueprintW, self.ParentBlueprintH, {
+                LPressed = self.SetParentOffset,
+            })
+            CheckClickableButton(self, button, mx, my)
+
         end
 
         -- ball creation
-        if(MouseDown[2]) then
+        if(MouseDown[2] and MouseDragX ~= nil) then
             lg.setColor(1, 1, 0)
             lg.circle("line", MouseDragX, MouseDragY, PointDistance(MouseDragX, MouseDragY, mx, my))
             lg.setColor(1, 1, 1)
@@ -390,42 +415,11 @@ function PartBlueprintEditor()
 
     end
 
-    function prog:MousePressed(mb)
-        local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
-        local skeleton = CurrentSkeleton()
-        local currentBP = self:CurrentBlueprint()
-        local parent = nil
-        if(currentBP ~= nil) then
-            parent = skeleton.PartBlueprints[currentBP.ParentIndex]
-        end
-        if(mb == 1) then
-            if(mx > self.ViewW) then
-                local spriteSet = CurrentSpriteSet()
-                if(parent ~= nil) then
-                    local sprite = spriteSet[parent.DefSpriteIndex]
-                    currentBP.X = mx - self.ParentBlueprintX - sprite.AnchorX
-                    currentBP.Y = my - self.ParentBlueprintY - sprite.AnchorY
-                else
-                    local sprite = spriteSet[currentBP.DefSpriteIndex]
-                    currentBP.X = mx - self.CurrentBlueprintX - sprite.AnchorX
-                    currentBP.Y = my - self.CurrentBlueprintY - sprite.AnchorY
-                end
-            else
-                skeleton.X = mx - self.ViewCenterX
-                skeleton.Y = my - self.ViewH
-            end
-        elseif(mb == 2) then
-            MouseDragX = mx
-            MouseDragY = my
-        end
-            
-    end
-
     function prog:MouseReleased(mb)
         local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
         local skeleton = CurrentSkeleton()
         local currentBP = self:CurrentBlueprint()
-        if(mb == 2) then
+        if(mb == 2 and MouseDragX ~= nil) then
             local spriteSet = CurrentSpriteSet()
             local sprite = spriteSet[currentBP.DefSpriteIndex]
             local _, _, sw, sh = sprite.Quad:getViewport()
@@ -449,7 +443,70 @@ function PartBlueprintEditor()
                 table.insert(currentBP.Hitballs, Hitball(clickX, clickY, radius, HITBALL_HITTABLE))
             end
 
+            MouseDragX = nil
+            MouseDragY = nil
+
         end
+    end
+
+    function prog:SetOffset(button, mx, my)
+        local currentBP = self:CurrentBlueprint()
+        local spriteSet = CurrentSpriteSet()
+        local sprite = spriteSet[currentBP.DefSpriteIndex]
+        currentBP.X = mx - self.CurrentBlueprintX - sprite.AnchorX
+        currentBP.Y = my - self.CurrentBlueprintY - sprite.AnchorY
+    end
+
+    function prog:SetParentOffset(button, mx, my)
+        local skeleton = CurrentSkeleton()
+        local currentBP = self:CurrentBlueprint()
+        local parent = skeleton.PartBlueprints[currentBP.ParentIndex]
+        local spriteSet = CurrentSpriteSet()
+        local sprite = spriteSet[parent.DefSpriteIndex]
+        currentBP.X = mx - self.ParentBlueprintX - sprite.AnchorX
+        currentBP.Y = my - self.ParentBlueprintY - sprite.AnchorY
+    end
+
+    function prog:StartHitball(button, mx, my)
+        MouseDragX = mx
+        MouseDragY = my
+    end
+
+    function prog:SetSkeletonXY(button, mx, my)
+        local skeleton = CurrentSkeleton()
+        skeleton.X = mx - button.W/2
+        skeleton.Y = my - button.H
+    end
+
+    function prog:SelectBlueprint(button, mx, my)
+        if(self.BlueprintIndex == button.Index) then
+            self:IncrementSprite()
+        else
+            self.BlueprintIndex = button.Index
+        end
+    end
+
+    function prog:SelectParent(button, mx, my)
+        local currentBP = self:CurrentBlueprint()
+        if(currentBP.ParentIndex == button.Index) then
+            currentBP.ParentIndex = nil
+        elseif(self.BlueprintIndex == button.Index) then
+            self:DecrementSprite()
+        else
+            currentBP.ParentIndex = button.Index
+        end
+    end
+
+    function prog:IncrementSprite()
+        local bluePrint = self:CurrentBlueprint()
+        local spriteSet = CurrentSpriteSet()
+        bluePrint.DefSpriteIndex = (bluePrint.DefSpriteIndex % #spriteSet) + 1
+    end
+
+    function prog:DecrementSprite()
+        local bluePrint = self:CurrentBlueprint()
+        local spriteSet = CurrentSpriteSet()
+        bluePrint.DefSpriteIndex = ((bluePrint.DefSpriteIndex - 2) % #spriteSet) + 1
     end
 
     return prog
