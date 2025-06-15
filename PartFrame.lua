@@ -3,6 +3,8 @@
 -- rotation, position
 -- stretch (for arms and legs, defined by ik)
 
+require "Math"
+
 -- TODO: add hit ball type for current part for current frame (hittable, unhittable, active+hitabble, active+unhittable (disjoint))
 
 function PartFrame(blueprintIndex, spriteIndex, rotation, x, y, layer)
@@ -61,9 +63,12 @@ function UpdatePartFrame(part, frame, skeleton)
     local pyscale = parent.ScaleY
 
     -- add parent rotation and modulo to keep within 0 and 2pi
-    part.CRotation = (prot + part.Rotation + 2*math.pi) % math.pi
-    part.CX = px + (blueprint.X + part.X)*(math.cos(prot) - math.sin(prot))*pxscale
-    part.CY = py + (blueprint.Y + part.Y)*(math.sin(prot) + math.cos(prot))*pyscale 
+    part.CRotation = prot + part.Rotation
+
+    local dx, dy = RotatePoint((blueprint.X + part.X)*pxscale, (blueprint.Y + part.Y)*pyscale, prot)
+
+    part.CX = px + dx
+    part.CY = py + dy
 
 end
 

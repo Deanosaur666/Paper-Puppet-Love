@@ -17,3 +17,10 @@ function GetIKJointAngle(sx, sy, tx, ty, l1, l2, alt)
 
     return alpha + beta
 end
+
+function RotatePoint(x, y, rot)
+    local nx = x*math.cos(rot) - y*math.sin(rot)
+    local ny = y*math.cos(rot) + x*math.sin(rot)
+
+    return nx, ny
+end

@@ -59,8 +59,8 @@ function PartBlueprintEditor()
     prog.ParentBlueprintW = 0
     prog.ParentBlueprintH = 0
 
-    prog.SkeletonX = 0
-    prog.SkeletonY = 0
+    prog.ViewCenterX = 0
+    prog.ViewCenterY = 0
 
     function prog:Draw()
         local lg = love.graphics
@@ -86,9 +86,11 @@ function PartBlueprintEditor()
 
         local sheet = CurrentTexture()
 
+        self.ViewCenterX, self.ViewCenterY = sheet:getWidth()/2, sheet:getHeight()/2
+
         lg.rectangle("line", 0, 0, sheet:getWidth(), sheet:getHeight())
 
-        self:DrawSkeleton(sheet:getWidth()/2, sheet:getHeight()/2)
+        self:DrawSkeleton(self.ViewCenterX, self.ViewCenterY)
 
         local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
 
@@ -212,6 +214,9 @@ function PartBlueprintEditor()
     function prog:DrawSkeleton(x, y)
         local skeleton = CurrentSkeleton()
         local frame = DefaultFrame(skeleton)
+        PointyPart = self.BlueprintIndex
+        local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
+        PointRotation = math.atan2(my - prog.ViewCenterY, mx - prog.ViewCenterX)
         UpdateFrame(frame, skeleton)
         DrawFrame(frame, skeleton, CurrentSpriteSet(), CurrentTexture(), x, y)
     end
