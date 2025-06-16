@@ -59,6 +59,8 @@ function GetPoseHitballs(pose, skeleton)
         local blueprint = GetPartBluePrint(part, skeleton)
         for i, _ in ipairs(blueprint.Hitballs) do
             local hitball = HitballFromPart(skeleton, part, i)
+            hitball.X = hitball.X + (skeleton.X or 0) + (pose.X or 0)
+            hitball.Y = hitball.Y + (skeleton.Y or 0) + (pose.Y or 0)
             table.insert(balls, hitball)
         end
     end
@@ -75,9 +77,7 @@ function HitballAtPoint(hitballs, x, y, radius)
         if(bdist < dist and bdist < ball.Radius + radius) then
             closest = ball
             dist = bdist
-            print("Ball found")
         end
-        -- print("Ball distance " .. bdist .. " ball at " .. ball.X .. ", " .. ball.Y .. " point at " .. x .. ", " .. y)
     end
 
     return closest

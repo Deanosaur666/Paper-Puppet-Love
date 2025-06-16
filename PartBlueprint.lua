@@ -65,6 +65,14 @@ function PartBlueprintEditor()
     prog.CurrentPart = nil
     prog.CurrentHitball = nil
 
+    prog.CurrentPartStartCRotation = 0
+    prog.CurrentPartStartCX = 0
+    prog.CurrentPartStartCY = 0
+    prog.CurrentPartStartXScale = 0
+    prog.CurrentPartStartYScale = 0
+    prog.PartDragMX = 0
+    prog.PartDragMY = 0
+
     function prog:Draw()
         local lg = love.graphics
         lg.push("all")
@@ -270,14 +278,6 @@ function PartBlueprintEditor()
         local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
         local partFrame = frame.PartFrames[self.BlueprintIndex]
 
-        if(love.keyboard.isDown("lalt") or love.keyboard.isDown("lalt")) then
-            partFrame.Rotation = math.atan2(my - prog.ViewCenterY, mx - prog.ViewCenterX)
-        end
-        if(love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
-            partFrame.XScale = (mx - prog.ViewCenterX) / 500
-            partFrame.YScale = (my - prog.ViewCenterY) / 500
-        end
-
         UpdatePose(frame, skeleton)
         DrawPose(frame, skeleton, CurrentSpriteSet(), CurrentTexture(), x, y)
         DrawPoseHitballs(frame, skeleton, x, y)
@@ -289,14 +289,47 @@ function PartBlueprintEditor()
                 self.CurrentBall = ball
                 self.CurrentPart = ball.Part
             else
+                self.CurrentBall = nil
                 self.CurrentPart = nil
-                self.CurrentHitball = nil
             end
         end
 
-        if(self.CurrentBall ~= nil) then
+        local part = self.CurrentPart
+        local ball = self.CurrentBall
+
+        if(MousePressed[1] and part ~= nil) then
+            self.CurrentPartStartRotation = part.Rotation
+            self.CurrentPartStartCX = part.CX
+            self.CurrentPartStartCY = part.CY
+            self.CurrentPartStartXScale = part.XScale
+            self.CurrentPartStartYScale = part.YSCale
+            self.PartDragMX = mx
+            self.PartDragMY = my
+        end
+
+        if(part ~= nil) then
             lg.setColor(1, 1, 0)
-            lg.circle("line", self.CurrentBall.X + x, self.CurrentBall.Y + y, self.CurrentBall.Radius)
+            lg.circle("line", ball.X + x, ball.Y + y, ball.Radius)
+
+            if(MouseDown[1]) then
+                local px, py = part.CX + x + skeleton.X, part.CY + y + skeleton.Y
+                lg.circle("line", px, py, 20)
+                lg.line(px, py, mx, my)
+
+                -- shift for translate
+                if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
+                    
+                -- ctrl for scale
+                elseif(love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
+                
+                -- no key for rotate
+                else
+                    local startangle = math.atan2(self.PartDragMY - py, self.PartDragMX - px)
+                    local newangle = math.atan2(my - py, mx - px)
+
+                    part.Rotation = self.CurrentPartStartRotation + (newangle - startangle)
+                end
+            end
         end
     end
 
