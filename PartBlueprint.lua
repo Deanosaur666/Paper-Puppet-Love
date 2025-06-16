@@ -307,6 +307,7 @@ function PartBlueprintEditor()
             self.CurrentPartStartYScale = part.YSCale or 1
             self.PartDragMX = mx
             self.PartDragMY = my
+            self.BlueprintIndex = ball.PartIndex
         end
 
         if(part ~= nil) then
@@ -322,9 +323,11 @@ function PartBlueprintEditor()
                 if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
                     local dx, dy = mx - self.PartDragMX, my - self.PartDragMY
                     dx, dy = RotatePoint(dx, dy, -(part.CRotation - part.Rotation))
-
-                    part.X = self.CurrentPartStartX + dx
-                    part.Y = self.CurrentPartStartY + dy
+                    local blueprint = GetPartBluePrint(part, skeleton)
+                    if(not blueprint.PositionLock) then
+                        part.X = self.CurrentPartStartX + dx
+                        part.Y = self.CurrentPartStartY + dy
+                    end
                     
                 -- ctrl for scale
                 elseif(love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then

@@ -55,12 +55,13 @@ end
 
 function GetPoseHitballs(pose, skeleton)
     local balls = {}
-    for _, part in pairs(pose.PartFrames) do
+    for p, part in ipairs(pose.PartFrames) do
         local blueprint = GetPartBluePrint(part, skeleton)
-        for i, _ in ipairs(blueprint.Hitballs) do
-            local hitball = HitballFromPart(skeleton, part, i)
+        for h, _ in ipairs(blueprint.Hitballs) do
+            local hitball = HitballFromPart(skeleton, part, h)
             hitball.X = hitball.X + (skeleton.X or 0) + (pose.X or 0)
             hitball.Y = hitball.Y + (skeleton.Y or 0) + (pose.Y or 0)
+            hitball.PartIndex = p
             table.insert(balls, hitball)
         end
     end
