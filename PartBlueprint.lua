@@ -301,6 +301,8 @@ function PartBlueprintEditor()
             self.CurrentPartStartRotation = part.Rotation
             self.CurrentPartStartCX = part.CX
             self.CurrentPartStartCY = part.CY
+            self.CurrentPartStartX = part.X
+            self.CurrentPartStartY = part.Y
             self.CurrentPartStartXScale = part.XScale or 1
             self.CurrentPartStartYScale = part.YSCale or 1
             self.PartDragMX = mx
@@ -318,6 +320,11 @@ function PartBlueprintEditor()
 
                 -- shift for translate
                 if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
+                    local dx, dy = mx - self.PartDragMX, my - self.PartDragMY
+                    dx, dy = RotatePoint(dx, dy, -(part.CRotation - part.Rotation))
+
+                    part.X = self.CurrentPartStartX + dx
+                    part.Y = self.CurrentPartStartY + dy
                     
                 -- ctrl for scale
                 elseif(love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
