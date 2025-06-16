@@ -19,6 +19,10 @@ function BlankProgram()
         -- nothing
     end
 
+    function prog:TextInput(t)
+        -- nothing
+    end
+
     function prog:MousePressed(mb)
         -- nothing
     end

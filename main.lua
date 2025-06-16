@@ -32,6 +32,8 @@ function  love.load()
     Font_KBig = love.graphics.newFont("fonts/KOMTIT.ttf", 35)
     love.graphics.setFont(Font_K)
 
+    Font_Consolas32 = love.graphics.newFont("fonts/CONSOLA.ttf", 32)
+
     --CurrentProgram = BlankProgram()
     CurrentProgram = EditorProgram
 
@@ -45,6 +47,10 @@ end
 
 function love.keypressed(key, scancode, isrepeat)
     CurrentProgram:KeyPressed(key, scancode, isrepeat)
+end
+
+function love.textinput(t)
+    CurrentProgram:TextInput(t)
 end
 
 function love.update(dt)
