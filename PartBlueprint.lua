@@ -301,8 +301,8 @@ function PartBlueprintEditor()
             self.CurrentPartStartRotation = part.Rotation
             self.CurrentPartStartCX = part.CX
             self.CurrentPartStartCY = part.CY
-            self.CurrentPartStartXScale = part.XScale
-            self.CurrentPartStartYScale = part.YSCale
+            self.CurrentPartStartXScale = part.XScale or 1
+            self.CurrentPartStartYScale = part.YSCale or 1
             self.PartDragMX = mx
             self.PartDragMY = my
         end
@@ -321,7 +321,10 @@ function PartBlueprintEditor()
                     
                 -- ctrl for scale
                 elseif(love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
-                
+                    local dx, dy = RotatePoint(mx - self.PartDragMX, my - self.PartDragMY, -part.CRotation)
+                    -- dy = -dy
+                    part.XScale = self.CurrentPartStartXScale * ((ball.Radius+dx) / ball.Radius)
+                    part.YScale = self.CurrentPartStartYScale * ((ball.Radius+dy) / ball.Radius)
                 -- no key for rotate
                 else
                     local startangle = math.atan2(self.PartDragMY - py, self.PartDragMX - px)
