@@ -346,6 +346,12 @@ function PartBlueprintEditor()
 
                     part.Rotation = self.CurrentPartStartRotation + (newangle - startangle)
                 end
+            elseif(MouseDown[2]) then
+                part.X = 0
+                part.Y = 0
+                part.XScale = 1
+                part.YScale = 1
+                part.Rotation = 0
             end
         end
     end
@@ -479,9 +485,11 @@ function PartBlueprintEditor()
     end
 
     function prog:SetSkeletonXY(button, mx, my)
-        local skeleton = CurrentSkeleton()
-        skeleton.X = mx - button.W/2
-        skeleton.Y = my - button.H
+        if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
+            local skeleton = CurrentSkeleton()
+            skeleton.X = mx - button.W/2
+            skeleton.Y = my - button.H
+        end
     end
 
     function prog:SelectBlueprint(button, mx, my)
