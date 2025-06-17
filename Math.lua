@@ -1,3 +1,4 @@
+
 function GetIKJointAngle(sx, sy, tx, ty, l1, l2, alt)    
     local dx = tx-sx
     local dy = ty-sy

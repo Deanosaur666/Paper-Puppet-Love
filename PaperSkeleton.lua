@@ -62,19 +62,35 @@ end
 
 IKLockParts = {}
 IKAltParts = {}
+IKPrevCX = {}
+IKPrevCY = {}
+IKPrevCRotation = {}
+
+
+function IKDrag(skeleton, pose, part, dx, dy)
+    -- we want the part's CX and CY to change by dx and dy without changing its actual X and Y
+    -- we also want to preserve the part's orignal rotation
+end
 
 function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
     local lg = love.graphics
 
     local spriteSet = CurrentSpriteSet()
     local texture = CurrentTexture()
+    local parts = pose.PartFrames
 
+    -- we ensure part's new relative transforms are updated
     UpdatePose(pose, skeleton)
+
+    -- the actual figure
     DrawPose(pose, skeleton, spriteSet, texture, x, y)
+    
+    -- drawing the hit balls
     if(DisplayHitballs) then
         DrawPoseHitballs(pose, skeleton, x, y)
     end
 
+    -- we only reset current ball and part when mouse isn't down
     if(not MouseDown[1]) then
         local hitballs = GetPoseHitballs(pose, skeleton)
         local ball = HitballAtPoint(hitballs, mx - x, my - y, 0)
@@ -97,6 +113,7 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
         blueprint = GetPartBluePrint(part, skeleton)
     end
 
+    -- when you first click, we reset lots of stuff, find part's starting transforms
     if(MousePressed[1] and part ~= nil) then
         CurrentPartStartRotation = part.Rotation
         CurrentPartStartCX = part.CX
@@ -108,6 +125,8 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
         PartDragMX = mx
         PartDragMY = my
         BlueprintIndex = ball.PartIndex
+        ClickedPart = part
+        ClickedBall = ball
     end
 
     if(part ~= nil) then
@@ -119,11 +138,30 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
             lg.circle("line", px, py, 20)
             lg.line(px, py, mx, my)
 
+            for p, on in pairs(IKLockParts) do
+                -- record previous postion
+                if(on) then
+                    IKPrevCX[p] = parts[p].CX
+                    IKPrevCY[p] = parts[p].CY
+                    IKPrevCRotation[p] = parts[p].CRotation
+                end
+            end
+
             -- shift for translate
             if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
                 local dx, dy = mx - PartDragMX, my - PartDragMY
+                
+                -- this is how much we're moving it in it's own local rotated space
+                -- that is, the actual change in X and Y to achieve this visible X and Y change
                 dx, dy = RotatePoint(dx, dy, -(part.CRotation - part.Rotation))
-                if(not blueprint.PositionLock) then
+
+                if(blueprint.IK) then
+                    -- drag with IK
+                    IKDrag(skeleton, pose, part, dx, dy)
+                    PartDragMX = mx
+                    PartDragMY = my
+
+                elseif(not blueprint.PositionLock) then
                     part.X = CurrentPartStartX + dx
                     part.Y = CurrentPartStartY + dy
                 end
@@ -140,7 +178,26 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
                 local newangle = math.atan2(my - py, mx - px)
 
                 part.Rotation = CurrentPartStartRotation + (newangle - startangle)
+                PartDragMX = mx
+                PartDragMY = my
+                CurrentPartStartRotation = part.Rotation
             end
+
+
+            -- to update part relative positions before we change them back with below
+            UpdatePose(pose, skeleton)
+
+            for p, on in pairs(IKLockParts) do
+                -- drag with IK to previous position
+                local ikpart = parts[p]
+                if(on) then
+                    ikpart.Rotation = ikpart.Rotation + (IKPrevCRotation[p] - ikpart.CRotation)
+                    -- drag back
+                    local dx, dy = ikpart.CX - IKPrevCX[p], ikpart.CY - IKPrevCY[p]
+                    IKDrag(skeleton, pose, ikpart, dx, dy)
+                end
+            end
+            
         elseif(MousePressed[2]) then
             -- shift for reset hitballs and sprite
             if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
