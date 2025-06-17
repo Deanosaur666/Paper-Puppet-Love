@@ -58,6 +58,11 @@ function love.textinput(t)
 end
 
 function love.update(dt)
+
+    MouseDownPrev[1] = MouseDown[1]
+    MouseDownPrev[2] = MouseDown[2]
+    MouseDownPrev[3] = MouseDown[3]
+
     MouseDown[1] = love.mouse.isDown(1)
     MouseDown[2] = love.mouse.isDown(2)
     MouseDown[3] = love.mouse.isDown(3)
@@ -92,9 +97,7 @@ function love.update(dt)
 
     CurrentProgram:Update()
 
-    MouseDownPrev[1] = MouseDown[1]
-    MouseDownPrev[2] = MouseDown[2]
-    MouseDownPrev[3] = MouseDown[3]
+   
 end
 
 function love.wheelmoved(x, y)
