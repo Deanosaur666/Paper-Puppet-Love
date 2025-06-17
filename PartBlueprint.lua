@@ -114,7 +114,7 @@ function PartBlueprintEditor()
         local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
 
         local button = ClickableButton(0, 0, self.ViewW, self.ViewH, {
-            RHeld = self.SetSkeletonXY
+            MHeld = self.SetSkeletonXY
         })
         CheckClickableButton(self, button, mx, my)
 
@@ -411,11 +411,9 @@ function PartBlueprintEditor()
     end
 
     function prog:SetSkeletonXY(button, mx, my)
-        if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
-            local skeleton = CurrentSkeleton()
-            skeleton.X = mx - button.W/2
-            skeleton.Y = my - button.H
-        end
+        local skeleton = CurrentSkeleton()
+        skeleton.X = mx - button.W/2
+        skeleton.Y = my - button.H
     end
 
     function prog:SelectBlueprint(button, mx, my)
