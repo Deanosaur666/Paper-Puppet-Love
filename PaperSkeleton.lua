@@ -115,9 +115,10 @@ function IKDrag(skeleton, pose, part, dx, dy, alt)
 
     part.Rotation = (part.Rotation or 0) - ((grandparent.Rotation - gpstartrot) + (parent.Rotation - pstartrot))
 
+    
+    -- stretching
     local desired_dist = PointDistance(0, 0, mx + ndx, my + ndy)
     if(desired_dist > gplen + plen) then
-        print("STRETCH")
         local ratio = desired_dist/(gplen + plen)
         local desired_gplen = gplen * ratio
         local desired_plen = plen * ratio
