@@ -154,14 +154,25 @@ function PaperSpriteEditor()
         local sheet = CurrentTexture()
         love.graphics.draw(sheet, 0, 0)
 
-        lg.rectangle("line", 0, 0, sheet:getWidth(), sheet:getHeight())
+        local viewW = sheet:getWidth()
+        local viewH = sheet:getHeight()
+
+        lg.rectangle("line", 0, 0, viewW, viewH)
 
         local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
 
+        local button = ClickableButton(0, 0, viewW, viewH, {
+            --LHeld = self.SetSkeletonXY,
+            LHeld = self.SpriteBounds,
+            LReleased = self.SetSpriteBounds,
+        })
+        CheckClickableButton(self, button, mx, my)
+        
+
         if(MouseDown[1]) then
-            lg.setColor(1, 0, 0)
-            lg.rectangle("line", MouseDragX, MouseDragY, mx - MouseDragX, my - MouseDragY)
-            lg.setColor(1, 1, 1)
+            --lg.setColor(1, 0, 0)
+            --lg.rectangle("line", MouseDragX, MouseDragY, mx - MouseDragX, my - MouseDragY)
+            --lg.setColor(1, 1, 1)
         end
 
         lg.circle("line", mx, my, 5)
@@ -213,6 +224,28 @@ function PaperSpriteEditor()
         
     end
 
+    function prog:SpriteBounds(button, mx, my)
+        local lg = love.graphics
+        lg.setColor(1, 0, 0)
+        lg.rectangle("line", MouseDragX, MouseDragY, mx - MouseDragX, my - MouseDragY)
+        lg.setColor(1, 1, 1)
+    end
+
+    function prog:SetSpriteBounds(button, mx, my)
+        local sprite = self:CurrentSprite()
+        if(sprite == nil) then
+            return
+        end
+        --if(mb == 1) then
+            --local mx, my = GetRelativeMouse(prog.Scale, prog.OffsetX, prog.OffsetY)
+            local x1 = math.min(MouseDragX, mx)
+            local x2 = math.max(MouseDragX, mx)
+            local y1 = math.min(MouseDragY, my)
+            local y2 = math.max(MouseDragY, my)
+            self:DefineQuad(x1, y1, x2 - x1, y2 - y1)
+        --end
+    end
+
     function prog:Update()
     
     end
@@ -241,9 +274,11 @@ function PaperSpriteEditor()
 
     function prog:MousePressed(mb)
         local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
+        
         if(mb == 1) then
             MouseDragX, MouseDragY = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
         end
+        
 
         local sprite = self:CurrentSprite()
         if(sprite == nil) then
@@ -258,6 +293,7 @@ function PaperSpriteEditor()
     end
 
     function prog:MouseReleased(mb)
+        --[[
         local sprite = self:CurrentSprite()
         if(sprite == nil) then
             return
@@ -270,6 +306,7 @@ function PaperSpriteEditor()
             local y2 = math.max(MouseDragY, my)
             self:DefineQuad(x1, y1, x2 - x1, y2 - y1)
         end
+        --]]
     end
 
     function prog:CurrentSprite()

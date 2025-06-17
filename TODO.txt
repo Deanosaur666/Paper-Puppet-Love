@@ -1,6 +1,5 @@
 Screens:
 
-Shift + Right Click to copy hit-balls
 Hit-balls currently don't flip?
 
 Sort part update order based on parenting, rather than manually ordered...
@@ -10,11 +9,9 @@ Sort part update order based on parenting, rather than manually ordered...
 
 Hit balls (ow)
 
+Maybe shift+click to swap parts?
+
 Weirdness on edges between sprites
-
-
-Part Blueprint editor
-    Set part hit balls
 
 Animation editor
     Create an animation with a name
