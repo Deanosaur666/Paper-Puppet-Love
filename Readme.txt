@@ -34,11 +34,18 @@ Part blueprint editor:
 
 Skeleton posing:
     Right click:            Reset transforms
-    Shift + Right click:    Reset transforms and also hitball flags, hitball scales, and part SpriteIndex
+    Shift + Right click:    Reset hitballs and sprite index
+    
     Left Click:             Rotate part
     Shift + Left Click:     Move part
     Ctrl + Left Click:      Resize part
+    
     Mouse wheel:            Change hitball type
     Shift + wheel:          Change part sprite
     Ctrl + wheel:           Change hitball scale
     Alt + wheel:            Flip part on X/Y
+    L + wheel:              Change part layer
+
+    Middle click:           Toggle part IK lock
+    Shift + middle click:   Toggle part IK alt
+    Ctrl + middle click:    Move skeleton (in blueprint editor)

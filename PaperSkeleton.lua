@@ -176,12 +176,14 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
             if(love.keyboard.isDown("l")) then
                 part.Layer = (part.Layer or blueprint.DefLayer) + wheel
             
-                -- shift for change sprite
+            -- shift for change sprite
             elseif(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
                 part.SpriteIndex = tableChangeIndex((part.SpriteIndex or blueprint.DefSpriteIndex), spriteSet, wheel)
+            
             -- ctrl for ball size
             elseif(love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
                 part.HitballScale[ball.Index] = Clamp((part.HitballScale[ball.Index] or 1) + wheel*0.1, 0.1, 10)
+            
             -- alt for flipping
             elseif(love.keyboard.isDown("lalt") or love.keyboard.isDown("ralt")) then
                 if(wheel == -1) then
@@ -189,7 +191,8 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
                 else
                     part.YScale = (part.YScale or 1) * -1
                 end
-            -- no keys for change ball
+            
+            -- no keys for change ball flags
             else
                 local ballNum = ball.Index
                 part.HitballFlags[ball.Index] = (ball.Flags + wheel) % #HITBALL_STATES
