@@ -3,6 +3,7 @@ require "PaperSkeleton"
 require "PartBlueprint"
 require "PartFrame"
 require "PaperAnimation"
+require "EditorStartScreen"
 
 local utf8 = require("utf8")
 
@@ -13,13 +14,17 @@ SpriteSets = {}
 -- contains all skeletons
 Skeletons = {}
 
+-- name of current spriteset or skeleton
+SpriteSetName = nil
+SkeletonName = nil
+
 -- what sheet we're using for drawing
 SheetIndex = 1
 SpriteSetIndex = nil
 
 -- skeletons
 -- SCARY!
-Skeletons = { PaperSkeleton() }
+Skeletons = { }
 SkeletonIndex = 1
 
 -- text entry
@@ -41,9 +46,8 @@ function CurrentSkeleton()
 end
 
 EditorProgram = BlankProgram()
-CurrentScreen = PaperSpriteEditor()
-
-TextEntryOn = true
+--CurrentScreen = PaperSpriteEditor()
+CurrentScreen = SelectionMenu()
 
 function EditorProgram:Draw()
     local lg = love.graphics
@@ -96,13 +100,19 @@ function EditorProgram:KeyPressed(key, scancode, isrepeat)
             
         return
     end
+
+    if(key == "escape") then
+        CurrentScreen = SelectionMenu()
+        return
+    end
     
+    local filesSelected = FilesSelected()
     -- screen change
     -- we return so the screen won't receive this input
-    if(key == "1") then
+    if(key == "1" and filesSelected) then
         CurrentScreen = PaperSpriteEditor()
         return
-    elseif(key == "2") then
+    elseif(key == "2" and filesSelected) then
         CurrentScreen = PartBlueprintEditor()
         return
     end
@@ -144,4 +154,15 @@ end
 
 function EditorProgram:SaveAll()
 
+end
+
+function PrintCentered(text, x, y)
+    local lg = love.graphics
+    local font = lg.getFont()
+    local w = font:getWidth(text)
+    local h = font:getHeight()
+    x = x - w/2
+    y = y - h/2
+
+    lg.print(text, x, y)
 end

@@ -26,6 +26,7 @@ function  love.load()
     love.window.setTitle("Paper Puppet Editor")
 
     LoadSprites()
+    LoadSpriteSets()
     LoadSkeletons()
 
     Font_K = love.graphics.newFont("fonts/KOMTIT.ttf", 20)
@@ -33,6 +34,7 @@ function  love.load()
     love.graphics.setFont(Font_K)
 
     Font_Consolas32 = love.graphics.newFont("fonts/CONSOLA.ttf", 32)
+    Font_Consolas16 = love.graphics.newFont("fonts/CONSOLA.ttf", 16)
 
     --CurrentProgram = BlankProgram()
     CurrentProgram = EditorProgram

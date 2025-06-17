@@ -1,7 +1,6 @@
 -- load all sprites in the sprite folder and store them in a table for
 -- easy access by key (for convenient serialization of things that reference sprites)
 
-require "PaperSprite"
 
 function LoadSprites()
 
@@ -20,17 +19,6 @@ function LoadSprites()
         spr:setFilter("nearest", "nearest")
         SpriteSheets[value] = spr
         table.insert(SpriteSheetFiles, value)
-    end
-
-    dir  = "spritesets"
-
-    files = love.filesystem.getDirectoryItems(dir)
-    for _, value in ipairs(files) do
-        SpriteSets[tonumber(value)] = LoadSpriteSet(value)
-    end
-
-    if(#SpriteSets > 0) then
-        SpriteSetIndex = 1
     end
 
 end

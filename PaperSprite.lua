@@ -5,7 +5,13 @@ require "tables"
 
 -- a sprite set is a collection of sprites with keys, mapped to a skeleton
 
-function SaveSpriteSet(spriteSet, name)
+function SaveSpriteSet()
+    local spriteSet = CurrentSpriteSet()
+    local name = SpriteSetName
+    if(name == nil) then
+        EnterSpriteSetName()
+        return
+    end
     local file = io.open("spritesets/"..name, "w")
 
     for _, sprite in ipairs(spriteSet) do
@@ -16,6 +22,25 @@ function SaveSpriteSet(spriteSet, name)
     io.close(file)
 end
 
+function EnterSpriteSetName()
+    TextEntryOn = true
+    TextEntered = SpriteSetName or ""
+    TextEntryFinished = SpriteSetNameEntered
+end
+
+function SpriteSetNameEntered()
+    if(TextEntered == "") then
+        EnterSpriteSetName()
+        return
+    end
+    local spriteSet = CurrentSpriteSet()
+    SpriteSetIndex = TextEntered
+    SpriteSetName = SpriteSetIndex
+    SpriteSets[SpriteSetIndex] = spriteSet
+
+    SaveSpriteSet()
+end
+
 function LoadSpriteSet(filename)
     filename = "spritesets/" .. filename
     local spriteSet = {}
@@ -23,6 +48,19 @@ function LoadSpriteSet(filename)
 		table.insert(spriteSet, PaperSpriteFromString(line))
 	end
     return spriteSet
+end
+
+function LoadSpriteSets()
+    local dir  = "spritesets"
+
+    local files = love.filesystem.getDirectoryItems(dir)
+    for _, value in ipairs(files) do
+        SpriteSets[value] = LoadSpriteSet(value)
+    end
+
+    if(#SpriteSets > 0) then
+        SpriteSetIndex = 1
+    end
 end
 
 function PaperSprite(quad, anchorX, anchorY)
@@ -86,8 +124,8 @@ function PaperSpriteEditor()
     
     prog.SpriteIndex = 0
 
-    prog.MouseDragX = 0
-    prog.MouseDragY = 0
+    MouseDragX = 0
+    MouseDragY = 0
 
     function prog:Draw()
         local lg = love.graphics
@@ -105,7 +143,7 @@ function PaperSpriteEditor()
         str = "Current Sprite: " .. tostring(self.SpriteIndex) .. "/" .. tostring(#spriteSet)
         lg.print(str, 10, 20)
 
-        str = "Current SpriteSet: " .. tostring(SpriteSetIndex or 0) .. "/" .. tostring(#SpriteSets)
+        str = "Current SpriteSet: " .. tostring(SpriteSetIndex or "none")
         lg.print(str, 700, 20)
 
         lg.scale(self.Scale, self.Scale)
@@ -182,10 +220,6 @@ function PaperSpriteEditor()
     function prog:KeyPressed(key, scancode, isrepeat)
         local spriteSet = CurrentSpriteSet() or {}
         if(key == "n") then
-            if(SpriteSetIndex == nil) then
-                self:CreateSpriteSet()
-                spriteSet = CurrentSpriteSet()
-            end
             self:CreateSprite()
         elseif(key == "left") then
             SheetIndex = ((SheetIndex - 2) % #SpriteSheetFiles) + 1
@@ -196,13 +230,8 @@ function PaperSpriteEditor()
         elseif(key == "down") then
             self.SpriteIndex = (self.SpriteIndex % #spriteSet) + 1
         elseif(key == "s") then
-            SpriteSetIndex = SpriteSetIndex or 0
-            if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
-                self:CreateSpriteSet()
-            elseif((love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) and #spriteSet > 0) then
+            if((love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) and #spriteSet > 0) then
                 SaveSpriteSet(spriteSet, tostring(SpriteSetIndex))
-            else
-                SpriteSetIndex = (SpriteSetIndex % #SpriteSets) + 1
             end
         elseif(key == "delete") then
             table.remove(spriteSet, self.SpriteIndex)
@@ -249,13 +278,6 @@ function PaperSpriteEditor()
             return nil
         end
         return spriteSet[self.SpriteIndex]
-    end
-
-    function prog:CreateSpriteSet()
-        -- new sprite set
-        SpriteSetIndex = #SpriteSets + 1
-        local spriteSet = {}
-        SpriteSets[SpriteSetIndex] = spriteSet
     end
 
     function prog:CreateSprite()

@@ -6,14 +6,39 @@
 --      frames, which are collections of parts
 require "tables"
 
-function SaveSkeleton(skeleton, name)
+function SaveSkeleton()
+    local skeleton = CurrentSkeleton()
+    local name = SkeletonName
+    if(name == nil) then
+        EnterSkeletonName()
+        return
+    end
     jsonEncodeFile(skeleton, "skeletons/" .. name)
+end
+
+function EnterSkeletonName()
+    TextEntryOn = true
+    TextEntered = SkeletonName or ""
+    TextEntryFinished = SkeletonNameEntered
+end
+
+function SkeletonNameEntered()
+    if(TextEntered == "") then
+        EnterSkeletonName()
+        return
+    end
+    local skeleton = CurrentSkeleton()
+    SkeletonIndex = TextEntered
+    SkeletonName = SkeletonIndex
+    Skeletons[SkeletonIndex] = skeleton
+
+    SaveSkeleton()
 end
 
 function LoadSkeletons()
     local files = love.filesystem.getDirectoryItems("skeletons")
     for _, value in ipairs(files) do
-        Skeletons[tonumber(value)] = jsonDecodeFile("skeletons/" .. value)
+        Skeletons[value] = jsonDecodeFile("skeletons/" .. value)
     end
 end
 
