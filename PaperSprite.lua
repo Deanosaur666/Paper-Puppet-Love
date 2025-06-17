@@ -165,6 +165,7 @@ function PaperSpriteEditor()
             --LHeld = self.SetSkeletonXY,
             LHeld = self.SpriteBounds,
             LReleased = self.SetSpriteBounds,
+            RPressed = self.SetSpriteAnchor,
         })
         CheckClickableButton(self, button, mx, my)
         
@@ -212,16 +213,47 @@ function PaperSpriteEditor()
             lg.print(tostring(i), dx + 10, dy + 10)
             lg.rectangle("line", dx, dy, w, h)
             lg.circle("line", dx + sprite.AnchorX, dy + sprite.AnchorY, 5)
+
+            local button = ClickableButton(dx, dy, w, h, {
+                SpriteIndex = i,
+                LPressed = self.SetSpriteIndex,
+                RPressed = self.SetSpriteAnchor,
+            })
+            CheckClickableButton(self, button, mx, my)
+
             maxX = math.max(maxX, dx + w)
 
             lg.setColor(1, 1, 1)
 
             dy = dy + h + 2
+
+
         end
 
+        local newSpriteButton = ClickableButton(10, viewH + 20, 300, 120, {
+            LPressed = self.CreateSprite,
+        })
+        DrawCheckButton(self, newSpriteButton, "New Sprite", mx, my)
+
+        local deleteSpriteButton = ClickableButton(320, viewH + 20, 300, 120, {
+            LPressed = self.DeleteSprite,
+        })
+        DrawCheckButton(self, deleteSpriteButton, "Delete Sprite", mx, my)
+
+        local saveSpriteButton = ClickableButton(640, viewH + 20, 300, 120, {
+            LPressed = self.SaveSprite,
+        })
+        DrawCheckButton(self, saveSpriteButton, "Save Sprite", mx, my)
+
         lg.pop()
+
         
         
+        
+    end
+
+    function prog:SetSpriteIndex(button, mx, my)
+        self.SpriteIndex = button.SpriteIndex
     end
 
     function prog:SpriteBounds(button, mx, my)
@@ -246,8 +278,39 @@ function PaperSpriteEditor()
         --end
     end
 
+    function prog:SetSpriteAnchor(button, mx, my)
+        local sprite = self:CurrentSprite()
+        if(sprite == nil) then
+            return
+        end
+        
+        local x, y, w, h = sprite.Quad:getViewport()
+
+        if(button.SpriteIndex ~= nil) then
+            x = 0
+            y = 0
+        end
+
+        self:DefineAnchor(mx - x - button.X, my - y - button.Y)
+    end
+
     function prog:Update()
     
+    end
+
+    function prog:DeleteSprite()
+        local spriteSet = CurrentSpriteSet() or {}
+        table.remove(spriteSet, self.SpriteIndex)
+
+    end
+
+    function prog:SaveSprite()
+        local spriteSet = CurrentSpriteSet() or {}
+        if(#spriteSet > 0) then
+            SaveSpriteSet(spriteSet, tostring(SpriteSetIndex))
+        else
+            print("Can't save sprite set...")
+        end
     end
 
     function prog:KeyPressed(key, scancode, isrepeat)
@@ -280,33 +343,11 @@ function PaperSpriteEditor()
         end
         
 
-        local sprite = self:CurrentSprite()
-        if(sprite == nil) then
-            return
-        end
-        
-        if(mb == 2)then
-            local x, y, w, h = sprite.Quad:getViewport()
-            self:DefineAnchor(mx - x, my - y)
-        end
             
     end
 
     function prog:MouseReleased(mb)
-        --[[
-        local sprite = self:CurrentSprite()
-        if(sprite == nil) then
-            return
-        end
-        if(mb == 1) then
-            local mx, my = GetRelativeMouse(prog.Scale, prog.OffsetX, prog.OffsetY)
-            local x1 = math.min(MouseDragX, mx)
-            local x2 = math.max(MouseDragX, mx)
-            local y1 = math.min(MouseDragY, my)
-            local y2 = math.max(MouseDragY, my)
-            self:DefineQuad(x1, y1, x2 - x1, y2 - y1)
-        end
-        --]]
+
     end
 
     function prog:CurrentSprite()
