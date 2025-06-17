@@ -32,13 +32,13 @@ function PartBlueprintEditor()
     prog.OffsetX = 100
     prog.OffsetY = 100
 
-    prog.BlueprintIndex = nil
+    BlueprintIndex = nil
     local skeleton = CurrentSkeleton()
     if(#skeleton.PartBlueprints > 0) then
-        prog.BlueprintIndex = 1
+        BlueprintIndex = 1
     end
 
-    prog.DisplayHitballs = true
+    DisplayHitballs = true
 
     prog.NextSpriteIndex = 1
 
@@ -61,19 +61,19 @@ function PartBlueprintEditor()
     MouseDragX = nil
     MouseDragY = nil
 
-    prog.SkeletonFrame = nil
-    prog.SkeletonX = 0
-    prog.SkeletonY = 0
-    prog.CurrentPart = nil
-    prog.CurrentHitball = nil
+    SkeletonFrame = nil
+    SkeletonX = 0
+    SkeletonY = 0
+    CurrentPart = nil
+    CurrentHitball = nil
 
-    prog.CurrentPartStartCRotation = 0
-    prog.CurrentPartStartCX = 0
-    prog.CurrentPartStartCY = 0
-    prog.CurrentPartStartXScale = 0
-    prog.CurrentPartStartYScale = 0
-    prog.PartDragMX = 0
-    prog.PartDragMY = 0
+    CurrentPartStartCRotation = 0
+    CurrentPartStartCX = 0
+    CurrentPartStartCY = 0
+    CurrentPartStartXScale = 0
+    CurrentPartStartYScale = 0
+    PartDragMX = 0
+    PartDragMY = 0
 
     function prog:Draw()
         local lg = love.graphics
@@ -88,7 +88,7 @@ function PartBlueprintEditor()
 
         lg.setFont(Font_K)
 
-        str = "Current Part Blueprint: " .. tostring(self.BlueprintIndex or 0) .. "/" .. tostring(#skeleton.PartBlueprints)
+        str = "Current Part Blueprint: " .. tostring(BlueprintIndex or 0) .. "/" .. tostring(#skeleton.PartBlueprints)
         lg.print(str, 10, 20)
 
         lg.scale(self.Scale, self.Scale)
@@ -148,7 +148,7 @@ function PartBlueprintEditor()
                 DrawPaperSprite(sprite, CurrentTexture(), dx + sprite.AnchorX, dy + sprite.AnchorY, 0, xsc, ysc)
             end
 
-            if(i == self.BlueprintIndex) then
+            if(i == BlueprintIndex) then
                 if(sprite.Quad ~= nil) then
                     lg.setColor(0, 1, 0)
 
@@ -278,82 +278,8 @@ function PartBlueprintEditor()
         self.SkeletonFrame = frame
 
         local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
-        local partFrame = frame.PartFrames[self.BlueprintIndex]
-
-        UpdatePose(frame, skeleton)
-        DrawPose(frame, skeleton, CurrentSpriteSet(), CurrentTexture(), x, y)
-        if(self.DisplayHitballs) then
-            DrawPoseHitballs(frame, skeleton, x, y)
-        end
-
-        if(not MouseDown[1]) then
-            local hitballs = GetPoseHitballs(frame, skeleton)
-            local ball = HitballAtPoint(hitballs, mx - x, my - y, 0)
-            if(ball ~= nil) then
-                self.CurrentBall = ball
-                self.CurrentPart = ball.Part
-            else
-                self.CurrentBall = nil
-                self.CurrentPart = nil
-            end
-        end
-
-        local part = self.CurrentPart
-        local ball = self.CurrentBall
-
-        if(MousePressed[1] and part ~= nil) then
-            self.CurrentPartStartRotation = part.Rotation
-            self.CurrentPartStartCX = part.CX
-            self.CurrentPartStartCY = part.CY
-            self.CurrentPartStartX = part.X
-            self.CurrentPartStartY = part.Y
-            self.CurrentPartStartXScale = part.XScale or 1
-            self.CurrentPartStartYScale = part.YSCale or 1
-            self.PartDragMX = mx
-            self.PartDragMY = my
-            self.BlueprintIndex = ball.PartIndex
-        end
-
-        if(part ~= nil) then
-            lg.setColor(1, 1, 0)
-            lg.circle("line", ball.X + x, ball.Y + y, ball.Radius)
-
-            if(MouseDown[1]) then
-                local px, py = part.CX + x + (skeleton.X or 0), part.CY + y + (skeleton.Y or 0)
-                lg.circle("line", px, py, 20)
-                lg.line(px, py, mx, my)
-
-                -- shift for translate
-                if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
-                    local dx, dy = mx - self.PartDragMX, my - self.PartDragMY
-                    dx, dy = RotatePoint(dx, dy, -(part.CRotation - part.Rotation))
-                    local blueprint = GetPartBluePrint(part, skeleton)
-                    if(not blueprint.PositionLock) then
-                        part.X = self.CurrentPartStartX + dx
-                        part.Y = self.CurrentPartStartY + dy
-                    end
-                    
-                -- ctrl for scale
-                elseif(love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
-                    local dx, dy = RotatePoint(mx - self.PartDragMX, my - self.PartDragMY, -part.CRotation)
-                    -- dy = -dy
-                    part.XScale = self.CurrentPartStartXScale * ((ball.Radius+dx) / ball.Radius)
-                    part.YScale = self.CurrentPartStartYScale * ((ball.Radius+dy) / ball.Radius)
-                -- no key for rotate
-                else
-                    local startangle = math.atan2(self.PartDragMY - py, self.PartDragMX - px)
-                    local newangle = math.atan2(my - py, mx - px)
-
-                    part.Rotation = self.CurrentPartStartRotation + (newangle - startangle)
-                end
-            elseif(MouseDown[2]) then
-                part.X = 0
-                part.Y = 0
-                part.XScale = 1
-                part.YScale = 1
-                part.Rotation = 0
-            end
-        end
+        
+        DrawAndPoseSkeleton(skeleton, frame, x, y, mx, my)
     end
 
     function prog:Update()
@@ -361,17 +287,17 @@ function PartBlueprintEditor()
     end
 
     function prog:CurrentBlueprint()
-        if(self.BlueprintIndex == nil) then
+        if(BlueprintIndex == nil) then
             return nil
         end
         local skeleton = CurrentSkeleton()
-        return skeleton.PartBlueprints[self.BlueprintIndex]
+        return skeleton.PartBlueprints[BlueprintIndex]
     end
 
     function prog:CreateBlueprint()
         local skeleton = CurrentSkeleton()
-        self.BlueprintIndex = #skeleton.PartBlueprints + 1
-        skeleton.PartBlueprints[self.BlueprintIndex] = PartBlueprint(nil, 0, 0, self.NextSpriteIndex)
+        BlueprintIndex = #skeleton.PartBlueprints + 1
+        skeleton.PartBlueprints[BlueprintIndex] = PartBlueprint(nil, 0, 0, self.NextSpriteIndex)
         self.NextSpriteIndex = self.NextSpriteIndex + 1
         if(self.NextSpriteIndex > #CurrentSpriteSet()) then
             self.NextSpriteIndex = 1
@@ -385,15 +311,15 @@ function PartBlueprintEditor()
         if(key == "n") then
             self:CreateBlueprint()
         elseif(key == 'b') then
-            self.DisplayHitballs = not self.DisplayHitballs
+            DisplayHitballs = not DisplayHitballs
         elseif(key == "left" and bluePrint ~= nil) then
             bluePrint.DefSpriteIndex = ((bluePrint.DefSpriteIndex - 2) % #spriteSet) + 1
         elseif(key == "right" and bluePrint ~= nil) then
             bluePrint.DefSpriteIndex = (bluePrint.DefSpriteIndex % #spriteSet) + 1
-        elseif(key == "up" and self.BlueprintIndex ~= nil) then
-            self.BlueprintIndex = ((self.BlueprintIndex - 2) % #skeleton.PartBlueprints) + 1
-        elseif(key == "down" and self.BlueprintIndex ~= nil) then
-            self.BlueprintIndex = (self.BlueprintIndex % #skeleton.PartBlueprints) + 1
+        elseif(key == "up" and BlueprintIndex ~= nil) then
+            BlueprintIndex = ((BlueprintIndex - 2) % #skeleton.PartBlueprints) + 1
+        elseif(key == "down" and BlueprintIndex ~= nil) then
+            BlueprintIndex = (BlueprintIndex % #skeleton.PartBlueprints) + 1
         elseif(key == "s") then
             if(love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
                 SaveSkeleton(skeleton, SkeletonIndex)
@@ -493,10 +419,10 @@ function PartBlueprintEditor()
     end
 
     function prog:SelectBlueprint(button, mx, my)
-        if(self.BlueprintIndex == button.Index) then
+        if(BlueprintIndex == button.Index) then
             self:IncrementSprite()
         else
-            self.BlueprintIndex = button.Index
+            BlueprintIndex = button.Index
         end
     end
 
@@ -507,7 +433,7 @@ function PartBlueprintEditor()
         else
             if(currentBP.ParentIndex == button.Index) then
                 currentBP.ParentIndex = nil
-            elseif(self.BlueprintIndex == button.Index) then
+            elseif(BlueprintIndex == button.Index) then
                 self:DecrementSprite()
             else
                 currentBP.ParentIndex = button.Index
