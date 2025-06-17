@@ -235,6 +235,16 @@ function PaperSpriteEditor()
         })
         DrawCheckButton(self, newSpriteButton, "New Sprite", mx, my)
 
+        local deleteSpriteButton = ClickableButton(320, viewH + 20, 300, 120, {
+            LPressed = self.DeleteSprite,
+        })
+        DrawCheckButton(self, deleteSpriteButton, "Delete Sprite", mx, my)
+
+        local saveSpriteButton = ClickableButton(640, viewH + 20, 300, 120, {
+            LPressed = self.SaveSprite,
+        })
+        DrawCheckButton(self, saveSpriteButton, "Save Sprite", mx, my)
+
         lg.pop()
 
         
@@ -275,11 +285,32 @@ function PaperSpriteEditor()
         end
         
         local x, y, w, h = sprite.Quad:getViewport()
+
+        if(button.SpriteIndex ~= nil) then
+            x = 0
+            y = 0
+        end
+
         self:DefineAnchor(mx - x - button.X, my - y - button.Y)
     end
 
     function prog:Update()
     
+    end
+
+    function prog:DeleteSprite()
+        local spriteSet = CurrentSpriteSet() or {}
+        table.remove(spriteSet, self.SpriteIndex)
+
+    end
+
+    function prog:SaveSprite()
+        local spriteSet = CurrentSpriteSet() or {}
+        if(#spriteSet > 0) then
+            SaveSpriteSet(spriteSet, tostring(SpriteSetIndex))
+        else
+            print("Can't save sprite set...")
+        end
     end
 
     function prog:KeyPressed(key, scancode, isrepeat)
