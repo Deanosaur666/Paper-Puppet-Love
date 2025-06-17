@@ -172,8 +172,12 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
         -- mouse wheel up or down
         if(MouseWheel ~= 0 and part ~= nil) then
             local wheel = Sign(MouseWheel)
-            -- shift for change sprite
-            if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
+            -- L for layer
+            if(love.keyboard.isDown("l")) then
+                part.Layer = (part.Layer or blueprint.DefLayer) + wheel
+            
+                -- shift for change sprite
+            elseif(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
                 part.SpriteIndex = tableChangeIndex((part.SpriteIndex or blueprint.DefSpriteIndex), spriteSet, wheel)
             -- ctrl for ball size
             elseif(love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
