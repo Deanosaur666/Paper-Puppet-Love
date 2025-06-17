@@ -139,6 +139,7 @@ end
 
 function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
     DraggedPart = nil
+    ScrollLock = false
     local lg = love.graphics
 
     local spriteSet = CurrentSpriteSet()
@@ -196,6 +197,7 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
     end
 
     if(part ~= nil) then
+        ScrollLock = true
         lg.setColor(1, 1, 0)
         lg.circle("line", ball.X + x, ball.Y + y, ball.Radius*0.9)
 
@@ -270,6 +272,7 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
                 part.HitballFlags = {}
                 part.HitballScale = {}
                 part.SpriteIndex = nil
+                part.Layer = nil
             -- no keys for reset transforms
             else
                 part.X = 0

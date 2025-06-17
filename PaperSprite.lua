@@ -155,7 +155,9 @@ function PaperSpriteEditor()
         lg.scale(self.Scale, self.Scale)
         lg.translate(self.OffsetX, self.OffsetY)
 
-        local screenHeight = ScreenHeight/self.Scale - self.OffsetY*2
+        local screenHeight = ScreenHeight/self.Scale - self.OffsetY
+
+        ScrollLock = false
 
         local sheet = CurrentTexture()
         love.graphics.draw(sheet, 0, 0)
@@ -309,7 +311,24 @@ function PaperSpriteEditor()
     end
 
     function prog:Update()
-    
+        local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
+        if(not ScrollLock) then
+            if(love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
+                self.Scale = Clamp(self.Scale + MouseWheel*0.05, 0.1, 10)
+            end
+        end
+
+        if(MousePressed[3]) then
+            ScreenDragX = mx
+            ScreenDragY = my
+        end
+        if(MouseDown[3]) then
+            self.OffsetX = self.OffsetX + (mx - ScreenDragX)
+            self.OffsetY = self.OffsetY + (my - ScreenDragY)
+            mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
+            ScreenDragX = mx
+            ScreenDragY = my
+        end
     end
 
     function prog:DeleteSprite()
