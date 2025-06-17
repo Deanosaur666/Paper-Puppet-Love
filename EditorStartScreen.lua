@@ -8,6 +8,26 @@ function SelectionMenu()
     SpriteSets["[NEW]"] = nil
     Skeletons["[NEW]"] = nil
 
+    prog.SheetNames = {}
+    prog.SpriteSetNames = {}
+    prog.SkeletonNames = {}
+
+    -- not used
+    for _, filename in ipairs(SpriteSheetFiles) do
+        table.insert(prog.SheetNames, filename)
+    end
+    table.sort(prog.SheetNames)
+    
+    for i, _ in pairs(SpriteSets) do
+        table.insert(prog.SpriteSetNames, i)
+    end
+    table.sort(prog.SpriteSetNames)
+
+    for i, _ in pairs(Skeletons) do
+        table.insert(prog.SkeletonNames, i)
+    end
+    table.sort(prog.SkeletonNames)
+
     function prog:Draw()
         local lg = love.graphics
         lg.push("all")
@@ -69,7 +89,7 @@ function SelectionMenu()
         PrintCentered("Select spriteset", x + w/2, y + h/2)
         y = y + dy
         
-        for i, _ in pairs(SpriteSets) do
+        for _, i in ipairs(self.SpriteSetNames) do
             local button = ClickableButton(x, y, w, h, {
                 LPressed = prog.SetSpriteSet,
                 Index = i
@@ -106,7 +126,7 @@ function SelectionMenu()
         PrintCentered("Select skeleton", x + w/2, y + h/2)
         y = y + dy
         
-        for i, _ in pairs(Skeletons) do
+        for _, i in ipairs(self.SkeletonNames) do
             local button = ClickableButton(x, y, w, h, {
                 LPressed = prog.SelectSkeleton,
                 Index = i
@@ -168,6 +188,9 @@ function SelectionMenu()
     function prog:CreateSpriteSet()
         -- new sprite set
         SpriteSetIndex = "[NEW]"
+        if(SpriteSets[SpriteSetIndex] == nil) then
+            table.insert(self.SpriteSetNames, 1, SpriteSetIndex)
+        end
         SpriteSetName = nil
         local spriteSet = {}
         SpriteSets[SpriteSetIndex] = spriteSet
@@ -181,6 +204,9 @@ function SelectionMenu()
     function prog:CreateSkeleton()
         -- new sprite set
         SkeletonIndex = "[NEW]"
+        if(Skeletons[SkeletonIndex] == nil) then
+            table.insert(self.SkeletonNames, 1, SkeletonIndex)
+        end
         SkeletonName = nil
         Skeletons[SkeletonIndex] = PaperSkeleton()
     end

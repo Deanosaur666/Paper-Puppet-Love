@@ -9,7 +9,7 @@ require "tables"
 function SaveSkeleton()
     local skeleton = CurrentSkeleton()
     local name = SkeletonName
-    if(name == nil) then
+    if(name == nil or name == "[NEW]") then
         EnterSkeletonName()
         return
     end
