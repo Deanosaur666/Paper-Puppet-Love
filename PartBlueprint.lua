@@ -38,6 +38,8 @@ function PartBlueprintEditor()
         prog.BlueprintIndex = 1
     end
 
+    prog.DisplayHitballs = true
+
     prog.NextSpriteIndex = 1
 
     prog.CurrentBlueprintX = nil
@@ -193,7 +195,7 @@ function PartBlueprintEditor()
             local button = ClickableButton(dx, dy, w, h, {
                 Index = i,
                 LPressed = self.SelectBlueprint,
-                RPressed = self.SelectParent
+                RPressed = self.SelectParent_Or_CopyHitBall
             })
             CheckClickableButton(self, button, mx, my)
 
@@ -280,7 +282,9 @@ function PartBlueprintEditor()
 
         UpdatePose(frame, skeleton)
         DrawPose(frame, skeleton, CurrentSpriteSet(), CurrentTexture(), x, y)
-        DrawPoseHitballs(frame, skeleton, x, y)
+        if(self.DisplayHitballs) then
+            DrawPoseHitballs(frame, skeleton, x, y)
+        end
 
         if(not MouseDown[1]) then
             local hitballs = GetPoseHitballs(frame, skeleton)
@@ -315,7 +319,7 @@ function PartBlueprintEditor()
             lg.circle("line", ball.X + x, ball.Y + y, ball.Radius)
 
             if(MouseDown[1]) then
-                local px, py = part.CX + x + skeleton.X, part.CY + y + skeleton.Y
+                local px, py = part.CX + x + (skeleton.X or 0), part.CY + y + (skeleton.Y or 0)
                 lg.circle("line", px, py, 20)
                 lg.line(px, py, mx, my)
 
@@ -342,6 +346,12 @@ function PartBlueprintEditor()
 
                     part.Rotation = self.CurrentPartStartRotation + (newangle - startangle)
                 end
+            elseif(MouseDown[2]) then
+                part.X = 0
+                part.Y = 0
+                part.XScale = 1
+                part.YScale = 1
+                part.Rotation = 0
             end
         end
     end
@@ -374,6 +384,8 @@ function PartBlueprintEditor()
         local spriteSet = CurrentSpriteSet()
         if(key == "n") then
             self:CreateBlueprint()
+        elseif(key == 'b') then
+            self.DisplayHitballs = not self.DisplayHitballs
         elseif(key == "left" and bluePrint ~= nil) then
             bluePrint.DefSpriteIndex = ((bluePrint.DefSpriteIndex - 2) % #spriteSet) + 1
         elseif(key == "right" and bluePrint ~= nil) then
@@ -473,9 +485,11 @@ function PartBlueprintEditor()
     end
 
     function prog:SetSkeletonXY(button, mx, my)
-        local skeleton = CurrentSkeleton()
-        skeleton.X = mx - button.W/2
-        skeleton.Y = my - button.H
+        if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
+            local skeleton = CurrentSkeleton()
+            skeleton.X = mx - button.W/2
+            skeleton.Y = my - button.H
+        end
     end
 
     function prog:SelectBlueprint(button, mx, my)
@@ -486,15 +500,24 @@ function PartBlueprintEditor()
         end
     end
 
-    function prog:SelectParent(button, mx, my)
+    function prog:SelectParent_Or_CopyHitBall(button, mx, my)
         local currentBP = self:CurrentBlueprint()
-        if(currentBP.ParentIndex == button.Index) then
-            currentBP.ParentIndex = nil
-        elseif(self.BlueprintIndex == button.Index) then
-            self:DecrementSprite()
+        if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
+            CopyBlueprintHitballs(currentBP, button.Index)
         else
-            currentBP.ParentIndex = button.Index
+            if(currentBP.ParentIndex == button.Index) then
+                currentBP.ParentIndex = nil
+            elseif(self.BlueprintIndex == button.Index) then
+                self:DecrementSprite()
+            else
+                currentBP.ParentIndex = button.Index
+            end
         end
+
+    end
+
+    function CopyBlueprintHitballs(bp, copyIndex)
+        bp.Hitballs = CurrentSkeleton().PartBlueprints[copyIndex].Hitballs
     end
 
     function prog:IncrementSprite()

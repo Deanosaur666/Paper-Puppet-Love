@@ -1,5 +1,8 @@
 Screens:
 
+Shift + Right Click to copy hit-balls
+Hit-balls currently don't flip?
+
 Sort part update order based on parenting, rather than manually ordered...
     Parts with no parents first,
     Then, parts parented to that part,
