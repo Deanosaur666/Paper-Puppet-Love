@@ -411,9 +411,11 @@ function PartBlueprintEditor()
     end
 
     function prog:SetSkeletonXY(button, mx, my)
-        local skeleton = CurrentSkeleton()
-        skeleton.X = mx - button.W/2
-        skeleton.Y = my - button.H
+        if(love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
+            local skeleton = CurrentSkeleton()
+            skeleton.X = mx - button.W/2
+            skeleton.Y = my - button.H
+        end
     end
 
     function prog:SelectBlueprint(button, mx, my)

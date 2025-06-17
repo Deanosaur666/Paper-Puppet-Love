@@ -76,11 +76,30 @@ function DrawPoseHitballs(pose, skeleton, x, y, rot, xscale, yscale)
     lg.scale(xscale, yscale)
     lg.rotate(rot)
 
-    for _, part in pairs(pose.PartFrames) do
+    for p, part in ipairs(pose.PartFrames) do
         local blueprint = GetPartBluePrint(part, skeleton)
         for i, _ in ipairs(blueprint.Hitballs) do
             local hitball = HitballFromPart(skeleton, part, i)
-            DrawHitBall(hitball.X, hitball.Y, hitball.Radius, hitball.Flags)
+            local hx = hitball.X
+            local hy = hitball.Y
+            local hr = hitball.Radius
+            local r, g, b = HitballColor(hitball.Flags)
+            lg.setColor(r, g, b)
+            if(blueprint.IK) then
+                lg.line(hx - hr*0.9, hy, hx, hy - hr*0.9, hx + hr*0.9, hy, hx, hy + hr*0.9, hx - hr*0.9, hy)
+            end
+
+            if(IKLockParts[p]) then
+                lg.line(hx - hr*1.1, hy, hx, hy - hr*1.1, hx + hr*1.1, hy, hx, hy + hr*1.1, hx - hr*1.1, hy)
+            end
+
+            if(IKAltParts[p]) then
+                local d = math.cos(math.pi/4)*hr / 2
+                lg.line(hx - d, hy - d, hx + d, hy + d)
+                lg.line(hx - d, hy + d, hx + d, hy - d)
+            end
+
+            DrawHitBall(hx, hy, hr, hitball.Flags)
         end
     end
 
