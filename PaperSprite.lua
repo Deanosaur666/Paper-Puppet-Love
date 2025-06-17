@@ -165,6 +165,7 @@ function PaperSpriteEditor()
             --LHeld = self.SetSkeletonXY,
             LHeld = self.SpriteBounds,
             LReleased = self.SetSpriteBounds,
+            RPressed = self.SetSpriteAnchor,
         })
         CheckClickableButton(self, button, mx, my)
         
@@ -246,6 +247,16 @@ function PaperSpriteEditor()
         --end
     end
 
+    function prog:SetSpriteAnchor(button, mx, my)
+        local sprite = self:CurrentSprite()
+        if(sprite == nil) then
+            return
+        end
+        
+        local x, y, w, h = sprite.Quad:getViewport()
+        self:DefineAnchor(mx - x, my - y)
+    end
+
     function prog:Update()
     
     end
@@ -280,33 +291,11 @@ function PaperSpriteEditor()
         end
         
 
-        local sprite = self:CurrentSprite()
-        if(sprite == nil) then
-            return
-        end
-        
-        if(mb == 2)then
-            local x, y, w, h = sprite.Quad:getViewport()
-            self:DefineAnchor(mx - x, my - y)
-        end
             
     end
 
     function prog:MouseReleased(mb)
-        --[[
-        local sprite = self:CurrentSprite()
-        if(sprite == nil) then
-            return
-        end
-        if(mb == 1) then
-            local mx, my = GetRelativeMouse(prog.Scale, prog.OffsetX, prog.OffsetY)
-            local x1 = math.min(MouseDragX, mx)
-            local x2 = math.max(MouseDragX, mx)
-            local y1 = math.min(MouseDragY, my)
-            local y2 = math.max(MouseDragY, my)
-            self:DefineQuad(x1, y1, x2 - x1, y2 - y1)
-        end
-        --]]
+        
     end
 
     function prog:CurrentSprite()
