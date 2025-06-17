@@ -213,16 +213,37 @@ function PaperSpriteEditor()
             lg.print(tostring(i), dx + 10, dy + 10)
             lg.rectangle("line", dx, dy, w, h)
             lg.circle("line", dx + sprite.AnchorX, dy + sprite.AnchorY, 5)
+
+            local button = ClickableButton(dx, dy, w, h, {
+                SpriteIndex = i,
+                LPressed = self.SetSpriteIndex,
+                RPressed = self.SetSpriteAnchor,
+            })
+            CheckClickableButton(self, button, mx, my)
+
             maxX = math.max(maxX, dx + w)
 
             lg.setColor(1, 1, 1)
 
             dy = dy + h + 2
+
+
         end
 
+        local newSpriteButton = ClickableButton(10, viewH + 20, 300, 120, {
+            LPressed = self.CreateSprite,
+        })
+        DrawCheckButton(self, newSpriteButton, "New Sprite", mx, my)
+
         lg.pop()
+
         
         
+        
+    end
+
+    function prog:SetSpriteIndex(button, mx, my)
+        self.SpriteIndex = button.SpriteIndex
     end
 
     function prog:SpriteBounds(button, mx, my)
@@ -254,7 +275,7 @@ function PaperSpriteEditor()
         end
         
         local x, y, w, h = sprite.Quad:getViewport()
-        self:DefineAnchor(mx - x, my - y)
+        self:DefineAnchor(mx - x - button.X, my - y - button.Y)
     end
 
     function prog:Update()
@@ -295,7 +316,7 @@ function PaperSpriteEditor()
     end
 
     function prog:MouseReleased(mb)
-        
+
     end
 
     function prog:CurrentSprite()
