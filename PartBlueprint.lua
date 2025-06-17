@@ -317,9 +317,9 @@ function PartBlueprintEditor()
         elseif(key == "right" and bluePrint ~= nil) then
             bluePrint.DefSpriteIndex = (bluePrint.DefSpriteIndex % #spriteSet) + 1
         elseif(key == "up" and BlueprintIndex ~= nil) then
-            BlueprintIndex = ((BlueprintIndex - 2) % #skeleton.PartBlueprints) + 1
+            BlueprintIndex = tablePrevIndex(BlueprintIndex, skeleton.PartBlueprints)
         elseif(key == "down" and BlueprintIndex ~= nil) then
-            BlueprintIndex = (BlueprintIndex % #skeleton.PartBlueprints) + 1
+            BlueprintIndex = tableNextIndex(BlueprintIndex, skeleton.PartBlueprints)
         elseif(key == "s") then
             if(love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
                 SaveSkeleton(skeleton, SkeletonIndex)

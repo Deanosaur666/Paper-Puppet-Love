@@ -10,9 +10,10 @@ if arg[#arg] == "vsc_debug" then
 
 end
 
-MouseDownPrev = { [1] = false, [2] = false }
-MouseDown = { [1] = false, [2] = false }
-MousePressed = { [1] = false, [2] = false }
+MouseDownPrev = { [1] = false, [2] = false, [3] = false }
+MouseDown = { [1] = false, [2] = false, [3] = false}
+MousePressed = { [1] = false, [2] = false, [3] = false}
+MouseWheel = 0
 
 function love.conf(t)
 	t.console = true
@@ -58,9 +59,11 @@ end
 function love.update(dt)
     MouseDown[1] = love.mouse.isDown(1)
     MouseDown[2] = love.mouse.isDown(2)
+    MouseDown[3] = love.mouse.isDown(3)
 
     MousePressed[1] = MouseDown[1] and not MouseDownPrev[1]
     MousePressed[2] = MouseDown[2] and not MouseDownPrev[2]
+    MousePressed[3] = MouseDown[3] and not MouseDownPrev[3]
 
     if(MousePressed[1]) then
         CurrentProgram:MousePressed(1)
@@ -78,9 +81,22 @@ function love.update(dt)
         CurrentProgram:MouseReleased(2)
     end
 
+    if(MousePressed[3]) then
+        CurrentProgram:MousePressed(3)
+    elseif(MouseDown[3]) then
+        CurrentProgram:MouseHeld(3)
+    elseif(MouseDownPrev[3]) then
+        CurrentProgram:MouseReleased(3)
+    end
+
     CurrentProgram:Update()
 
     MouseDownPrev[1] = MouseDown[1]
     MouseDownPrev[2] = MouseDown[2]
+    MouseDownPrev[3] = MouseDown[3]
+end
+
+function love.wheelmoved(x, y)
+    MouseWheel = y
 end
 

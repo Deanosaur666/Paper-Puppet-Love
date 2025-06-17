@@ -16,6 +16,14 @@ function stringjoin(t, sep)
     return string.sub(str, 1, -2)
 end
 
+function tableNextIndex(index, table)
+  return (index % #table) + 1
+end
+
+function tablePrevIndex(index, table)
+  return ((index - 2) % #table) + 1
+end
+
 json = require "json"
 
 function jsonDecodeFile(filename)
