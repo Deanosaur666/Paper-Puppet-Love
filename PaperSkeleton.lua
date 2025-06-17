@@ -71,8 +71,6 @@ function IKDrag(skeleton, pose, part, dx, dy, alt)
     -- we also want to preserve the part's orignal rotation
 
     -- dx and dy of zero should do nothing, in theory
-        
-    print(string.format("IK drag DX: %d DY: %d", dx, dy))
 
     local bp = GetPartBluePrint(part, skeleton)
     local parent = GetParent(part, bp, pose)
@@ -116,6 +114,26 @@ function IKDrag(skeleton, pose, part, dx, dy, alt)
     parent.Rotation = (pnewrot - pangle) % (math.pi*2)
 
     part.Rotation = (part.Rotation or 0) - ((grandparent.Rotation - gpstartrot) + (parent.Rotation - pstartrot))
+
+    local desired_dist = PointDistance(0, 0, mx + ndx, my + ndy)
+    if(desired_dist > gplen + plen) then
+        print("STRETCH")
+        local ratio = desired_dist/(gplen + plen)
+        local desired_gplen = gplen * ratio
+        local desired_plen = plen * ratio
+
+        grandparent.XScale = ratio
+        grandparent.YScale = ratio
+
+        parent.XScale = ratio
+        parent.YScale = ratio
+
+    else
+        grandparent.XScale = 1
+        grandparent.YScale = 1
+        parent.XScale = 1
+        parent.YScale = 1
+    end
 end
 
 function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
