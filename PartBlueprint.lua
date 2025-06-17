@@ -114,7 +114,7 @@ function PartBlueprintEditor()
         local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
 
         local button = ClickableButton(0, 0, self.ViewW, self.ViewH, {
-            RHeld = self.SetSkeletonXY
+            MHeld = self.SetSkeletonXY
         })
         CheckClickableButton(self, button, mx, my)
 
@@ -317,9 +317,9 @@ function PartBlueprintEditor()
         elseif(key == "right" and bluePrint ~= nil) then
             bluePrint.DefSpriteIndex = (bluePrint.DefSpriteIndex % #spriteSet) + 1
         elseif(key == "up" and BlueprintIndex ~= nil) then
-            BlueprintIndex = ((BlueprintIndex - 2) % #skeleton.PartBlueprints) + 1
+            BlueprintIndex = tablePrevIndex(BlueprintIndex, skeleton.PartBlueprints)
         elseif(key == "down" and BlueprintIndex ~= nil) then
-            BlueprintIndex = (BlueprintIndex % #skeleton.PartBlueprints) + 1
+            BlueprintIndex = tableNextIndex(BlueprintIndex, skeleton.PartBlueprints)
         elseif(key == "s") then
             if(love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
                 SaveSkeleton(skeleton, SkeletonIndex)
@@ -411,11 +411,9 @@ function PartBlueprintEditor()
     end
 
     function prog:SetSkeletonXY(button, mx, my)
-        if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
-            local skeleton = CurrentSkeleton()
-            skeleton.X = mx - button.W/2
-            skeleton.Y = my - button.H
-        end
+        local skeleton = CurrentSkeleton()
+        skeleton.X = mx - button.W/2
+        skeleton.Y = my - button.H
     end
 
     function prog:SelectBlueprint(button, mx, my)

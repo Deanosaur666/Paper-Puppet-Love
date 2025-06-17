@@ -52,16 +52,25 @@ function ClickableButton(x, y, w, h, props)
     function button.RPressed(prog, button, mx, my)
         -- nothing
     end
+    function button.MPressed(prog, button, mx, my)
+        -- nothing
+    end
     function button.LHeld(prog, button, mx, my)
         -- nothing
     end
     function button.RHeld(prog, button, mx, my)
         -- nothing
     end
+    function button.MHeld(prog, button, mx, my)
+        -- nothing
+    end
     function button.LReleased(prog, button, mx, my)
         -- nothing
     end
     function button.RReleased(prog, button, mx, my)
+        -- nothing
+    end
+    function button.MReleased(prog, button, mx, my)
         -- nothing
     end
 
@@ -82,17 +91,26 @@ function CheckClickableButton(prog, button, mx, my)
     if(MousePressed[2]) then
         button.RPressed(prog, button, mx, my)
     end
+    if(MousePressed[3]) then
+        button.MPressed(prog, button, mx, my)
+    end
     if(MouseDown[1]) then
         button.LHeld(prog, button, mx, my)
     end
     if(MouseDown[2]) then
         button.RHeld(prog, button, mx, my)
     end
+    if(MouseDown[3]) then
+        button.MHeld(prog, button, mx, my)
+    end
     if(MouseDownPrev[1] and not MouseDown[1]) then
         button.LReleased(prog, button, mx, my)
     end
     if(MouseDownPrev[2] and not MouseDown[2]) then
         button.RReleased(prog, button, mx, my)
+    end
+    if(MouseDownPrev[3] and not MouseDown[3]) then
+        button.MReleased(prog, button, mx, my)
     end
 end
 

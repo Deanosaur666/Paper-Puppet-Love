@@ -35,3 +35,11 @@ function PointInRectangle(px, py, rx, ry, rw, rh)
     return (px >= rx and px < rx + rw) and
             (py >= ry and py < ry + rh)
 end
+
+function Sign(n)
+   return n == 0 and 0 or math.abs(n)/n 
+end
+
+function Clamp(n, lower, upper)
+    return math.min(math.max(n, lower), upper)
+end
