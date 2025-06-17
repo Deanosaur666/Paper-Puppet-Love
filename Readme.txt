@@ -22,9 +22,18 @@ Part blueprint editor:
     comma (,)/period (.):   change current blueprint's layer (shift is for .1 increments)
     number keys:            set current blueprint's parent (enter 0 or invalid number for nil)
     
-    Right click (list button): set parent
-    Shift+Right click (list button): copy hit balls
-    Left Click (Part Display): Align part with parent
-    Right Click (Part display): Create hit balls
+    (Parts List Buttons)
+    Right click: set parent
+    Shift+Right click: copy hit balls
+
+    (Upper-Right Part Display)
+    Left Click: Align part with parent
+    Right Click: Create hit balls
+
+    (Skeleton part)
+    Right click  : Reset transforms
+    Left Click: Rotate part
+    Shift+Left Click: Move part
+    Ctrl+Left Click: Resize part
 
     B: Toggle hitball display
