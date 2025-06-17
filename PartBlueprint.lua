@@ -193,7 +193,7 @@ function PartBlueprintEditor()
             local button = ClickableButton(dx, dy, w, h, {
                 Index = i,
                 LPressed = self.SelectBlueprint,
-                RPressed = self.SelectParent
+                RPressed = self.SelectParent_Or_CopyHitBall
             })
             CheckClickableButton(self, button, mx, my)
 
@@ -315,7 +315,7 @@ function PartBlueprintEditor()
             lg.circle("line", ball.X + x, ball.Y + y, ball.Radius)
 
             if(MouseDown[1]) then
-                local px, py = part.CX + x + skeleton.X, part.CY + y + skeleton.Y
+                local px, py = part.CX + x + (skeleton.X or 0), part.CY + y + (skeleton.Y or 0)
                 lg.circle("line", px, py, 20)
                 lg.line(px, py, mx, my)
 
@@ -486,15 +486,24 @@ function PartBlueprintEditor()
         end
     end
 
-    function prog:SelectParent(button, mx, my)
+    function prog:SelectParent_Or_CopyHitBall(button, mx, my)
         local currentBP = self:CurrentBlueprint()
-        if(currentBP.ParentIndex == button.Index) then
-            currentBP.ParentIndex = nil
-        elseif(self.BlueprintIndex == button.Index) then
-            self:DecrementSprite()
+        if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
+            CopyBlueprintHitballs(currentBP, button.Index)
         else
-            currentBP.ParentIndex = button.Index
+            if(currentBP.ParentIndex == button.Index) then
+                currentBP.ParentIndex = nil
+            elseif(self.BlueprintIndex == button.Index) then
+                self:DecrementSprite()
+            else
+                currentBP.ParentIndex = button.Index
+            end
         end
+
+    end
+
+    function CopyBlueprintHitballs(bp, copyIndex)
+        bp.Hitballs = CurrentSkeleton().PartBlueprints[copyIndex].Hitballs
     end
 
     function prog:IncrementSprite()
