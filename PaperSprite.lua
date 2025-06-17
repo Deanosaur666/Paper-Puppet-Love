@@ -99,8 +99,14 @@ end
 
 
 function PaperSpriteToString(sprite)
-    local qx, qy, qw, qh = sprite.Quad:getViewport()
-    local sw, sh = sprite.Quad:getTextureDimensions( )
+   
+    local qx, qy, qw, qh = 0, 0, 0, 0
+    local sw, sh = 0, 0
+    if(sprite.Quad ~= nil) then
+        qx, qy, qw, qh = sprite.Quad:getViewport()
+        sw, sh = sprite.Quad:getTextureDimensions( )
+    end
+    
 
     return stringjoin({qx, qy, qw, qh, sw, sh, sprite.AnchorX, sprite.AnchorY}, ":")
 end
@@ -191,6 +197,14 @@ function PaperSpriteEditor()
 
             if(sprite.Quad ~= nil) then
                 _, _, w, h = sprite.Quad:getViewport()
+                -- necessary so accidentally tiny quads are still barely clickable
+                if(w < 100) then
+                    w = 100
+                end
+                if(h < 100) then
+                    h = 100
+                end
+
                 if(dy + h > screenHeight) then
                     dy = 10
                     dx = maxX + 10
@@ -240,10 +254,10 @@ function PaperSpriteEditor()
         })
         DrawCheckButton(self, deleteSpriteButton, "Delete Sprite", mx, my)
 
-        local saveSpriteButton = ClickableButton(640, viewH + 20, 300, 120, {
-            LPressed = self.SaveSprite,
+        local saveSpriteButton = ClickableButton(640, viewH + 20, 400, 120, {
+            LPressed = self.SaveSpriteButton,
         })
-        DrawCheckButton(self, saveSpriteButton, "Save Sprite", mx, my)
+        DrawCheckButton(self, saveSpriteButton, "Save Sprite Set", mx, my)
 
         lg.pop()
 
@@ -304,7 +318,7 @@ function PaperSpriteEditor()
 
     end
 
-    function prog:SaveSprite()
+    function prog:SaveSpriteButton()
         local spriteSet = CurrentSpriteSet() or {}
         if(#spriteSet > 0) then
             SaveSpriteSet(spriteSet, tostring(SpriteSetIndex))
