@@ -26,3 +26,5 @@ Part blueprint editor:
     Shift+Right click (list button): copy hit balls
     Left Click (Part Display): Align part with parent
     Right Click (Part display): Create hit balls
+
+    B: Toggle hitball display

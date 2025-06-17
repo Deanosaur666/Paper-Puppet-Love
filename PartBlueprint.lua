@@ -38,6 +38,8 @@ function PartBlueprintEditor()
         prog.BlueprintIndex = 1
     end
 
+    prog.DisplayHitballs = true
+
     prog.NextSpriteIndex = 1
 
     prog.CurrentBlueprintX = nil
@@ -280,7 +282,9 @@ function PartBlueprintEditor()
 
         UpdatePose(frame, skeleton)
         DrawPose(frame, skeleton, CurrentSpriteSet(), CurrentTexture(), x, y)
-        DrawPoseHitballs(frame, skeleton, x, y)
+        if(self.DisplayHitballs) then
+            DrawPoseHitballs(frame, skeleton, x, y)
+        end
 
         if(not MouseDown[1]) then
             local hitballs = GetPoseHitballs(frame, skeleton)
@@ -374,6 +378,8 @@ function PartBlueprintEditor()
         local spriteSet = CurrentSpriteSet()
         if(key == "n") then
             self:CreateBlueprint()
+        elseif(key == 'b') then
+            self.DisplayHitballs = not self.DisplayHitballs
         elseif(key == "left" and bluePrint ~= nil) then
             bluePrint.DefSpriteIndex = ((bluePrint.DefSpriteIndex - 2) % #spriteSet) + 1
         elseif(key == "right" and bluePrint ~= nil) then
