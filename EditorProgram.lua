@@ -46,8 +46,10 @@ function CurrentSkeleton()
 end
 
 EditorProgram = BlankProgram()
---CurrentScreen = PaperSpriteEditor()
-CurrentScreen = SelectionMenu()
+
+function EditorProgram:Load()
+    CurrentScreen = SelectionMenu()
+end
 
 function EditorProgram:Draw()
     local lg = love.graphics

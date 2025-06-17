@@ -8,7 +8,7 @@ require "tables"
 function SaveSpriteSet()
     local spriteSet = CurrentSpriteSet()
     local name = SpriteSetName
-    if(name == nil) then
+    if(name == nil or name == "[NEW]") then
         EnterSpriteSetName()
         return
     end
