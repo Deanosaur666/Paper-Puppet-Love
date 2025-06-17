@@ -30,10 +30,15 @@ Part blueprint editor:
     Left Click: Align part with parent
     Right Click: Create hit balls
 
-    (Skeleton part)
-    Right click  : Reset transforms
-    Left Click: Rotate part
-    Shift+Left Click: Move part
-    Ctrl+Left Click: Resize part
-
     B: Toggle hitball display
+
+Skeleton posing:
+    Right click:            Reset transforms
+    Shift + Right click:    Reset transforms and also hitball flags, hitball scales, and part SpriteIndex
+    Left Click:             Rotate part
+    Shift + Left Click:     Move part
+    Ctrl + Left Click:      Resize part
+    Mouse wheel:            Change hitball type
+    Shift + wheel:          Change part sprite
+    Ctrl + wheel:           Change hitball scale
+    Alt + wheel:            Flip part on X/Y
