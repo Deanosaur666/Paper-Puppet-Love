@@ -1,8 +1,16 @@
 require "Math"
+bit = require "bit"
 
 -- hitball flags
 HITBALL_HITTABLE = 1
 HITBALL_ACTIVE = 2
+
+HITBALL_STATES = {
+    0, -- not hittable, not active
+    1, -- hittable, not active
+    2, -- Active, not hitabble
+    3, -- Hittable, active
+}
 
 function Hitball(x, y, radius, flags)
     return {
@@ -36,17 +44,23 @@ end
 function DrawHitBall(x, y, radius, flags)
     local lg = love.graphics
     lg.push("all")
+    -- hittable
     if(bit.band(flags, HITBALL_HITTABLE) ~= 0) then
+        -- non-disjoint active
         if(bit.band(flags, HITBALL_ACTIVE) ~= 0) then
             lg.setColor(1, 0, 0)
+        -- regular hurtball
         else
             lg.setColor(0, 0, 1)
         end
+    -- unhittable
     else
+        -- disjoint active
         if(bit.band(flags, HITBALL_ACTIVE) ~= 0) then
-            lg.setColor(1, 0, 1)
+            lg.setColor(0.5, 0, 0.5)
+        -- intangible
         else
-            lg.setColor(0.5, 0.5, 0.5)
+            lg.setColor(0.2, 0.2, 0.2)
         end
     end
     lg.circle("line", x, y, radius)

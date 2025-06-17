@@ -63,8 +63,11 @@ end
 function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
     local lg = love.graphics
 
+    local spriteSet = CurrentSpriteSet()
+    local texture = CurrentTexture()
+
     UpdatePose(pose, skeleton)
-    DrawPose(pose, skeleton, CurrentSpriteSet(), CurrentTexture(), x, y)
+    DrawPose(pose, skeleton, spriteSet, texture, x, y)
     if(DisplayHitballs) then
         DrawPoseHitballs(pose, skeleton, x, y)
     end
@@ -83,6 +86,10 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
 
     local part = CurrentPart
     local ball = CurrentBall
+    local blueprint = nil
+    if(part) then
+        blueprint = GetPartBluePrint(part, skeleton)
+    end
 
     if(MousePressed[1] and part ~= nil) then
         CurrentPartStartRotation = part.Rotation
@@ -99,7 +106,7 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
 
     if(part ~= nil) then
         lg.setColor(1, 1, 0)
-        lg.circle("line", ball.X + x, ball.Y + y, ball.Radius)
+        lg.circle("line", ball.X + x, ball.Y + y, ball.Radius*0.9)
 
         if(MouseDown[1]) then
             local px, py = part.CX + x + (skeleton.X or 0), part.CY + y + (skeleton.Y or 0)
@@ -110,7 +117,6 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
             if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
                 local dx, dy = mx - PartDragMX, my - PartDragMY
                 dx, dy = RotatePoint(dx, dy, -(part.CRotation - part.Rotation))
-                local blueprint = GetPartBluePrint(part, skeleton)
                 if(not blueprint.PositionLock) then
                     part.X = CurrentPartStartX + dx
                     part.Y = CurrentPartStartY + dy
@@ -135,6 +141,34 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
             part.XScale = 1
             part.YScale = 1
             part.Rotation = 0
+            part.SpriteIndex = nil
+            if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
+                part.HitballFlags = {}
+                part.HitballScale = {}
+            end
+        end
+
+        -- mouse wheel up or down
+        if(MouseWheel ~= 0 and part ~= nil) then
+            local wheel = Sign(MouseWheel)
+            -- shift for change sprite
+            if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
+                part.SpriteIndex = tableChangeIndex((part.SpriteIndex or blueprint.DefSpriteIndex), spriteSet, wheel)
+            -- ctrl for ball size
+            elseif(love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
+                part.HitballScale[ball.Index] = Clamp((part.HitballScale[ball.Index] or 1) + wheel*0.1, 0.1, 10)
+            -- alt for flipping
+            elseif(love.keyboard.isDown("lalt") or love.keyboard.isDown("ralt")) then
+                if(wheel == -1) then
+                    part.XScale = (part.XScale or 1) * -1
+                else
+                    part.YScale = (part.YScale or 1) * -1
+                end
+            -- no keys for change ball
+            else
+                local ballNum = ball.Index
+                part.HitballFlags[ball.Index] = (ball.Flags + wheel) % #HITBALL_STATES
+            end
         end
     end
 end

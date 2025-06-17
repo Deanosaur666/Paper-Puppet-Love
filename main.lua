@@ -46,6 +46,7 @@ end
 
 function love.draw()
     CurrentProgram:Draw()
+    MouseWheel = 0
 end
 
 function love.keypressed(key, scancode, isrepeat)
