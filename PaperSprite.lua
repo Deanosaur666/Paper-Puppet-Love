@@ -99,8 +99,14 @@ end
 
 
 function PaperSpriteToString(sprite)
-    local qx, qy, qw, qh = sprite.Quad:getViewport()
-    local sw, sh = sprite.Quad:getTextureDimensions( )
+   
+    local qx, qy, qw, qh = 0, 0, 0, 0
+    local sw, sh = 0, 0
+    if(sprite.Quad ~= nil) then
+        qx, qy, qw, qh = sprite.Quad:getViewport()
+        sw, sh = sprite.Quad:getTextureDimensions( )
+    end
+    
 
     return stringjoin({qx, qy, qw, qh, sw, sh, sprite.AnchorX, sprite.AnchorY}, ":")
 end
@@ -191,6 +197,14 @@ function PaperSpriteEditor()
 
             if(sprite.Quad ~= nil) then
                 _, _, w, h = sprite.Quad:getViewport()
+                -- necessary so accidentally tiny quads are still barely clickable
+                if(w < 100) then
+                    w = 100
+                end
+                if(h < 100) then
+                    h = 100
+                end
+
                 if(dy + h > screenHeight) then
                     dy = 10
                     dx = maxX + 10
