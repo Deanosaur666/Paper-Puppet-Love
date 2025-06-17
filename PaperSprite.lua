@@ -254,10 +254,10 @@ function PaperSpriteEditor()
         })
         DrawCheckButton(self, deleteSpriteButton, "Delete Sprite", mx, my)
 
-        local saveSpriteButton = ClickableButton(640, viewH + 20, 300, 120, {
-            LPressed = self.SaveSprite,
+        local saveSpriteButton = ClickableButton(640, viewH + 20, 400, 120, {
+            LPressed = self.SaveSpriteButton,
         })
-        DrawCheckButton(self, saveSpriteButton, "Save Sprite", mx, my)
+        DrawCheckButton(self, saveSpriteButton, "Save Sprite Set", mx, my)
 
         lg.pop()
 
@@ -318,7 +318,7 @@ function PaperSpriteEditor()
 
     end
 
-    function prog:SaveSprite()
+    function prog:SaveSpriteButton()
         local spriteSet = CurrentSpriteSet() or {}
         if(#spriteSet > 0) then
             SaveSpriteSet(spriteSet, tostring(SpriteSetIndex))
