@@ -60,6 +60,9 @@ function Animation(name)
     }
 end
 
+IKLockParts = {}
+IKAltParts = {}
+
 function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
     local lg = love.graphics
 
@@ -78,13 +81,16 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
         if(ball ~= nil) then
             CurrentBall = ball
             CurrentPart = ball.Part
+            CurrentPartIndex = ball.PartIndex
         else
             CurrentBall = nil
             CurrentPart = nil
+            CurrentPartIndex = nil
         end
     end
 
     local part = CurrentPart
+    local partIndex = CurrentPartIndex
     local ball = CurrentBall
     local blueprint = nil
     if(part) then
@@ -135,16 +141,31 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
 
                 part.Rotation = CurrentPartStartRotation + (newangle - startangle)
             end
-        elseif(MouseDown[2]) then
-            part.X = 0
-            part.Y = 0
-            part.XScale = 1
-            part.YScale = 1
-            part.Rotation = 0
-            part.SpriteIndex = nil
+        elseif(MousePressed[2]) then
+            -- shift for reset hitballs and sprite
             if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
                 part.HitballFlags = {}
                 part.HitballScale = {}
+                part.SpriteIndex = nil
+            -- no keys for reset transforms
+            else
+                part.X = 0
+                part.Y = 0
+                part.XScale = 1
+                part.YScale = 1
+                part.Rotation = 0
+            end
+        elseif(MousePressed[3]) then
+            -- ctrl for IK lock
+            if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
+                if(blueprint.IK) then
+                    IKAltParts[partIndex] = not IKAltParts[partIndex]
+                end
+            -- alt for IK alt
+            else
+                if(blueprint.IK) then
+                    IKLockParts[partIndex] = not IKLockParts[partIndex]
+                end
             end
         end
 

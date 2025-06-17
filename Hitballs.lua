@@ -41,28 +41,32 @@ function HitballFromPart(skeleton, partframe, ballnum)
     return ball
 end
 
-function DrawHitBall(x, y, radius, flags)
-    local lg = love.graphics
-    lg.push("all")
-    -- hittable
+function HitballColor(flags)
     if(bit.band(flags, HITBALL_HITTABLE) ~= 0) then
         -- non-disjoint active
         if(bit.band(flags, HITBALL_ACTIVE) ~= 0) then
-            lg.setColor(1, 0, 0)
+            return 1, 0, 0
         -- regular hurtball
         else
-            lg.setColor(0, 0, 1)
+            return 0, 0, 1
         end
     -- unhittable
     else
         -- disjoint active
         if(bit.band(flags, HITBALL_ACTIVE) ~= 0) then
-            lg.setColor(0.5, 0, 0.5)
+            return 0.5, 0, 0.5
         -- intangible
         else
-            lg.setColor(0.2, 0.2, 0.2)
+            return 0.2, 0.2, 0.2
         end
     end
+end
+
+function DrawHitBall(x, y, radius, flags)
+    local lg = love.graphics
+    lg.push("all")
+    local r, g, b = HitballColor(flags)
+    lg.setColor(r, g, b)
     lg.circle("line", x, y, radius)
     lg.pop()
 end
