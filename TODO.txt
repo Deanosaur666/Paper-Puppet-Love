@@ -7,11 +7,10 @@ Sort part update order based on parenting, rather than manually ordered...
     Then, parts parented to that part,
     Etc...
 
-Hit balls (ow)
+Middle click and drag in skeleton view to scroll (may be useful for large figures)
+Ctrl + scroll in skeleton view to zoom in and out (when not over a part)
 
 Maybe shift+click to swap parts?
-
-Weirdness on edges between sprites
 
 Animation editor
     Create an animation with a name

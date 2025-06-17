@@ -46,6 +46,7 @@ end
 function UpdatePartPose(part, frame, skeleton)
     local blueprint = GetPartBluePrint(part, skeleton)
     local parent = GetParent(part, blueprint, frame)
+    part.Rotation = part.Rotation % (math.pi * 2)
 
     if(parent == nil) then
         part.CX = part.X + blueprint.X

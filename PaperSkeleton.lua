@@ -64,15 +64,62 @@ IKLockParts = {}
 IKAltParts = {}
 IKPrevCX = {}
 IKPrevCY = {}
-IKPrevCRotation = {}
 
 
-function IKDrag(skeleton, pose, part, dx, dy)
+function IKDrag(skeleton, pose, part, dx, dy, alt)
     -- we want the part's CX and CY to change by dx and dy without changing its actual X and Y
     -- we also want to preserve the part's orignal rotation
+
+    -- dx and dy of zero should do nothing, in theory
+        
+    print(string.format("IK drag DX: %d DY: %d", dx, dy))
+
+    local bp = GetPartBluePrint(part, skeleton)
+    local parent = GetParent(part, bp, pose)
+    -- parent blueprint
+    local pbp = GetPartBluePrint(parent, skeleton)
+
+    local grandparent = GetParent(parent, pbp, pose)
+    -- grandparent blueprint
+    local gpbp = GetPartBluePrint(grandparent, skeleton)
+
+    -- great-grandparent rotation
+    local ggprot = grandparent.CRotation - grandparent.Rotation -- SUPPOSE this is 0 (no rotation)
+
+    -- parent length, angle
+    local plen = PointDistance(0, 0, bp.X, bp.Y)
+    local pangle = math.atan2(bp.Y, bp.X) -- SUPPOSE this is -90 (down)
+    -- grandparent length, angle
+    local gplen = PointDistance(0, 0, pbp.X, pbp.Y)
+    local gpangle = math.atan2(pbp.Y, pbp.X) -- SUPOSE this is -90 (down)
+
+    -- we do this to cancel ggprot, so it's as if the gp does not inherit rotation
+    local ndx, ndy = RotatePoint(dx, dy, -ggprot) -- SUPPOSE ggprot is zero and so are dx and dy. Thus ndx, ndy = 0
+
+    -- the X and Y of the IK part relative to the grandparent
+    local mx, my = RotatePoint(part.CX - grandparent.CX, part.CY - grandparent.CY, -ggprot) -- SUPPOSE these are 0, 100 (IK part 100 pixels below grandparent)
+
+    local gpnewrot = GetIKJointAngle(0, 0, mx + ndx, my + ndy, gplen, plen, alt) -- SUPPOSE the previous suppositions. This should point straight down (-90)
+
+    -- new parent x and y
+    local px = math.cos(gpnewrot)*gplen
+    local py = math.sin(gpnewrot)*gplen -- SUPPOSE this is 0, 50
+
+    -- IF px, py are 0, 50 and mx are 0, 100, this is -90
+    -- THE PROBLEM IS: when dx, dy are 0, gpnewrot doesn't change, but pnewrot does...
+    local pnewrot = math.atan2(my + ndy - py, mx + ndx - px) - (gpnewrot - gpangle) -- THIS would make pnewrot 0
+
+    local gpstartrot = grandparent.Rotation or 0
+    local pstartrot = parent.Rotation or 0
+
+    grandparent.Rotation = (gpnewrot - gpangle) % (math.pi*2)
+    parent.Rotation = (pnewrot - pangle) % (math.pi*2)
+
+    part.Rotation = (part.Rotation or 0) - ((grandparent.Rotation - gpstartrot) + (parent.Rotation - pstartrot))
 end
 
 function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
+    DraggedPart = nil
     local lg = love.graphics
 
     local spriteSet = CurrentSpriteSet()
@@ -143,25 +190,26 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
                 if(on) then
                     IKPrevCX[p] = parts[p].CX
                     IKPrevCY[p] = parts[p].CY
-                    IKPrevCRotation[p] = parts[p].CRotation
                 end
             end
 
             -- shift for translate
             if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
                 local dx, dy = mx - PartDragMX, my - PartDragMY
-                
-                -- this is how much we're moving it in it's own local rotated space
-                -- that is, the actual change in X and Y to achieve this visible X and Y change
-                dx, dy = RotatePoint(dx, dy, -(part.CRotation - part.Rotation))
 
                 if(blueprint.IK) then
                     -- drag with IK
-                    IKDrag(skeleton, pose, part, dx, dy)
+                    IKDrag(skeleton, pose, part, dx, dy, IKAltParts[partIndex])
                     PartDragMX = mx
                     PartDragMY = my
 
+                    DraggedPart = part
+
                 elseif(not blueprint.PositionLock) then
+                    -- this is how much we're moving it in it's own local rotated space
+                    -- that is, the actual change in X and Y to achieve this visible X and Y change
+                    dx, dy = RotatePoint(dx, dy, -(part.CRotation - part.Rotation))
+
                     part.X = CurrentPartStartX + dx
                     part.Y = CurrentPartStartY + dy
                 end
@@ -190,11 +238,10 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
             for p, on in pairs(IKLockParts) do
                 -- drag with IK to previous position
                 local ikpart = parts[p]
-                if(on) then
-                    ikpart.Rotation = ikpart.Rotation + (IKPrevCRotation[p] - ikpart.CRotation)
+                if(on and ikpart ~= DraggedPart) then
                     -- drag back
-                    local dx, dy = ikpart.CX - IKPrevCX[p], ikpart.CY - IKPrevCY[p]
-                    IKDrag(skeleton, pose, ikpart, dx, dy)
+                    local dx, dy = IKPrevCX[p] - ikpart.CX, IKPrevCY[p] - ikpart.CY
+                    IKDrag(skeleton, pose, ikpart, dx, dy, IKAltParts[p])
                 end
             end
             
