@@ -205,6 +205,21 @@ function AnimationEditor()
         })
         DrawCheckButton(self, newFrameButton, "New Frame", mx, my)
 
+        local delFrameButton = ClickableButton(640, viewH + 20, 300, 120, {
+            LPressed = prog.DeleteFrame,
+        })
+        DrawCheckButton(self, delFrameButton, "Delete Frame", mx, my)
+
+        local copyFrameButton = ClickableButton(960, viewH + 20, 300, 120, {
+            LPressed = prog.CopyFrame,
+        })
+        DrawCheckButton(self, copyFrameButton, "Copy Frame", mx, my)
+
+        local pasteFrameButton = ClickableButton(960 + 320, viewH + 20, 300, 120, {
+            LPressed = prog.PasteFrame,
+        })
+        DrawCheckButton(self, pasteFrameButton, "Paste Frame", mx, my)
+
 
         lg.pop()
     end
@@ -213,7 +228,6 @@ function AnimationEditor()
         CurrentAnimationIndex = button.Index
 
         CurrentFrameIndex = 1
-
 
     end
 
@@ -236,7 +250,30 @@ function AnimationEditor()
         if(CurrentAnimationIndex ~= 0) then 
             local anim = prog.CurrentAnimation
             table.insert(anim.Frames, CopyPose(anim.Frames[CurrentFrameIndex] or BlankPose()))
+            CurrentFrameIndex = CurrentFrameIndex + 1
+        end
+    end
 
+    function prog:DeleteFrame()
+        if(CurrentAnimationIndex ~= 0) then 
+            local anim = prog.CurrentAnimation
+            table.remove(anim.Frames, CurrentFrameIndex)
+            CurrentFrameIndex = math.max(1, CurrentFrameIndex - 1)
+            
+        end
+    end
+
+    function prog:CopyFrame()
+        if(CurrentAnimationIndex ~= 0) then 
+            local anim = prog.CurrentAnimation
+            prog.ClipboardPose = CopyPose(anim.Frames[CurrentFrameIndex])
+        end
+    end
+
+    function prog:PasteFrame()
+        if(CurrentAnimationIndex ~= 0 and prog.ClipboardPose ~= nil) then 
+            local anim = prog.CurrentAnimation
+            anim.Frames[CurrentFrameIndex] = CopyPose(prog.ClipboardPose)
         end
     end
 
@@ -279,6 +316,8 @@ function AnimationEditor()
             end
         elseif(key == "n") then
             prog:NewFrame()
+        elseif(key == 'b') then
+            DisplayHitballs = not DisplayHitballs
         end
     end
 
