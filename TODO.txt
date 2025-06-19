@@ -1,5 +1,7 @@
 Screens:
 
+Animation Editor
+
 Hit-balls currently don't flip?
 
 Sort part update order based on parenting, rather than manually ordered...

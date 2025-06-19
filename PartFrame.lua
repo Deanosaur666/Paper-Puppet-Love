@@ -28,6 +28,8 @@ function PartPose(blueprintIndex, spriteIndex, rotation, x, y, layer)
     }
 end
 
+
+
 function GetPartSprite(part, blueprint, spriteSet)
     return spriteSet[part.SpriteIndex or blueprint.DefSpriteIndex]
 end

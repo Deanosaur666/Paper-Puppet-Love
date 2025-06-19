@@ -22,6 +22,14 @@ function Pose(skeleton)
     return frame
 end
 
+function CopyPose(pose)
+    -- just in case we need to add extra functionality....????
+    return deepcopy(pose)
+end
+
+-- TODO: Copy and save poses 
+
+
 function UpdatePose(frame, skeleton)
     for i, pf in ipairs(frame.PartFrames) do
         UpdatePartPose(pf, frame, skeleton)

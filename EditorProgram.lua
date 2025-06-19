@@ -33,6 +33,29 @@ TextEntryPattern = "[%w%._]+" -- just alphanumeric characters, dot, and undersco
 TextEntered = ""
 TextEntryFinished = nil -- a function for when entry is finished
 
+
+-- Core data for multiple editors
+
+MouseDragX = nil
+MouseDragY = nil
+
+ScreenDragX = nil
+ScreenDragY = nil
+
+SkeletonFrame = nil
+SkeletonX = 0
+SkeletonY = 0
+CurrentPart = nil
+CurrentHitball = nil
+
+CurrentPartStartCRotation = 0
+CurrentPartStartCX = 0
+CurrentPartStartCY = 0
+CurrentPartStartXScale = 0
+CurrentPartStartYScale = 0
+PartDragMX = 0
+PartDragMY = 0
+
 function CurrentTexture()
     return SpriteSheets[SpriteSheetFiles[SheetIndex]]
 end
@@ -116,6 +139,9 @@ function EditorProgram:KeyPressed(key, scancode, isrepeat)
         return
     elseif(key == "2" and filesSelected) then
         CurrentScreen = PartBlueprintEditor()
+        return
+    elseif(key == "3" and filesSelected) then
+        CurrentScreen = AnimationEditor()
         return
     end
 
