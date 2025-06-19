@@ -1,16 +1,9 @@
 Screens:
 
-Hit-balls currently don't flip?
-
 Sort part update order based on parenting, rather than manually ordered...
     Parts with no parents first,
     Then, parts parented to that part,
     Etc...
-
-Middle click and drag in skeleton view to scroll (may be useful for large figures)
-Ctrl + scroll in skeleton view to zoom in and out (when not over a part)
-
-Zooming and scrolling screens if parts get too big
 
 Hiding/unhiding parts in frames (could be useful for weapons and stuff)
 Show partframe layers when holding L

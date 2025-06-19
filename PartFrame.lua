@@ -23,6 +23,8 @@ function PartPose(blueprintIndex, spriteIndex, rotation, x, y, layer)
         YScale = 1,
         Layer = layer,
 
+        Hidden = false,
+
         HitballFlags = {}, -- changing hit balls from inactive to active, for example
         HitballScale = {} -- changing the size of a hit ball for an attack
     }
@@ -71,9 +73,4 @@ function UpdatePartPose(part, frame, skeleton)
     part.CX = px + dx
     part.CY = py + dy
 
-end
-
-function MovePart(dx, dy)
-    -- move a part's on-screen position, taking inherited rotation into account
-    -- effectively, we want CX and CY to change by these values next update
 end

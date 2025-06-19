@@ -49,8 +49,10 @@ function DrawPose(frame, skeleton, spriteset, texture, x, y, rot, xscale, yscale
     local partqueue = PriorityQueue("max")
 
     for _, part in pairs(frame.PartFrames) do
-        local blueprint = GetPartBluePrint(part, skeleton)
-        partqueue:enqueue(part, part.Layer or blueprint.DefLayer)
+        if(not part.Hidden) then
+            local blueprint = GetPartBluePrint(part, skeleton)
+            partqueue:enqueue(part, part.Layer or blueprint.DefLayer)
+        end
     end
 
     while not partqueue:empty() do
