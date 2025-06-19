@@ -46,6 +46,7 @@ function AnimationEditor()
     prog.ViewH = 0
 
     CurrentAnimationIndex = 0
+    CurrentFrameIndex = 0
 
     function prog:Draw()
         
@@ -53,6 +54,7 @@ function AnimationEditor()
         local frame = Pose(skeleton)
 
         prog.CurrentAnimation = skeleton.Animations[CurrentAnimationIndex]
+        local anim = prog.CurrentAnimation
 
         local lg = love.graphics
         lg.push("all")
@@ -69,6 +71,9 @@ function AnimationEditor()
         end
         local str = "Current Animation: " .. aName
         lg.print(str, 10, 20)
+
+        local str = "Current Frame: " .. tostring(CurrentFrameIndex)
+        lg.print(str, 10, 40)
         
 
 
@@ -100,6 +105,10 @@ function AnimationEditor()
         local y = self.SkeletonY
         
         
+        if(anim ~= nil and anim.Frames[CurrentFrameIndex] ~= nil) then
+            self.SkeletonFrame = anim.Frames[CurrentFrameIndex]
+            --print("Frame valid")
+        end
 
         if(self.SkeletonFrame ~= nil and #self.SkeletonFrame.PartFrames == #frame.PartFrames) then
             frame = self.SkeletonFrame
@@ -107,10 +116,17 @@ function AnimationEditor()
 
         self.SkeletonFrame = frame
 
+        
+
         local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
         
         -- the MEAT of the thing
         DrawAndPoseSkeleton(skeleton, frame, x, y, mx, my)
+
+        if(anim ~= nil and anim.Frames[CurrentFrameIndex] ~= nil) then
+            anim.Frames[CurrentFrameIndex] = self.SkeletonFrame
+            --print("Frame valid")
+        end
 
         -- Special features
 
@@ -127,7 +143,15 @@ function AnimationEditor()
 
         lg.setColor(1, 1, 1)
         PrintCentered("Select Animation", x + w/2, y + h/2)
+
+        local deleteAnimButton = ClickableButton(x + w, y, 300, 100, {
+            LPressed = self.DeleteAnimation,
+        })
+        DrawCheckButton(self, deleteAnimButton, "Delete Animation", mx, my)
+
         y = y + dy
+
+
 
         for i, anim in ipairs(skeleton.Animations) do
             local button = ClickableButton(x, y, w, h, {
@@ -164,10 +188,7 @@ function AnimationEditor()
         PrintCentered("(NEW Animation)", x + w/2, y + h/2)
 
 
-        local deleteAnimButton = ClickableButton(320, viewH + 20, 300, 120, {
-            LPressed = self.DeleteAnimation,
-        })
-        DrawCheckButton(self, deleteAnimButton, "Delete Animation", mx, my)
+        
 
         local saveAnimButton = ClickableButton(10, viewH + 20, 300, 120, {
             LPressed = SaveSkeleton,
@@ -180,12 +201,16 @@ function AnimationEditor()
 
     function prog:SetAnimation(button, mx, my)
         CurrentAnimationIndex = button.Index
+
+        CurrentFrameIndex = 1
+
+
     end
 
-     function prog:DeleteAnimation(button, mx, my)
+    function prog:DeleteAnimation(button, mx, my)
         if(CurrentAnimationIndex ~= 0) then 
             table.remove(skeleton.Animations, CurrentAnimationIndex)
-            CurrentAnimationIndex = CurrentAnimationIndex - 1
+            CurrentAnimationIndex = 0
 
         end
         
@@ -208,6 +233,10 @@ function AnimationEditor()
         table.insert(skeleton.Animations, anim)
 
         CurrentAnimationIndex = #skeleton.Animations
+
+        CurrentFrameIndex = 1
+
+        table.insert(anim.Frames, BlankPose())
         
         
         --SaveSkeleton()
