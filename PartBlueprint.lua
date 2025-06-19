@@ -58,26 +58,6 @@ function PartBlueprintEditor()
     prog.ViewW = 0
     prog.ViewH = 0
 
-    MouseDragX = nil
-    MouseDragY = nil
-
-    ScreenDragX = nil
-    ScreenDragY = nil
-
-    SkeletonFrame = nil
-    SkeletonX = 0
-    SkeletonY = 0
-    CurrentPart = nil
-    CurrentHitball = nil
-
-    CurrentPartStartCRotation = 0
-    CurrentPartStartCX = 0
-    CurrentPartStartCY = 0
-    CurrentPartStartXScale = 0
-    CurrentPartStartYScale = 0
-    PartDragMX = 0
-    PartDragMY = 0
-
     function prog:Draw()
         local lg = love.graphics
         lg.push("all")
@@ -254,20 +234,6 @@ function PartBlueprintEditor()
         
         
     end
-
-    -- this is just used for flipping
-    function GetBlueprintScale(bp)
-        local xsc = 1
-        local ysc = 1
-        if(bp.FlippedX) then
-            xsc = -1
-        end
-        if(bp.FlippedY) then
-            ysc = -1
-        end
-
-        return xsc, ysc
-    end 
 
     function prog:DrawSkeleton(x, y)
         local lg = love.graphics
@@ -462,9 +428,7 @@ function PartBlueprintEditor()
 
     end
 
-    function CopyBlueprintHitballs(bp, copyIndex)
-        bp.Hitballs = CurrentSkeleton().PartBlueprints[copyIndex].Hitballs
-    end
+    
 
     function prog:IncrementSprite()
         local bluePrint = self:CurrentBlueprint()
@@ -479,4 +443,22 @@ function PartBlueprintEditor()
     end
 
     return prog
+end
+
+-- this is just used for flipping
+function GetBlueprintScale(bp)
+    local xsc = 1
+    local ysc = 1
+    if(bp.FlippedX) then
+        xsc = -1
+    end
+    if(bp.FlippedY) then
+        ysc = -1
+    end
+
+    return xsc, ysc
+end 
+
+function CopyBlueprintHitballs(bp, copyIndex)
+    bp.Hitballs = CurrentSkeleton().PartBlueprints[copyIndex].Hitballs
 end

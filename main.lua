@@ -1,6 +1,7 @@
 require "sprites"
 require "Screens"
 require "PaperSprite"
+require "AnimationEditor"
 
 -- in the future, should depend on if we load in editor mode
 require "EditorProgram"
