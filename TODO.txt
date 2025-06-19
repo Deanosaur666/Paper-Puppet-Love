@@ -1,5 +1,7 @@
 Screens:
 
+Skeletons have animations... so we need to edit them
+
 Animation Editor
 
 Sort part update order based on parenting, rather than manually ordered...

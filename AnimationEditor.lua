@@ -1,5 +1,18 @@
 require "PartBlueprint"
 
+-- TODO:
+--[[
+    Set the "Idle Pose" with a button  (I)
+    Create a new frame  (Button or N)
+    Change Animations (List of buttons)
+    Change frames with arrow keys (left right)
+    Change frame duration with UP/Down
+
+
+
+
+]]
+
 function AnimationEditor()
     local prog = BlankProgram()
 
@@ -32,12 +45,32 @@ function AnimationEditor()
     prog.ViewW = 0
     prog.ViewH = 0
 
+    CurrentAnimationIndex = 0
+
     function prog:Draw()
         
+        local skeleton = CurrentSkeleton()
+        local frame = Pose(skeleton)
+
+        prog.CurrentAnimation = skeleton.Animations[CurrentAnimationIndex]
+
         local lg = love.graphics
         lg.push("all")
 
         lg.clear(0.4, 0.4, 0.4)
+
+        lg.setFont(Font_K)
+        local str = "Current Skeleton: " .. SkeletonIndex
+        lg.print(str, 10, 0)
+
+        local aName = "None"
+        if(prog.CurrentAnimation ~= nil) then
+            aName = prog.CurrentAnimation.Name
+        end
+        local str = "Current Animation: " .. aName
+        lg.print(str, 10, 20)
+        
+
 
         lg.scale(self.Scale, self.Scale)
         lg.translate(self.OffsetX, self.OffsetY)
@@ -63,8 +96,7 @@ function AnimationEditor()
         local x = self.SkeletonX
         local y = self.SkeletonY
         
-        local skeleton = CurrentSkeleton()
-        local frame = Pose(skeleton)
+        
 
         if(self.SkeletonFrame ~= nil and #self.SkeletonFrame.PartFrames == #frame.PartFrames) then
             frame = self.SkeletonFrame
@@ -79,13 +111,84 @@ function AnimationEditor()
 
         -- Special features
 
-        
+        -- Animation lis
+        local dy = ScreenHeight/5 
+        local dx = ScreenWidth/5
+        local y = 20
+        local x = sheet:getWidth() + 10
+
+        local w = ScreenWidth/4
+        local h = ScreenHeight/7
+
+        lg.setFont(Font_KBig)
+
+        lg.setColor(1, 1, 1)
+        PrintCentered("Select Animation", x + w/2, y + h/2)
+        y = y + dy
+
+        for i, anim in ipairs(skeleton.Animations) do
+            local button = ClickableButton(x, y, w, h, {
+                LPressed = prog.SetAnimation,
+                Animation = anim,
+                Index = i
+            })
+            CheckClickableButton(self, button, mx, my)
+
+            lg.setColor(1, 1, 0)
+            if(i == CurrentAnimationIndex) then
+                lg.setColor(1, 0, 0)
+            end
+            lg.rectangle("fill", x, y, w, h)
+            lg.setColor(0, 0, 0)
+            lg.rectangle("line", x, y, w, h)
+            PrintCentered(anim.Name, x + w/2, y + h/2)
+            y = y + dy
+
+            if(y > prog.ViewW - h) then
+                y = 20 + dy
+                x = x + w + 10
+            end
+        end
+
+        local newButton = ClickableButton(x, y, w, h, {
+            LPressed = prog.NewAnimation,
+        })
+        CheckClickableButton(self, newButton, mx, my)
+        lg.setColor(1, 1, 1)
+        lg.rectangle("fill", x, y, w, h)
+        lg.setColor(0, 0, 0)
+        lg.rectangle("line", x, y, w, h)
+        PrintCentered("(NEW Animation)", x + w/2, y + h/2)
 
 
         lg.pop()
     end
 
+    function prog:SetAnimation(button, mx, my)
+        CurrentAnimationIndex = button.Index
+    end
 
+    function prog:NewAnimation(button, mx, my)
+        TextEntryOn = true
+        TextEntered = ""
+        TextEntryFinished = prog.CreateAnimation
+    end
+
+    function prog:CreateAnimation()
+        if(TextEntered == "") then
+            prog:NewAnimation()
+            return
+        end
+    
+        local skeleton = CurrentSkeleton()
+        local anim = Animation(TextEntered)
+        table.insert(skeleton.Animations, anim)
+
+        CurrentAnimationIndex = #skeleton.Animations
+        
+        
+        SaveSkeleton()
+    end
 
 
     return prog

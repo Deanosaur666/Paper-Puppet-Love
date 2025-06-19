@@ -120,3 +120,10 @@ function DrawPoseHitballs(pose, skeleton, x, y, rot, xscale, yscale)
 
     lg.pop()
 end
+
+function Animation(name)
+    return {
+        Name = name,
+        Frames = {}, -- an array of poses
+    }
+end
