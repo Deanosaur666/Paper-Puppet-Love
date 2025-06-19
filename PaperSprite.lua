@@ -171,7 +171,7 @@ function PaperSpriteEditor()
         local viewH = sheet:getHeight()
 
 
-        lg.setColor(0.4, 0.4, 0.4)
+        DarkGray()
         lg.rectangle("fill", 0, 0, viewW, viewH)
         lg.setColor(1, 1, 1)
         love.graphics.draw(sheet, 0, 0)
@@ -190,7 +190,7 @@ function PaperSpriteEditor()
         lg.circle("line", mx, my, 5)
 
         local spriteSet = SpriteSets[SpriteSetIndex] or {}
-        local dx = sheet:getWidth() + 20
+        local dx = sheet:getWidth() + 40
         local startDY = screenTop
         local dy = startDY
         local maxX = 0
@@ -198,7 +198,7 @@ function PaperSpriteEditor()
             local w, h = 200, 100
             if(dy + h > screenBottom) then
                 dy = startDY
-                dx = maxX + 20
+                dx = maxX + 40
             end
 
             if(sprite.Quad ~= nil) then
@@ -213,16 +213,16 @@ function PaperSpriteEditor()
 
                 if(dy + h > screenBottom) then
                     dy = startDY
-                    dx = maxX + 10
+                    dx = maxX + 40
                 end
 
-                lg.setColor(0.4, 0.4, 0.4)
+                DarkGray()
                 lg.rectangle("fill", dx, dy, w, h)
                 lg.setColor(1, 1, 1)
 
                 DrawPaperSprite(sprite, CurrentTexture(), dx + sprite.AnchorX, dy + sprite.AnchorY)
             else
-                lg.setColor(0.4, 0.4, 0.4)
+                DarkGray()
                 lg.rectangle("fill", dx, dy, w, h)
                 lg.setColor(1, 1, 1)
             end
@@ -254,7 +254,7 @@ function PaperSpriteEditor()
 
             lg.setColor(1, 1, 1)
 
-            dy = dy + h + 20
+            dy = dy + h + 40
 
 
         end

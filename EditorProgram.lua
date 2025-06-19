@@ -203,7 +203,7 @@ function DrawEditorBackground()
     
     lg.setLineWidth(2)
     
-    lg.setColor(0.4, 0.4, 0.4)
+    DarkGray()
 
     local w = ScreenWidth/15
     for x=w/2,ScreenWidth,w do
@@ -225,4 +225,12 @@ function DrawEditorBackground()
     end
 
     lg.pop()
+end
+
+function DarkGray()
+    love.graphics.setColor(0.4, 0.4, 0.4)
+end
+
+function White()
+    love.graphics.setColor(1, 1, 1)
 end

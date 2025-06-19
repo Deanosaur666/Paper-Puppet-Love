@@ -1,5 +1,7 @@
 Screens:
 
+Fix gui issues in screens 2 and 3 based on swapping offset and scale order
+
 Skeletons have animations... so we need to edit them
 
 Animation Editor
