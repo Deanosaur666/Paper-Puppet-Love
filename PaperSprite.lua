@@ -140,7 +140,9 @@ function PaperSpriteEditor()
         local lg = love.graphics
         lg.push("all")
 
-        lg.clear(0.4, 0.4, 0.4)
+        --lg.clear(0.4, 0.4, 0.4)
+        DrawEditorBackground()
+        lg.setLineWidth(4)
 
         lg.setFont(Font_K)
 
@@ -164,11 +166,15 @@ function PaperSpriteEditor()
         ScrollLock = false
 
         local sheet = CurrentTexture()
-        love.graphics.draw(sheet, 0, 0)
 
         local viewW = sheet:getWidth()
         local viewH = sheet:getHeight()
 
+
+        lg.setColor(0.4, 0.4, 0.4)
+        lg.rectangle("fill", 0, 0, viewW, viewH)
+        lg.setColor(1, 1, 1)
+        love.graphics.draw(sheet, 0, 0)
         lg.rectangle("line", 0, 0, viewW, viewH)
 
         local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
@@ -209,7 +215,16 @@ function PaperSpriteEditor()
                     dy = startDY
                     dx = maxX + 10
                 end
+
+                lg.setColor(0.4, 0.4, 0.4)
+                lg.rectangle("fill", dx, dy, w, h)
+                lg.setColor(1, 1, 1)
+
                 DrawPaperSprite(sprite, CurrentTexture(), dx + sprite.AnchorX, dy + sprite.AnchorY)
+            else
+                lg.setColor(0.4, 0.4, 0.4)
+                lg.rectangle("fill", dx, dy, w, h)
+                lg.setColor(1, 1, 1)
             end
 
             if(i == self.SpriteIndex) then

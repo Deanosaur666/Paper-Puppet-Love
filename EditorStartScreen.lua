@@ -32,7 +32,8 @@ function SelectionMenu()
         local lg = love.graphics
         lg.push("all")
 
-        lg.clear(0.4, 0.4, 0.4)
+        -- lg.clear(0.4, 0.4, 0.4)
+        DrawEditorBackground()
 
         lg.setFont(Font_Consolas16)
 
