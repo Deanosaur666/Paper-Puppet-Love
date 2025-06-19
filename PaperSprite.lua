@@ -263,6 +263,8 @@ function PaperSpriteEditor()
 
         lg.push("all")
 
+        local mx, my = GetRelativeMouse(1, 0, 0)
+
         lg.setColor(0.2, 0.2, 0.2)
         lg.rectangle("fill", 0, 0, ScreenWidth, self.BannerHeight)
         lg.setFont(Font_Consolas16)
