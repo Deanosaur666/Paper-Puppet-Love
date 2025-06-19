@@ -72,7 +72,12 @@ function AnimationEditor()
         local str = "Current Animation: " .. aName
         lg.print(str, 10, 20)
 
-        local str = "Current Frame: " .. tostring(CurrentFrameIndex)
+        local totalFrames = 0
+        if(anim ~= nil) then
+            totalFrames = #anim.Frames
+        end
+
+        local str = "Current Frame: " .. tostring(CurrentFrameIndex) .. "/" .. totalFrames
         lg.print(str, 10, 40)
         
 
@@ -195,6 +200,11 @@ function AnimationEditor()
         })
         DrawCheckButton(self, saveAnimButton, "Save Skeleton", mx, my)
 
+        local newFrameButton = ClickableButton(320, viewH + 20, 300, 120, {
+            LPressed = prog.NewFrame,
+        })
+        DrawCheckButton(self, newFrameButton, "New Frame", mx, my)
+
 
         lg.pop()
     end
@@ -222,6 +232,14 @@ function AnimationEditor()
         TextEntryFinished = prog.CreateAnimation
     end
 
+    function prog:NewFrame()
+        if(CurrentAnimationIndex ~= 0) then 
+            local anim = prog.CurrentAnimation
+            table.insert(anim.Frames, CopyPose(anim.Frames[CurrentFrameIndex] or BlankPose()))
+
+        end
+    end
+
     function prog:CreateAnimation()
         if(TextEntered == "") then
             prog:NewAnimation()
@@ -240,6 +258,28 @@ function AnimationEditor()
         
         
         --SaveSkeleton()
+    end
+
+    function prog:KeyPressed(key, scancode, isrepeat)
+        local totalFrames = 0
+        if(prog.CurrentAnimation ~= nil) then
+            totalFrames = #prog.CurrentAnimation.Frames
+        end
+       
+       
+        if(key == "right") then
+            CurrentFrameIndex = CurrentFrameIndex + 1
+            if(CurrentFrameIndex > totalFrames) then
+                CurrentFrameIndex = 1
+            end
+        elseif(key == "left") then
+            CurrentFrameIndex = CurrentFrameIndex - 1
+            if(CurrentFrameIndex < 1) then
+                CurrentFrameIndex = totalFrames
+            end
+        elseif(key == "n") then
+            prog:NewFrame()
+        end
     end
 
 
