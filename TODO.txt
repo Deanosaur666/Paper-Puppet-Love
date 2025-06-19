@@ -24,3 +24,5 @@ Animation editor
 
     Copy animation
     Copy animation with just starting frame (attack from idle, for example)
+
+    ONION SKIN (back and forward)
