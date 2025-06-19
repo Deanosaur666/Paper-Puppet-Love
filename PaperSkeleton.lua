@@ -185,7 +185,7 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
         CurrentPartStartX = part.X
         CurrentPartStartY = part.Y
         CurrentPartStartXScale = part.XScale or 1
-        CurrentPartStartYScale = part.YSCale or 1
+        CurrentPartStartYScale = part.YScale or 1
         PartDragMX = mx
         PartDragMY = my
         BlueprintIndex = ball.PartIndex
@@ -236,9 +236,10 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
             -- ctrl for scale
             elseif(love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
                 local dx, dy = RotatePoint(mx - PartDragMX, my - PartDragMY, -part.CRotation)
-                -- dy = -dy
+
                 part.XScale = CurrentPartStartXScale * ((ball.Radius+dx) / ball.Radius)
                 part.YScale = CurrentPartStartYScale * ((ball.Radius+dy) / ball.Radius)
+
             -- no key for rotate
             else
                 local startangle = math.atan2(PartDragMY - py, PartDragMX - px)

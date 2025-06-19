@@ -9,11 +9,7 @@ Sort part update order based on parenting, rather than manually ordered...
     Then, parts parented to that part,
     Etc...
 
-Hiding/unhiding parts in frames (could be useful for weapons and stuff)
-Show partframe layers when holding L
 Labeling hitballs for gameplay purposes (may be useful if you want a projectile to spawn from a specific hitball, or want a weak spot)
-
-Better scaling controls
 
 Maybe shift+click to swap parts?
 
