@@ -1,5 +1,11 @@
 Screens:
 
+Onion skinning
+
+Animation editor GUI:
+Left is animation list
+Bottom is animation timeline (width of frames based on length)
+
 Fix gui issues in screens 2 and 3 based on swapping offset and scale order
 
 Skeletons have animations... so we need to edit them
