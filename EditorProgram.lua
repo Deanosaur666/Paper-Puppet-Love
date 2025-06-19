@@ -29,7 +29,7 @@ SkeletonIndex = 1
 
 -- text entry
 TextEntryOn = false
-TextEntryPattern = "[%w%._]+" -- just alphanumeric characters, dot, and underscore
+TextEntryPattern = "[%w%.%s_]+" -- just alphanumeric characters, space, dot, and underscore
 TextEntered = ""
 TextEntryFinished = nil -- a function for when entry is finished
 

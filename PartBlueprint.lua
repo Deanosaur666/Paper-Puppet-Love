@@ -263,7 +263,7 @@ function PartBlueprintEditor()
             ScreenDragX = mx
             ScreenDragY = my
         end
-        if(MouseDown[3]) then
+        if(MouseDown[3] and not CtrlDown and not ShiftDown and not AltDown) then
             self.OffsetX = self.OffsetX + (mx - ScreenDragX)
             self.OffsetY = self.OffsetY + (my - ScreenDragY)
             mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
