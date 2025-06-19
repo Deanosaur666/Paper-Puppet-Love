@@ -27,7 +27,11 @@ function HitballFromPart(skeleton, partframe, ballnum)
     local scale = math.min(math.abs(partframe.XScale), math.abs(partframe.YScale))
     
     local x, y = hitball.X, hitball.Y
-    x, y = RotatePoint(x * partframe.XScale, y * partframe.YScale, partframe.CRotation)
+    local xsc, ysc = GetBlueprintScale(blueprint)
+
+    x = x * partframe.XScale * xsc
+    y = y * partframe.YScale * ysc
+    x, y = RotatePoint(x, y, partframe.CRotation)
 
     x = x + partframe.CX
     y = y + partframe.CY

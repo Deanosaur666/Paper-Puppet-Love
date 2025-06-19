@@ -16,6 +16,8 @@ MouseDown = { [1] = false, [2] = false, [3] = false}
 MousePressed = { [1] = false, [2] = false, [3] = false}
 MouseWheel = 0
 
+KeysPressed = {}
+
 function love.conf(t)
 	t.console = true
     love.filesystem.setIdentity("Paper_Puppets_Love")
@@ -48,10 +50,12 @@ end
 function love.draw()
     CurrentProgram:Draw()
     MouseWheel = 0
+    KeysPressed = {}
 end
 
 function love.keypressed(key, scancode, isrepeat)
     CurrentProgram:KeyPressed(key, scancode, isrepeat)
+    KeysPressed[key] = true
 end
 
 function love.textinput(t)

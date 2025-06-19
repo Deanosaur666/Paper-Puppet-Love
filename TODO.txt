@@ -2,17 +2,10 @@ Screens:
 
 Animation Editor
 
-Hit-balls currently don't flip?
-
 Sort part update order based on parenting, rather than manually ordered...
     Parts with no parents first,
     Then, parts parented to that part,
     Etc...
-
-Middle click and drag in skeleton view to scroll (may be useful for large figures)
-Ctrl + scroll in skeleton view to zoom in and out (when not over a part)
-
-Zooming and scrolling screens if parts get too big
 
 Hiding/unhiding parts in frames (could be useful for weapons and stuff)
 Show partframe layers when holding L
@@ -28,11 +21,6 @@ Animation editor
     Copy a frame
     Set a frame's duration
     Move a frame in the timeline maybe
-    Rotate, move, scale parts (the meat of the program)
-    Set IK lock (for feet and stuff)
-    Reverse IK direction (swap between two possible states)
-    Change part sprites
-    Change part layers
 
     Copy animation
     Copy animation with just starting frame (attack from idle, for example)

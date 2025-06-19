@@ -64,6 +64,7 @@ IKLockParts = {}
 IKAltParts = {}
 IKPrevCX = {}
 IKPrevCY = {}
+IKPrevCRot = {}
 
 
 function IKDrag(skeleton, pose, part, dx, dy, alt)
@@ -141,6 +142,7 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
     DraggedPart = nil
     ScrollLock = false
     local lg = love.graphics
+    lg.push("all")
 
     local spriteSet = CurrentSpriteSet()
     local texture = CurrentTexture()
@@ -211,6 +213,7 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
                 if(on) then
                     IKPrevCX[p] = parts[p].CX
                     IKPrevCY[p] = parts[p].CY
+                    IKPrevCRot[p] = parts[p].CRotation
                 end
             end
 
@@ -250,6 +253,8 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
                 PartDragMX = mx
                 PartDragMY = my
                 CurrentPartStartRotation = part.Rotation
+
+                DraggedPart = part
             end
 
 
@@ -263,6 +268,18 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
                     -- drag back
                     local dx, dy = IKPrevCX[p] - ikpart.CX, IKPrevCY[p] - ikpart.CY
                     IKDrag(skeleton, pose, ikpart, dx, dy, IKAltParts[p])
+                end
+            end
+
+            UpdatePose(pose, skeleton)
+
+            for p, on in pairs(IKLockParts) do
+                -- drag with IK to previous position
+                local ikpart = parts[p]
+                if(on and ikpart ~= DraggedPart) then
+                    -- rotate back
+                    local drotation = ikpart.CRotation - IKPrevCRot[p]
+                    ikpart.Rotation = ikpart.Rotation - drotation
                 end
             end
             
@@ -324,5 +341,12 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
                 part.HitballFlags[ball.Index] = (ball.Flags + wheel) % #HITBALL_STATES
             end
         end
+
+        -- hiding and unhiding part with H
+        if(KeysPressed["h"]) then
+            part.Hidden = not part.Hidden
+        end
     end
+
+    lg.pop()
 end
