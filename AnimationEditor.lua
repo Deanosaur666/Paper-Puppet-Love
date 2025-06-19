@@ -82,6 +82,9 @@ function AnimationEditor()
 
         local sheet = CurrentTexture()
         self.ViewCenterX, self.ViewCenterY, self.ViewW, self.ViewH = sheet:getWidth()/2, sheet:getHeight()/2, sheet:getWidth(), sheet:getHeight()
+
+        local viewW = sheet:getWidth()
+        local viewH = sheet:getHeight()
         
         -- the basic rectangle for the sheet
         lg.rectangle("line", 0, 0, sheet:getWidth(), sheet:getHeight())
@@ -161,11 +164,31 @@ function AnimationEditor()
         PrintCentered("(NEW Animation)", x + w/2, y + h/2)
 
 
+        local deleteAnimButton = ClickableButton(320, viewH + 20, 300, 120, {
+            LPressed = self.DeleteAnimation,
+        })
+        DrawCheckButton(self, deleteAnimButton, "Delete Animation", mx, my)
+
+        local saveAnimButton = ClickableButton(10, viewH + 20, 300, 120, {
+            LPressed = SaveSkeleton,
+        })
+        DrawCheckButton(self, saveAnimButton, "Save Skeleton", mx, my)
+
+
         lg.pop()
     end
 
     function prog:SetAnimation(button, mx, my)
         CurrentAnimationIndex = button.Index
+    end
+
+     function prog:DeleteAnimation(button, mx, my)
+        if(CurrentAnimationIndex ~= 0) then 
+            table.remove(skeleton.Animations, CurrentAnimationIndex)
+            CurrentAnimationIndex = CurrentAnimationIndex - 1
+
+        end
+        
     end
 
     function prog:NewAnimation(button, mx, my)
@@ -187,7 +210,7 @@ function AnimationEditor()
         CurrentAnimationIndex = #skeleton.Animations
         
         
-        SaveSkeleton()
+        --SaveSkeleton()
     end
 
 
