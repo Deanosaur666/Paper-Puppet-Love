@@ -199,9 +199,11 @@ function DrawEditorBackground()
     local lg = love.graphics
     lg.push("all")
 
-    lg.clear(0.9, 0.8, 0.6)
+    lg.clear(0.3, 0.3, 0.3)
+    
     lg.setLineWidth(2)
-    lg.setColor(0.2, 0, 0)
+    
+    DarkGray()
 
     local w = ScreenWidth/15
     for x=w/2,ScreenWidth,w do
@@ -212,7 +214,7 @@ function DrawEditorBackground()
         lg.line(0, y, ScreenWidth, y)
     end
 
-    lg.setColor(0.6, 0.5, 0)
+    lg.setColor(0.6, 0.6, 0.6)
 
     for x=0,ScreenWidth,w do
         lg.line(x, 0, x, ScreenHeight)
@@ -223,4 +225,12 @@ function DrawEditorBackground()
     end
 
     lg.pop()
+end
+
+function DarkGray()
+    love.graphics.setColor(0.4, 0.4, 0.4)
+end
+
+function White()
+    love.graphics.setColor(1, 1, 1)
 end

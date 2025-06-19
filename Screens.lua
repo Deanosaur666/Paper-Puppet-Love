@@ -129,6 +129,7 @@ function DrawCheckButton(prog, button, text, mx, my)
     lg.push("all")
     CheckClickableButton(prog, button, mx, my)
 
+    lg.setLineWidth(3)
     lg.setColor(1, 1, 0)
     
     lg.rectangle("fill", button.X, button.Y, button.W, button.H)
