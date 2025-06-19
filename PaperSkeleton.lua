@@ -49,14 +49,9 @@ function PaperSkeleton()
         Animations = {},
         -- global offset so that 0,0 can be their feet, for example
         X = nil,
-        Y = nil
-    }
-end
-
-function Animation(name)
-    return {
-        Name = name,
-        Frames = {}, -- an array of poses
+        Y = nil,
+        -- Used for ease of use in animation editor
+        IdlePose = nil,
     }
 end
 
