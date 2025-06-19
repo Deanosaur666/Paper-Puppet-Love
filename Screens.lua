@@ -126,6 +126,7 @@ end
 
 function DrawCheckButton(prog, button, text, mx, my)
     local lg = love.graphics
+    lg.push("all")
     CheckClickableButton(prog, button, mx, my)
 
     lg.setColor(1, 1, 0)
@@ -134,7 +135,7 @@ function DrawCheckButton(prog, button, text, mx, my)
     lg.setColor(0, 0, 0)
     lg.rectangle("line",  button.X, button.Y, button.W, button.H)
     
-    lg.setFont(Font_KBig)
     PrintCentered(text, button.X + button.W/2, button.Y + button.H/2)
+    lg.pop()
     
 end

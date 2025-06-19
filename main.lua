@@ -64,6 +64,10 @@ end
 
 function love.update(dt)
 
+    CtrlDown = love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")
+    ShiftDown = love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")
+    AltDown = love.keyboard.isDown("lalt") or love.keyboard.isDown("ralt")
+
     MouseDownPrev[1] = MouseDown[1]
     MouseDownPrev[2] = MouseDown[2]
     MouseDownPrev[3] = MouseDown[3]
