@@ -124,9 +124,9 @@ function PaperSpriteEditor()
     local prog = BlankProgram()
     prog.Scale = 0.5
 
-    prog.BannerHeight = 70
+    prog.BannerHeight = 60
 
-    prog.OffsetX = 100
+    prog.OffsetX = 20
     prog.OffsetY = prog.BannerHeight + 20
 
     -- mapping sprites to names/indexes
@@ -155,12 +155,11 @@ function PaperSpriteEditor()
         str = "Current SpriteSet: " .. tostring(SpriteSetIndex or "none")
         lg.print(str, 700, 20)
 
-        lg.scale(self.Scale, self.Scale)
         lg.translate(self.OffsetX, self.OffsetY)
+        lg.scale(self.Scale, self.Scale)
 
-        local screenLeft = 100 - self.OffsetX
-        local screenTop = 100 - prog.BannerHeight + 10
-        local screenBottom = ScreenHeight/self.Scale - self.OffsetY
+        local screenTop = (self.BannerHeight + 10)/self.Scale - self.OffsetY/self.Scale
+        local screenBottom = ScreenHeight/self.Scale - self.OffsetY/self.Scale
 
         ScrollLock = false
 
@@ -185,7 +184,7 @@ function PaperSpriteEditor()
         lg.circle("line", mx, my, 5)
 
         local spriteSet = SpriteSets[SpriteSetIndex] or {}
-        local dx = sheet:getWidth() + 10
+        local dx = sheet:getWidth() + 20
         local startDY = screenTop
         local dy = startDY
         local maxX = 0
@@ -193,7 +192,7 @@ function PaperSpriteEditor()
             local w, h = 200, 100
             if(dy + h > screenBottom) then
                 dy = startDY
-                dx = maxX + 10
+                dx = maxX + 20
             end
 
             if(sprite.Quad ~= nil) then
@@ -240,7 +239,7 @@ function PaperSpriteEditor()
 
             lg.setColor(1, 1, 1)
 
-            dy = dy + h + 2
+            dy = dy + h + 20
 
 
         end
@@ -253,17 +252,17 @@ function PaperSpriteEditor()
         lg.rectangle("fill", 0, 0, ScreenWidth, self.BannerHeight)
         lg.setFont(Font_Consolas16)
 
-        local newSpriteButton = ClickableButton(10, 5, 150, 60, {
+        local newSpriteButton = ClickableButton(30, 5, 150, 50, {
             LPressed = self.CreateSprite,
         })
         DrawCheckButton(self, newSpriteButton, "New Sprite", mx, my)
 
-        local deleteSpriteButton = ClickableButton(170, 5, 150, 60, {
+        local deleteSpriteButton = ClickableButton(190, 5, 150, 50, {
             LPressed = self.DeleteSprite,
         })
         DrawCheckButton(self, deleteSpriteButton, "Delete Sprite", mx, my)
 
-        local saveSpriteButton = ClickableButton(330, 5, 200, 60, {
+        local saveSpriteButton = ClickableButton(350, 5, 200, 50, {
             LPressed = self.SaveSpriteButton,
         })
         DrawCheckButton(self, saveSpriteButton, "Save Sprite Set", mx, my)
@@ -328,8 +327,8 @@ function PaperSpriteEditor()
             ScreenDragY = my
         end
         if(MouseDown[3] and not CtrlDown and not ShiftDown and not AltDown) then
-            self.OffsetX = self.OffsetX + (mx - ScreenDragX)
-            self.OffsetY = self.OffsetY + (my - ScreenDragY)
+            self.OffsetX = self.OffsetX + (mx - ScreenDragX) * self.Scale
+            self.OffsetY = self.OffsetY + (my - ScreenDragY) * self.Scale
             mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
             ScreenDragX = mx
             ScreenDragY = my

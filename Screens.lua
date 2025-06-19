@@ -117,8 +117,8 @@ end
 function GetRelativeMouse(scale, offsetX, offsetY)
     local mx, my = love.mouse.getPosition()
 
-    mx = (mx / scale) - offsetX
-    my = (my / scale) - offsetY
+    mx = (mx - offsetX) / scale
+    my = (my - offsetY) / scale
     
     return mx, my
 end
@@ -134,7 +134,7 @@ function DrawCheckButton(prog, button, text, mx, my)
     lg.rectangle("fill", button.X, button.Y, button.W, button.H)
     lg.setColor(0, 0, 0)
     lg.rectangle("line",  button.X, button.Y, button.W, button.H)
-    
+
     PrintCentered(text, button.X + button.W/2, button.Y + button.H/2)
     lg.pop()
     
