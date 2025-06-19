@@ -72,8 +72,8 @@ function AnimationEditor()
         
 
 
-        lg.scale(self.Scale, self.Scale)
         lg.translate(self.OffsetX, self.OffsetY)
+        lg.scale(self.Scale, self.Scale)
 
         local screenWidth = ScreenWidth/self.Scale - self.OffsetX
         local screenHeight = ScreenHeight/self.Scale - self.OffsetY

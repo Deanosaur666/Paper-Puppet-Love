@@ -74,8 +74,8 @@ function PartBlueprintEditor()
         str = "Current Part Blueprint: " .. tostring(BlueprintIndex or 0) .. "/" .. tostring(#skeleton.PartBlueprints)
         lg.print(str, 10, 20)
 
-        lg.scale(self.Scale, self.Scale)
         lg.translate(self.OffsetX, self.OffsetY)
+        lg.scale(self.Scale, self.Scale)
 
         local screenWidth = ScreenWidth/self.Scale - self.OffsetX
         local screenHeight = ScreenHeight/self.Scale - self.OffsetY
