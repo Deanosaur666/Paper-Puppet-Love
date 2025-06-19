@@ -141,6 +141,7 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
     DraggedPart = nil
     ScrollLock = false
     local lg = love.graphics
+    lg.push("all")
 
     local spriteSet = CurrentSpriteSet()
     local texture = CurrentTexture()
@@ -325,4 +326,6 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
             end
         end
     end
+
+    lg.pop()
 end

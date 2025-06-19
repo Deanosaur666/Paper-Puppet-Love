@@ -26,11 +26,6 @@ Animation editor
     Copy a frame
     Set a frame's duration
     Move a frame in the timeline maybe
-    Rotate, move, scale parts (the meat of the program)
-    Set IK lock (for feet and stuff)
-    Reverse IK direction (swap between two possible states)
-    Change part sprites
-    Change part layers
 
     Copy animation
     Copy animation with just starting frame (attack from idle, for example)

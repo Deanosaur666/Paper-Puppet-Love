@@ -72,6 +72,7 @@ function DrawPoseHitballs(pose, skeleton, x, y, rot, xscale, yscale)
     local lg = love.graphics
 
     lg.push("all")
+    lg.setFont(Font_Consolas32)
     lg.translate(x + (skeleton.X or 0) + (pose.X or 0), y + (skeleton.Y or 0) + (pose.Y or 0))
     lg.scale(xscale, yscale)
     lg.rotate(rot)
@@ -100,6 +101,10 @@ function DrawPoseHitballs(pose, skeleton, x, y, rot, xscale, yscale)
             end
 
             DrawHitBall(hx, hy, hr, hitball.Flags)
+
+            if(love.keyboard.isDown("l")) then
+                PrintCentered(tostring(part.Layer or blueprint.DefLayer), hx, hy)
+            end
         end
     end
 
