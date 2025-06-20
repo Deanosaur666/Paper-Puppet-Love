@@ -77,15 +77,23 @@ function IKDrag(skeleton, pose, part, dx, dy, alt)
     -- grandparent blueprint
     local gpbp = GetPartBluePrint(grandparent, skeleton)
 
+    grandparent.XScale = Sign(grandparent.XScale)
+    grandparent.YScale = Sign(grandparent.YScale)
+    parent.XScale = Sign(parent.XScale)
+    parent.YScale = Sign(parent.YScale)
+
     -- great-grandparent rotation
     local ggprot = grandparent.CRotation - grandparent.Rotation -- SUPPOSE this is 0 (no rotation)
 
     -- parent length, angle
-    local plen = PointDistance(0, 0, bp.X, bp.Y)
-    local pangle = math.atan2(bp.Y, bp.X) -- SUPPOSE this is -90 (down)
+    local x, y = bp.X * parent.XScale * grandparent.XScale, bp.Y * parent.YScale * grandparent.YScale
+    local plen = PointDistance(0, 0, x, y)
+    local pangle = math.atan2(y, x) -- SUPPOSE this is -90 (down)
     -- grandparent length, angle
-    local gplen = PointDistance(0, 0, pbp.X, pbp.Y)
-    local gpangle = math.atan2(pbp.Y, pbp.X) -- SUPOSE this is -90 (down)
+    local gplen = PointDistance(0, 0, pbp.X * grandparent.XScale, pbp.Y * grandparent.YScale)
+    local gpangle = math.atan2(pbp.Y * grandparent.YScale, pbp.X * grandparent.XScale) -- SUPOSE this is -90 (down)
+
+    dx, dy = dx * parent.XScale * grandparent.XScale, dy * parent.YScale * grandparent.YScale
 
     -- we do this to cancel ggprot, so it's as if the gp does not inherit rotation
     local ndx, ndy = RotatePoint(dx, dy, -ggprot) -- SUPPOSE ggprot is zero and so are dx and dy. Thus ndx, ndy = 0
@@ -119,17 +127,11 @@ function IKDrag(skeleton, pose, part, dx, dy, alt)
         local desired_gplen = gplen * ratio
         local desired_plen = plen * ratio
 
-        grandparent.XScale = ratio
-        grandparent.YScale = ratio
+        grandparent.XScale = ratio * Sign(grandparent.XScale)
+        grandparent.YScale = ratio * Sign(grandparent.YScale)
 
-        parent.XScale = ratio
-        parent.YScale = ratio
-
-    else
-        grandparent.XScale = Sign(grandparent.XScale)
-        grandparent.YScale = Sign(grandparent.YScale)
-        parent.XScale = Sign(grandparent.XScale)
-        parent.YScale = Sign(grandparent.YScale)
+        parent.XScale = ratio * Sign(parent.XScale)
+        parent.YScale = ratio * Sign(parent.YScale)
     end
 end
 

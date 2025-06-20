@@ -329,7 +329,11 @@ function AnimationEditor()
     function prog:CopyFrame()
         if(CurrentAnimationIndex ~= 0) then 
             local anim = prog.CurrentAnimation
-            prog.ClipboardPose = CopyPose(anim.Frames[CurrentFrameIndex])
+            local pose = anim.Frames[CurrentFrameIndex]
+            if(pose == nil) then
+                pose = self.SkeletonFrame
+            end
+            prog.ClipboardPose = CopyPose(pose)
         end
     end
 
