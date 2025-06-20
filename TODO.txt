@@ -26,6 +26,7 @@ Labeling hitballs for gameplay purposes (may be useful if you want a projectile 
 Maybe shift+click to swap parts?
 
 Animation editor
+    RENAME ANIMATION
     Create an animation with a name
     Create a frame for an animation
     Copy a frame

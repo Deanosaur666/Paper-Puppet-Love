@@ -41,6 +41,11 @@ function AnimationEditor()
     prog.OnionSkinPrev = true
     prog.OnionSkinNext = false
 
+    prog.Playing = false
+    prog.Looping = false
+    prog.FrameTimeLeft = 0
+    prog.PlayTime = 0
+
     function prog:Draw()
         
         local skeleton = CurrentSkeleton()
@@ -137,6 +142,11 @@ function AnimationEditor()
     end
 
     function prog:DrawControlPanels()
+
+        if(self.Playing) then
+            self:PlayAnimationStep()
+        end
+
         local lg = love.graphics
         local mx, my = GetRelativeMouse(1, 0, 0)
         local skeleton = CurrentSkeleton()
@@ -145,27 +155,178 @@ function AnimationEditor()
 
         lg.setLineWidth(3)
 
-        DarkGray()
-        lg.rectangle("fill", 0, 0, self.LeftPanelWidth, ScreenHeight)
+        
+        -- draw bottom panel background
         lg.setColor(0.5, 0.5, 0.5)
         lg.rectangle("fill", self.LeftPanelWidth, ScreenHeight - self.BottomPanelHeight, ScreenWidth - self.LeftPanelWidth, self.BottomPanelHeight)
-
         lg.setColor(1, 1, 1)
-        lg.rectangle("line", 0, 0, self.LeftPanelWidth, ScreenHeight)
         lg.rectangle("line", self.LeftPanelWidth, ScreenHeight - self.BottomPanelHeight, ScreenWidth - self.LeftPanelWidth, self.BottomPanelHeight)
 
-        White()
         lg.setFont(Font_Consolas16)
 
-        local totalFrames = 0
-        if(anim ~= nil) then
-            totalFrames = #anim.Frames
+        -- frame buttons
+
+        local w = self.LeftPanelWidth * 0.4
+        local dx = w + 10
+        local h = 30
+        local x = self.LeftPanelWidth + 10
+        local y = ScreenHeight - self.BottomPanelHeight + 10
+
+        local playButton = ClickableButton(x, y, w, h, {
+            Looping = false,
+            LPressed = self.PlayAnimation,
+        })
+        if(self.Playing and not self.Looping) then
+            DrawCheckButton(self, playButton, "Play", mx, my, 1, 0, 0)
+        else
+            DrawCheckButton(self, playButton, "Play", mx, my)
         end
 
-        local str = "Current Frame: " .. tostring(CurrentFrameIndex) .. "/" .. totalFrames
-        lg.print(str, self.LeftPanelWidth + 20, 20)
+        x = x + dx
 
-        -- Special features
+        local playLoopButton = ClickableButton(x, y, w, h, {
+            Looping = true,
+            LPressed = self.PlayAnimation,
+        })
+        if(self.Playing and self.Looping) then
+            DrawCheckButton(self, playLoopButton, "Loop", mx, my, 1, 0, 0)
+        else
+            DrawCheckButton(self, playLoopButton, "Loop", mx, my)
+        end
+
+        x = x + dx
+
+        local saveAnimButton = ClickableButton(x, y, w, h, {
+            LPressed = SaveSkeleton,
+        })
+        DrawCheckButton(self, saveAnimButton, "Save", mx, my)
+
+        x = x + dx
+
+        local newFrameButton = ClickableButton(x, y, w, h, {
+            LPressed = prog.NewFrame,
+        })
+        DrawCheckButton(self, newFrameButton, "New", mx, my)
+
+        x = x + dx
+
+        local delFrameButton = ClickableButton(x, y, w, h, {
+            LPressed = prog.DeleteFrame,
+        })
+        DrawCheckButton(self, delFrameButton, "Delete", mx, my)
+
+        x = x + dx
+
+        local copyFrameButton = ClickableButton(x, y, w, h, {
+            LPressed = prog.CopyFrame,
+        })
+        DrawCheckButton(self, copyFrameButton, "Copy", mx, my)
+
+        x = x + dx
+
+        local pasteFrameButton = ClickableButton(x, y, w, h, {
+            LPressed = prog.PasteFrame,
+        })
+        DrawCheckButton(self, pasteFrameButton, "Paste", mx, my)
+
+        x = x + dx
+
+        w = self.LeftPanelWidth * 0.8
+        dx = w + 10
+
+
+        local pasteFrameButton = ClickableButton(x, y, w, h, {
+            LPressed = function(prog) prog.OnionSkinPrev = not prog.OnionSkinPrev end,
+        })
+        if(self.OnionSkinPrev) then
+            DrawCheckButton(self, pasteFrameButton, "Onion Skin (P)", mx, my, 1, 0, 0)
+        else
+            DrawCheckButton(self, pasteFrameButton, "Onion Skin (P)", mx, my)
+        end
+
+        x = x + dx
+
+        local pasteFrameButton = ClickableButton(x, y, w, h, {
+            LPressed = function(prog) prog.OnionSkinNext = not prog.OnionSkinNext end,
+        })
+        if(self.OnionSkinNext) then
+            DrawCheckButton(self, pasteFrameButton, "Onion Skin (N)", mx, my, 1, 0, 0)
+        else
+            DrawCheckButton(self, pasteFrameButton, "Onion Skin (N)", mx, my)
+        end
+
+        x = x + dx
+
+        -- draw the timeline
+        lg.setLineWidth(2)
+        local frameStartX = self.LeftPanelWidth + 10
+        local frameHeight = 30
+        local frameLineHeight = 40
+        local frameWidth = 15
+        local framePattern = 2
+        x = frameStartX - (self.TimeLineStart - 1)*frameWidth
+        y = ScreenHeight - frameLineHeight - 10
+
+        lg.setColor(1, 1, 1)
+        lg.setFont(Font_Consolas16)
+
+        for i=1, self.TimeLineStart+ScreenWidth/frameWidth do
+            lg.line(x, y + (frameLineHeight - frameHeight), x + frameWidth, y + (frameLineHeight - frameHeight))
+            lg.line(x, y + frameLineHeight, x + frameWidth, y + frameLineHeight)
+
+            if(i % framePattern == 0) then
+                lg.line(x, y, x, y + frameLineHeight)
+                lg.print(i, x + 4, y - 6)
+            else
+                lg.line(x, y + (frameLineHeight - frameHeight), x, y + (frameLineHeight - frameHeight) + frameHeight)
+            end
+
+            x = x + frameWidth
+        end
+
+        x = frameStartX - (self.TimeLineStart - 1)*frameWidth
+        y = y + (frameLineHeight - frameHeight)
+
+        if(anim ~= nil) then
+            for i, frame in ipairs(anim.Frames) do
+                local duration = math.max(frame.Duration, 1)
+                local w = duration * frameWidth
+                if(i == CurrentFrameIndex) then
+                    lg.setColor(1, 0, 0)
+                else
+                    lg.setColor(1, 1, 1)
+                end
+
+                lg.rectangle("fill", x, y, w, frameHeight)
+
+                lg.setColor(0, 0, 0)
+                lg.rectangle("line", x, y, w, frameHeight)
+
+                local button = ClickableButton(x, y, w, h, {
+                    Index = i,
+                    LPressed = function(prog, button) CurrentFrameIndex = button.Index end
+                })
+                CheckClickableButton(self, button, mx, my)
+
+                x = x + w
+            end
+        end
+
+        if(self.Playing) then
+            lg.setColor(1, 1, 1)
+            local x = frameStartX + self.PlayTime*frameWidth
+            local y = ScreenHeight - frameLineHeight - 10
+            local h = frameLineHeight + 10
+
+            lg.line(x, y, x, y + h)
+        end
+
+
+        -- draw left panel background
+        DarkGray()
+        lg.rectangle("fill", 0, 0, self.LeftPanelWidth, ScreenHeight)
+        lg.setColor(1, 1, 1)
+        lg.rectangle("line", 0, 0, self.LeftPanelWidth, ScreenHeight)
 
         -- Animation list
         local w = self.LeftPanelWidth * 0.9
@@ -217,98 +378,46 @@ function AnimationEditor()
             LPressed = self.DeleteAnimation,
         })
         DrawCheckButton(self, deleteAnimButton, "(Delete Animation)", mx, my)
-
-        -- frame buttons
-
-        w = w * 0.8
-        h = 30
-        local dx = w * 1.1
-        x = self.LeftPanelWidth + 10
-        y = ScreenHeight - self.BottomPanelHeight + 10
-
-        local saveAnimButton = ClickableButton(x, y, w, h, {
-            LPressed = SaveSkeleton,
-        })
-        DrawCheckButton(self, saveAnimButton, "Save Skeleton", mx, my)
-
-        x = x + dx
-
-        local newFrameButton = ClickableButton(x, y, w, h, {
-            LPressed = prog.NewFrame,
-        })
-        DrawCheckButton(self, newFrameButton, "New Frame", mx, my)
-
-        x = x + dx
-
-        local delFrameButton = ClickableButton(x, y, w, h, {
-            LPressed = prog.DeleteFrame,
-        })
-        DrawCheckButton(self, delFrameButton, "Delete Frame", mx, my)
-
-        x = x + dx
-
-        local copyFrameButton = ClickableButton(x, y, w, h, {
-            LPressed = prog.CopyFrame,
-        })
-        DrawCheckButton(self, copyFrameButton, "Copy Frame", mx, my)
-
-        x = x + dx
-
-        local pasteFrameButton = ClickableButton(x, y, w, h, {
-            LPressed = prog.PasteFrame,
-        })
-        DrawCheckButton(self, pasteFrameButton, "Paste Frame", mx, my)
-
-        x = x + dx
-
-
-        local pasteFrameButton = ClickableButton(x, y, w, h, {
-            LPressed = function(prog) prog.OnionSkinPrev = not prog.OnionSkinPrev end,
-        })
-        if(self.OnionSkinPrev) then
-            DrawCheckButton(self, pasteFrameButton, "Onion Skin (P)", mx, my, 1, 0, 0)
-        else
-            DrawCheckButton(self, pasteFrameButton, "Onion Skin (P)", mx, my)
-        end
-
-        x = x + dx
-
-        local pasteFrameButton = ClickableButton(x, y, w, h, {
-            LPressed = function(prog) prog.OnionSkinNext = not prog.OnionSkinNext end,
-        })
-        if(self.OnionSkinNext) then
-            DrawCheckButton(self, pasteFrameButton, "Onion Skin (N)", mx, my, 1, 0, 0)
-        else
-            DrawCheckButton(self, pasteFrameButton, "Onion Skin (N)", mx, my)
-        end
-
-        x = x + dx
-
-        -- draw the timeline
-        lg.setLineWidth(2)
-        local frameStartX = self.LeftPanelWidth + 10
-        local frameHeight = 30
-        local frameLineHeight = 40
-        local frameWidth = 30
-        x = frameStartX
-        y = ScreenHeight - frameLineHeight - 10
-
-        lg.setColor(1, 1, 1)
-        lg.setFont(Font_Consolas16)
-        if(self.TimeLineStart > 1) then
-            local lx = self.LeftPanelWidth
-            lg.line(lx, y + (frameLineHeight - frameHeight), lx + frameWidth, y + (frameLineHeight - frameHeight))
-            lg.line(lx, y + frameLineHeight, lx + frameWidth, y + frameLineHeight)
-        end
-        for i=self.TimeLineStart, self.TimeLineStart+60 do
-            lg.line(x, y, x, y + frameLineHeight)
-            lg.line(x, y + (frameLineHeight - frameHeight), x + frameWidth, y + (frameLineHeight - frameHeight))
-            lg.line(x, y + frameLineHeight, x + frameWidth, y + frameLineHeight)
-            lg.print(i, x + 4, y - 6)
-
-            x = x + frameWidth
-        end
         
+    end
+
+    function prog:PlayAnimation(button, mx, my)
+        if(self.Playing) then
+            self.Playing = false
+        else
+            local anim = prog.CurrentAnimation
+            self.Looping = button.Looping
+            if(anim ~= nil) then
+                CurrentFrameIndex = 1
+                self.Playing = true
+                self.PlayTime = 1
+                local frame = anim.Frames[CurrentFrameIndex]
+                self.FrameTimeLeft = frame.Duration
+            end
+        end
+    end
+
+    function prog:PlayAnimationStep()
+        local anim = prog.CurrentAnimation
+        self.PlayTime = self.PlayTime + 1
+        self.FrameTimeLeft = self.FrameTimeLeft - 1
+        if(self.FrameTimeLeft <= 0) then
+            CurrentFrameIndex = CurrentFrameIndex + 1
+            local frame = anim.Frames[CurrentFrameIndex]
+            if(frame == nil) then
+                if(self.Looping) then
+                    CurrentFrameIndex = 1
+                    local frame = anim.Frames[CurrentFrameIndex]
+                    self.FrameTimeLeft = frame.Duration
+                    self.PlayTime = 1
+                else
+                    CurrentFrameIndex = CurrentFrameIndex - 1
+                    self.Playing = false
+                end
+            else
+                self.FrameTimeLeft = frame.Duration
+            end
+        end
     end
 
     function prog:SetAnimation(button, mx, my)
@@ -337,7 +446,7 @@ function AnimationEditor()
     function prog:NewFrame()
         if(CurrentAnimationIndex ~= 0) then 
             local anim = prog.CurrentAnimation
-            table.insert(anim.Frames, CopyPose(anim.Frames[CurrentFrameIndex] or BlankPose()))
+            table.insert(anim.Frames, CurrentFrameIndex + 1, CopyPose(anim.Frames[CurrentFrameIndex] or BlankPose()))
             CurrentFrameIndex = CurrentFrameIndex + 1
         end
     end
@@ -406,6 +515,7 @@ function AnimationEditor()
             totalFrames = #prog.CurrentAnimation.Frames
         end
        
+        local anim = self.CurrentAnimation
        
         if(key == "right") then
             CurrentFrameIndex = CurrentFrameIndex + 1
@@ -417,6 +527,12 @@ function AnimationEditor()
             if(CurrentFrameIndex < 1) then
                 CurrentFrameIndex = totalFrames
             end
+        elseif(key == "up" and anim ~= nil) then
+            local frame = anim.Frames[CurrentFrameIndex]
+            frame.Duration = frame.Duration + 1
+        elseif(key == "down") then
+            local frame = anim.Frames[CurrentFrameIndex]
+            frame.Duration = math.max(1, frame.Duration - 1)
         elseif(key == "n") then
             prog:NewFrame()
         elseif(key == 'b') then
