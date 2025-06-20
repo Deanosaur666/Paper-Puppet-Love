@@ -25,6 +25,8 @@ function AnimationEditor()
     prog.OffsetX = prog.LeftPanelWidth + 20
     prog.OffsetY = 20
 
+    prog.TimeLineStart = 1
+
     DisplayHitballs = true
 
     prog.ViewCenterX = 0
@@ -282,7 +284,30 @@ function AnimationEditor()
 
         x = x + dx
 
-        -- draw the frames
+        -- draw the timeline
+        lg.setLineWidth(2)
+        local frameStartX = self.LeftPanelWidth + 10
+        local frameHeight = 30
+        local frameLineHeight = 40
+        local frameWidth = 30
+        x = frameStartX
+        y = ScreenHeight - frameLineHeight - 10
+
+        lg.setColor(1, 1, 1)
+        lg.setFont(Font_Consolas16)
+        if(self.TimeLineStart > 1) then
+            local lx = self.LeftPanelWidth
+            lg.line(lx, y + (frameLineHeight - frameHeight), lx + frameWidth, y + (frameLineHeight - frameHeight))
+            lg.line(lx, y + frameLineHeight, lx + frameWidth, y + frameLineHeight)
+        end
+        for i=self.TimeLineStart, self.TimeLineStart+60 do
+            lg.line(x, y, x, y + frameLineHeight)
+            lg.line(x, y + (frameLineHeight - frameHeight), x + frameWidth, y + (frameLineHeight - frameHeight))
+            lg.line(x, y + frameLineHeight, x + frameWidth, y + frameLineHeight)
+            lg.print(i, x + 4, y - 6)
+
+            x = x + frameWidth
+        end
         
     end
 
@@ -370,6 +395,8 @@ function AnimationEditor()
         local mx, my = GetRelativeMouse(1, 0, 0)
         if(mx < self.LeftPanelWidth) then
             self.LeftPanelYScroll = self.LeftPanelYScroll + MouseWheel * 20
+        elseif(my > ScreenHeight - self.BottomPanelHeight) then
+            self.TimeLineStart = math.max(1, self.TimeLineStart - MouseWheel)
         end
     end
 

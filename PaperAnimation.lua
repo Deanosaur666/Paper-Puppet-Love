@@ -2,7 +2,7 @@ PriorityQueue = require "PriorityQueue"
 
 function BlankPose()
     return {
-        Duration = 0,
+        Duration = 1,
         PartFrames = {},
         -- frame specific offset for the whole body
         X = nil,
