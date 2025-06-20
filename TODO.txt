@@ -4,18 +4,6 @@ IKDrag does not work on parts with flipped xscale, yscale!
 
 Hitballflags and stuff cause JSON errors!!!!
 
-Onion skinning
-
-Animation editor GUI:
-Left is animation list
-Bottom is animation timeline (width of frames based on length)
-
-Fix gui issues in screens 2 and 3 based on swapping offset and scale order
-
-Skeletons have animations... so we need to edit them
-
-Animation Editor
-
 Sort part update order based on parenting, rather than manually ordered...
     Parts with no parents first,
     Then, parts parented to that part,
@@ -27,30 +15,10 @@ Maybe shift+click to swap parts?
 
 Animation editor
     RENAME ANIMATION
-    Create an animation with a name
-    Create a frame for an animation
-    Copy a frame
-    Set a frame's duration
     Move a frame in the timeline maybe
 
     Copy animation
     Copy animation with just starting frame (attack from idle, for example)
 
-    ONION SKIN (back and forward)
-
     Buttons:
-        Save skeleton
-        Select animation
-        New animation
-        Delete animation
-
-        Frame selection
-        New frame (after selected)
-        Delete frame
         Cut frame
-        Copy frame
-        Paste frame
-
-        Toggle onion skin
-        Toggle hit balls
-
