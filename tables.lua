@@ -28,6 +28,18 @@ function tableChangeIndex(index, table, d)
   return ((index - 1 + d) % #table) + 1
 end
 
+function fillArray(t, val, len)
+  len = len or #t
+  while(#t < len) do
+    table.insert(t, val)
+  end
+
+  for i, _ in ipairs(t) do
+    t[i] = val
+  end
+
+end
+
 json = require "json"
 
 function jsonDecodeFile(filename)

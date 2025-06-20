@@ -308,6 +308,8 @@ function AnimationEditor()
                 })
                 CheckClickableButton(self, button, mx, my)
 
+                lg.print(frame.Duration, x + 3, y + 10)
+
                 x = x + w
             end
         end

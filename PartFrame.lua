@@ -7,27 +7,34 @@ require "Math"
 
 -- TODO: add hit ball type for current part for current frame (hittable, unhittable, active+hitabble, active+unhittable (disjoint))
 
-function PartPose(blueprintIndex, spriteIndex, rotation, x, y, layer)
-    return {
+function PartPose(skeleton, blueprintIndex)
+    local part = {
         BlueprintIndex = blueprintIndex,
-        SpriteIndex = spriteIndex,
-        Rotation = rotation,
+        SpriteIndex = nil,
+        Rotation = 0,
         -- current rotation after rotation by parent
-        CRotation = rotation,
-        X = x,
-        Y = y,
+        CRotation = 0,
+        X = 0,
+        Y = 0,
         -- current x and y values after offset by parent
-        CX = x,
-        CY = y,
+        CX = 0,
+        CY = 0,
         XScale = 1,
         YScale = 1,
-        Layer = layer,
+        Layer = nil,
 
         Hidden = false,
 
-        HitballFlags = {}, -- changing hit balls from inactive to active, for example
-        HitballScale = {} -- changing the size of a hit ball for an attack
+        HitballFlags = {},
+        HitballScale = {}
     }
+
+    local blueprint = GetPartBluePrint(part, skeleton)
+    local hitballs = #blueprint.Hitballs
+    fillArray(part.HitballFlags, HITBALL_HITTABLE, hitballs)
+    fillArray(part.HitballScale, 1, hitballs)
+
+    return part
 end
 
 

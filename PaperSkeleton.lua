@@ -287,8 +287,8 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
         elseif(MousePressed[2]) then
             -- shift for reset hitballs and sprite
             if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
-                part.HitballFlags = {}
-                part.HitballScale = {}
+                fillArray(part.HitballFlags, HITBALL_HITTABLE)
+                fillArray(part.HitballScale, 1)
                 part.SpriteIndex = nil
                 part.Layer = nil
             -- no keys for reset transforms

@@ -16,7 +16,7 @@ function Pose(skeleton)
     local partFrames = frame.PartFrames
     local blueprints = skeleton.PartBlueprints
     for i, bp in ipairs(blueprints) do
-        partFrames[i] = PartPose(i, nil, 0, 0, 0, nil) -- default values, take from blueprint's defaults
+        partFrames[i] = PartPose(skeleton, i) -- default values, take from blueprint's defaults
     end
 
     return frame
