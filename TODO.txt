@@ -1,7 +1,5 @@
 Screens:
 
-IKDrag does not work on parts with flipped xscale, yscale!
-
 Still have JSON issues actually :(
 
 Sort part update order based on parenting, rather than manually ordered...

@@ -87,14 +87,12 @@ function IKDrag(skeleton, pose, part, dx, dy, alt)
     local ggprot = grandparent.CRotation - grandparent.Rotation -- SUPPOSE this is 0 (no rotation)
 
     -- parent length, angle
-    local x, y = bp.X * parent.XScale * grandparent.XScale, bp.Y * parent.YScale * grandparent.YScale
+    local x, y = bp.X * parent.XScale, bp.Y  * parent.YScale
     local plen = PointDistance(0, 0, x, y)
     local pangle = math.atan2(y, x) -- SUPPOSE this is -90 (down)
     -- grandparent length, angle
-    local gplen = PointDistance(0, 0, pbp.X * grandparent.XScale, pbp.Y * grandparent.YScale)
+    local gplen = PointDistance(0, 0, pbp.X, pbp.Y)
     local gpangle = math.atan2(pbp.Y * grandparent.YScale, pbp.X * grandparent.XScale) -- SUPOSE this is -90 (down)
-
-    dx, dy = dx * parent.XScale * grandparent.XScale, dy * parent.YScale * grandparent.YScale
 
     -- we do this to cancel ggprot, so it's as if the gp does not inherit rotation
     local ndx, ndy = RotatePoint(dx, dy, -ggprot) -- SUPPOSE ggprot is zero and so are dx and dy. Thus ndx, ndy = 0
