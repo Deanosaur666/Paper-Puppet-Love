@@ -18,6 +18,7 @@ end
 
 function EnterSkeletonName()
     TextEntryOn = true
+    TextEntryPrompt = "Enter skeleton name"
     TextEntered = SkeletonName or ""
     TextEntryFinished = SkeletonNameEntered
 end

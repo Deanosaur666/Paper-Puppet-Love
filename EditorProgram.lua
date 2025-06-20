@@ -29,6 +29,7 @@ SkeletonIndex = 1
 
 -- text entry
 TextEntryOn = false
+TextEntryPrompt = nil
 TextEntryPattern = "[%w%.%s_]+" -- just alphanumeric characters, space, dot, and underscore
 TextEntered = ""
 TextEntryFinished = nil -- a function for when entry is finished
@@ -93,6 +94,16 @@ function EditorProgram:Draw()
         lg.rectangle("fill", x, y, w, h)
         lg.setColor(1, 1, 1)
         lg.print(text, x, y)
+
+        if(TextEntryPrompt ~= nil) then
+            text = TextEntryPrompt
+            w = Font_Consolas32:getWidth(text)
+            y = y - h - 10
+            x = ScreenWidth/2 - w/2
+            lg.rectangle("fill", x, y, w, h)
+            lg.setColor(0, 0, 0)
+            lg.print(text, x, y)
+        end
 
         lg.pop()
     end

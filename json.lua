@@ -88,7 +88,9 @@ local function encode_table(val, stack)
     -- Treat as an object
     for k, v in pairs(val) do
       if type(k) ~= "string" then
-        error("invalid table: mixed or invalid key types")
+        -- error("invalid table: mixed or invalid key types")
+        print("invalid table: mixed or invalid key types: key: " .. k)
+        k = tostring(k)
       end
       table.insert(res, encode(k, stack) .. ":" .. encode(v, stack))
     end

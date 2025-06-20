@@ -363,16 +363,21 @@ function AnimationEditor()
             y = y + dy
         end
 
+        y = y + dy
+
         local newButton = ClickableButton(x, y, w, h, {
             LPressed = prog.NewAnimation,
         })
-        
-        CheckClickableButton(self, newButton, mx, my)
-        lg.setColor(1, 1, 1)
-        lg.rectangle("fill", x, y, w, h)
-        lg.setColor(0, 0, 0)
-        lg.rectangle("line", x, y, w, h)
-        PrintCentered("(NEW Animation)", x + w/2, y + h/2)
+
+        DrawCheckButton(self, newButton, "(New Animation)", mx, my)
+
+        y = y + dy
+
+        local renameButton = ClickableButton(x, y, w, h, {
+            LPressed = prog.RenameAnimation,
+        })
+
+        DrawCheckButton(self, renameButton, "(Rename Animation)", mx, my)
 
         y = y + dy
 
@@ -441,6 +446,7 @@ function AnimationEditor()
 
     function prog:NewAnimation(button, mx, my)
         TextEntryOn = true
+        TextEntryPrompt = "Name new animation"
         TextEntered = ""
         TextEntryFinished = prog.CreateAnimation
     end
@@ -498,6 +504,23 @@ function AnimationEditor()
         
         
         --SaveSkeleton()
+    end
+
+    function prog:RenameAnimation(button, mx, my)
+        TextEntryOn = true
+        TextEntryPrompt = "Rename animation"
+        TextEntered = ""
+        TextEntryFinished = prog.AnimationRenamed
+    end
+
+    function prog:AnimationRenamed()
+        if(TextEntered == "") then
+            prog:RenameAnimation()
+            return
+        end
+
+        local anim = prog.CurrentAnimation
+        anim.Name = TextEntered
     end
 
     function prog:Update()

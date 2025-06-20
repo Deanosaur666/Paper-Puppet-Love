@@ -24,6 +24,7 @@ end
 
 function EnterSpriteSetName()
     TextEntryOn = true
+    TextEntryPrompt = "Enter spriteset name"
     TextEntered = SpriteSetName or ""
     TextEntryFinished = SpriteSetNameEntered
 end
