@@ -136,8 +136,11 @@ end
 function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
     DraggedPart = nil
     ScrollLock = false
+    
     local lg = love.graphics
     lg.push("all")
+
+    lg.setLineWidth(2)
 
     local spriteSet = CurrentSpriteSet()
     local texture = CurrentTexture()

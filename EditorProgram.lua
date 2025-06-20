@@ -227,6 +227,27 @@ function DrawEditorBackground()
     lg.pop()
 end
 
+function UpdateZoomAndOffset(self)
+    local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
+    if(not ScrollLock) then
+        if(love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
+            self.Scale = Clamp(self.Scale + MouseWheel*0.05, 0.1, 10)
+        end
+    end
+
+    if(MousePressed[3]) then
+        ScreenDragX = mx
+        ScreenDragY = my
+    end
+    if(MouseDown[3] and not CtrlDown and not ShiftDown and not AltDown) then
+        self.OffsetX = self.OffsetX + (mx - ScreenDragX) * self.Scale
+        self.OffsetY = self.OffsetY + (my - ScreenDragY) * self.Scale
+        mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
+        ScreenDragX = mx
+        ScreenDragY = my
+    end
+end
+
 function DarkGray()
     love.graphics.setColor(0.4, 0.4, 0.4)
 end

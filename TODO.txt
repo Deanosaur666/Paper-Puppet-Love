@@ -32,3 +32,20 @@ Animation editor
     Copy animation with just starting frame (attack from idle, for example)
 
     ONION SKIN (back and forward)
+
+    Buttons:
+        Save skeleton
+        Select animation
+        New animation
+        Delete animation
+
+        Frame selection
+        New frame (after selected)
+        Delete frame
+        Cut frame
+        Copy frame
+        Paste frame
+
+        Toggle onion skin
+        Toggle hit balls
+
