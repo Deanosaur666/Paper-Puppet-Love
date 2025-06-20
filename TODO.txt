@@ -1,5 +1,7 @@
 Screens:
 
+IKDrag does not work on parts with flipped xscale, yscale!
+
 Onion skinning
 
 Animation editor GUI:

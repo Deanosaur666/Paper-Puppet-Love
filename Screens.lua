@@ -124,13 +124,16 @@ function GetRelativeMouse(scale, offsetX, offsetY)
 end
 
 
-function DrawCheckButton(prog, button, text, mx, my)
+function DrawCheckButton(prog, button, text, mx, my, r, g, b)
     local lg = love.graphics
     lg.push("all")
     CheckClickableButton(prog, button, mx, my)
 
+    r = r or 1
+    g = g or 1
+    b = b or 0
     lg.setLineWidth(3)
-    lg.setColor(1, 1, 0)
+    lg.setColor(r, g, b)
     
     lg.rectangle("fill", button.X, button.Y, button.W, button.H)
     lg.setColor(0, 0, 0)
