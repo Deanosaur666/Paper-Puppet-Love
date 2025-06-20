@@ -126,10 +126,10 @@ function IKDrag(skeleton, pose, part, dx, dy, alt)
         parent.YScale = ratio
 
     else
-        grandparent.XScale = 1
-        grandparent.YScale = 1
-        parent.XScale = 1
-        parent.YScale = 1
+        grandparent.XScale = Sign(grandparent.XScale)
+        grandparent.YScale = Sign(grandparent.YScale)
+        parent.XScale = Sign(grandparent.XScale)
+        parent.YScale = Sign(grandparent.YScale)
     end
 end
 

@@ -36,6 +36,9 @@ function AnimationEditor()
     CurrentAnimationIndex = 0
     CurrentFrameIndex = 0
 
+    prog.OnionSkinPrev = true
+    prog.OnionSkinNext = false
+
     function prog:Draw()
         
         local skeleton = CurrentSkeleton()
@@ -96,6 +99,29 @@ function AnimationEditor()
 
         local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
         
+        -- onion skin
+        local prevFrame = nil
+        if(anim ~= nil) then
+            prevFrame = anim.Frames[CurrentFrameIndex - 1]
+        end
+
+        local nextFrame = nil
+        if(anim ~= nil) then
+            nextFrame = anim.Frames[CurrentFrameIndex + 1]
+        end
+
+        if(prevFrame ~= nil and self.OnionSkinPrev) then
+            lg.setColor(1, 0.9, 0.9, 0.5)
+            DrawPose(prevFrame, skeleton, CurrentSpriteSet(), CurrentTexture(), x, y)
+        end
+
+        if(nextFrame ~= nil and self.OnionSkinNext) then
+            lg.setColor(0.5, 0.5, 1, 0.4)
+            DrawPose(nextFrame, skeleton, CurrentSpriteSet(), CurrentTexture(), x, y)
+        end
+
+        lg.setColor(1, 1, 1, 1)
+
         -- the MEAT of the thing
         DrawAndPoseSkeleton(skeleton, frame, x, y, mx, my)
 
@@ -230,6 +256,29 @@ function AnimationEditor()
             LPressed = prog.PasteFrame,
         })
         DrawCheckButton(self, pasteFrameButton, "Paste Frame", mx, my)
+
+        x = x + dx
+
+
+        local pasteFrameButton = ClickableButton(x, y, w, h, {
+            LPressed = function(prog) prog.OnionSkinPrev = not prog.OnionSkinPrev end,
+        })
+        if(self.OnionSkinPrev) then
+            DrawCheckButton(self, pasteFrameButton, "Onion Skin (P)", mx, my, 1, 0, 0)
+        else
+            DrawCheckButton(self, pasteFrameButton, "Onion Skin (P)", mx, my)
+        end
+
+        x = x + dx
+
+        local pasteFrameButton = ClickableButton(x, y, w, h, {
+            LPressed = function(prog) prog.OnionSkinNext = not prog.OnionSkinNext end,
+        })
+        if(self.OnionSkinNext) then
+            DrawCheckButton(self, pasteFrameButton, "Onion Skin (N)", mx, my, 1, 0, 0)
+        else
+            DrawCheckButton(self, pasteFrameButton, "Onion Skin (N)", mx, my)
+        end
 
         x = x + dx
 
