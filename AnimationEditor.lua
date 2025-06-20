@@ -17,7 +17,9 @@ function AnimationEditor()
     local prog = BlankProgram()
 
     prog.LeftPanelWidth = 200
-    prog.BottomPanelHeight = 150
+    prog.BottomPanelHeight = 120
+
+    prog.LeftPanelYScroll = 10
 
     prog.Scale = 0.5
     prog.OffsetX = prog.LeftPanelWidth + 20
@@ -39,7 +41,7 @@ function AnimationEditor()
         local skeleton = CurrentSkeleton()
         local frame = Pose(skeleton)
 
-        prog.CurrentAnimation = skeleton.Animations[CurrentAnimationIndex]
+        self.CurrentAnimation = skeleton.Animations[CurrentAnimationIndex]
         local anim = prog.CurrentAnimation
 
         local lg = love.graphics
@@ -111,23 +113,21 @@ function AnimationEditor()
         local mx, my = GetRelativeMouse(1, 0, 0)
         local skeleton = CurrentSkeleton()
         local frame = self.SkeletonFrame
+        local anim = prog.CurrentAnimation
+
+        lg.setLineWidth(3)
 
         DarkGray()
         lg.rectangle("fill", 0, 0, self.LeftPanelWidth, ScreenHeight)
-        lg.setColor(0.4, 0.4, 0.4)
+        lg.setColor(0.5, 0.5, 0.5)
         lg.rectangle("fill", self.LeftPanelWidth, ScreenHeight - self.BottomPanelHeight, ScreenWidth - self.LeftPanelWidth, self.BottomPanelHeight)
 
-        White()
-        lg.setFont(Font_K)
-        local str = "Current Skeleton: " .. SkeletonIndex
-        lg.print(str, 10, 0)
+        lg.setColor(1, 1, 1)
+        lg.rectangle("line", 0, 0, self.LeftPanelWidth, ScreenHeight)
+        lg.rectangle("line", self.LeftPanelWidth, ScreenHeight - self.BottomPanelHeight, ScreenWidth - self.LeftPanelWidth, self.BottomPanelHeight)
 
-        local aName = "None"
-        if(prog.CurrentAnimation ~= nil) then
-            aName = prog.CurrentAnimation.Name
-        end
-        local str = "Current Animation: " .. aName
-        lg.print(str, 10, 20)
+        White()
+        lg.setFont(Font_Consolas16)
 
         local totalFrames = 0
         if(anim ~= nil) then
@@ -135,31 +135,22 @@ function AnimationEditor()
         end
 
         local str = "Current Frame: " .. tostring(CurrentFrameIndex) .. "/" .. totalFrames
-        lg.print(str, 10, 40)
+        lg.print(str, self.LeftPanelWidth + 20, 20)
 
         -- Special features
 
         -- Animation list
-        local dy = ScreenHeight/5 
-        local dx = ScreenWidth/5
-        local y = 20
-        local x = 20
+        local w = self.LeftPanelWidth * 0.9
+        local h = w/4
 
-        local w = ScreenWidth/4
-        local h = ScreenHeight/7
-
-        lg.setFont(Font_KBig)
+        local x = (self.LeftPanelWidth - w)/2
+        local y = self.LeftPanelYScroll
+        local dy = h * 1.2
 
         lg.setColor(1, 1, 1)
         PrintCentered("Select Animation", x + w/2, y + h/2)
 
-        local deleteAnimButton = ClickableButton(x + w, y, 300, 100, {
-            LPressed = self.DeleteAnimation,
-        })
-        DrawCheckButton(self, deleteAnimButton, "Delete Animation", mx, my)
-
         y = y + dy
-
 
 
         for i, anim in ipairs(skeleton.Animations) do
@@ -179,16 +170,12 @@ function AnimationEditor()
             lg.rectangle("line", x, y, w, h)
             PrintCentered(anim.Name, x + w/2, y + h/2)
             y = y + dy
-
-            if(y > prog.ViewW - h) then
-                y = 20 + dy
-                x = x + w + 10
-            end
         end
 
         local newButton = ClickableButton(x, y, w, h, {
             LPressed = prog.NewAnimation,
         })
+        
         CheckClickableButton(self, newButton, mx, my)
         lg.setColor(1, 1, 1)
         lg.rectangle("fill", x, y, w, h)
@@ -196,33 +183,58 @@ function AnimationEditor()
         lg.rectangle("line", x, y, w, h)
         PrintCentered("(NEW Animation)", x + w/2, y + h/2)
 
+        y = y + dy
 
-        
+        local deleteAnimButton = ClickableButton(x, y, w, h, {
+            LPressed = self.DeleteAnimation,
+        })
+        DrawCheckButton(self, deleteAnimButton, "(Delete Animation)", mx, my)
 
-        local saveAnimButton = ClickableButton(10, 20, 300, 120, {
+        -- frame buttons
+
+        w = w * 0.8
+        h = 30
+        local dx = w * 1.1
+        x = self.LeftPanelWidth + 10
+        y = ScreenHeight - self.BottomPanelHeight + 10
+
+        local saveAnimButton = ClickableButton(x, y, w, h, {
             LPressed = SaveSkeleton,
         })
         DrawCheckButton(self, saveAnimButton, "Save Skeleton", mx, my)
 
-        local newFrameButton = ClickableButton(320, 20, 300, 120, {
+        x = x + dx
+
+        local newFrameButton = ClickableButton(x, y, w, h, {
             LPressed = prog.NewFrame,
         })
         DrawCheckButton(self, newFrameButton, "New Frame", mx, my)
 
-        local delFrameButton = ClickableButton(640, 20, 300, 120, {
+        x = x + dx
+
+        local delFrameButton = ClickableButton(x, y, w, h, {
             LPressed = prog.DeleteFrame,
         })
         DrawCheckButton(self, delFrameButton, "Delete Frame", mx, my)
 
-        local copyFrameButton = ClickableButton(960, 20, 300, 120, {
+        x = x + dx
+
+        local copyFrameButton = ClickableButton(x, y, w, h, {
             LPressed = prog.CopyFrame,
         })
         DrawCheckButton(self, copyFrameButton, "Copy Frame", mx, my)
 
-        local pasteFrameButton = ClickableButton(960 + 320, 20, 300, 120, {
+        x = x + dx
+
+        local pasteFrameButton = ClickableButton(x, y, w, h, {
             LPressed = prog.PasteFrame,
         })
         DrawCheckButton(self, pasteFrameButton, "Paste Frame", mx, my)
+
+        x = x + dx
+
+        -- draw the frames
+        
     end
 
     function prog:SetAnimation(button, mx, my)
@@ -233,6 +245,7 @@ function AnimationEditor()
     end
 
     function prog:DeleteAnimation(button, mx, my)
+        local skeleton = CurrentSkeleton()
         if(CurrentAnimationIndex ~= 0) then 
             table.remove(skeleton.Animations, CurrentAnimationIndex)
             CurrentAnimationIndex = 0
@@ -300,6 +313,11 @@ function AnimationEditor()
 
     function prog:Update()
         UpdateZoomAndOffset(self)
+
+        local mx, my = GetRelativeMouse(1, 0, 0)
+        if(mx < self.LeftPanelWidth) then
+            self.LeftPanelYScroll = self.LeftPanelYScroll + MouseWheel * 20
+        end
     end
 
     function prog:KeyPressed(key, scancode, isrepeat)
