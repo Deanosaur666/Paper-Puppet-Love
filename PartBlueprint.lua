@@ -29,8 +29,8 @@ end
 function PartBlueprintEditor()
     local prog = BlankProgram()
     prog.Scale = 0.5
-    prog.OffsetX = 100
-    prog.OffsetY = 100
+    prog.OffsetX = 20
+    prog.OffsetY = 20
 
     BlueprintIndex = nil
     local skeleton = CurrentSkeleton()
@@ -58,33 +58,37 @@ function PartBlueprintEditor()
     prog.ViewW = 0
     prog.ViewH = 0
 
+    MouseDragX = nil
+    MouseDragY = nil
+
     function prog:Draw()
         local lg = love.graphics
         lg.push("all")
 
-        lg.clear(0.4, 0.4, 0.4)
-
-        local str = "Current Skeleton: " .. SkeletonIndex
-        lg.print(str, 10, 0)
-
-        local skeleton = CurrentSkeleton()
-
-        lg.setFont(Font_K)
-
-        str = "Current Part Blueprint: " .. tostring(BlueprintIndex or 0) .. "/" .. tostring(#skeleton.PartBlueprints)
-        lg.print(str, 10, 20)
+        DrawEditorBackground()
+        lg.setLineWidth(4)
 
         lg.translate(self.OffsetX, self.OffsetY)
         lg.scale(self.Scale, self.Scale)
 
-        local screenWidth = ScreenWidth/self.Scale - self.OffsetX
-        local screenHeight = ScreenHeight/self.Scale - self.OffsetY
+        local screenRight = ScreenWidth/self.Scale - self.OffsetX/self.Scale - 20
+
+        local screenTop = (20)/self.Scale - self.OffsetY/self.Scale
+        local screenBottom = ScreenHeight/self.Scale - self.OffsetY/self.Scale - 20
+
+        prog.CurrentBlueprintY = screenTop
 
         local sheet = CurrentTexture()
+        local viewW = sheet:getWidth()
+        local viewH = sheet:getHeight()
 
         self.ViewCenterX, self.ViewCenterY, self.ViewW, self.ViewH = sheet:getWidth()/2, sheet:getHeight()/2, sheet:getWidth(), sheet:getHeight()
 
-        lg.rectangle("line", 0, 0, sheet:getWidth(), sheet:getHeight())
+        DarkGray()
+        lg.rectangle("fill", 0, 0, viewW, viewH)
+        lg.setColor(1, 1, 1)
+        lg.rectangle("line", 0, 0, viewW, viewH)
+
         lg.line(0, self.ViewCenterY, self.ViewW, self.ViewCenterY)
         lg.line(self.ViewCenterX, 0, self.ViewCenterX, self.ViewH)
 
@@ -107,25 +111,25 @@ function PartBlueprintEditor()
         local currentBP = self:CurrentBlueprint()
         self.ParentBluePrintX = nil
         local spriteSet = CurrentSpriteSet()
-        local dx = sheet:getWidth() + 10
-        local dy = 10
+        local dx = sheet:getWidth() + 20
+        local dy = screenTop
         local maxX = 0
         for i, bp in ipairs(blueprints) do
             lg.setFont(Font_KBig)
             
             local w, h = 200, 100
-            if(dy + h > screenHeight) then
-                dy = 10
-                dx = maxX + 10
+            if(dy + h > screenBottom) then
+                dy = screenTop
+                dx = maxX + 20
             end
 
             local sprite = spriteSet[bp.DefSpriteIndex]
             -- draws an individual blueprint
             if(sprite.Quad ~= nil) then
                 _, _, w, h = sprite.Quad:getViewport()
-                if(dy + h > screenHeight) then
-                    dy = 10
-                    dx = maxX + 10
+                if(dy + h > screenBottom) then
+                    dy = screenTop
+                    dx = maxX + 20
                 end
                 local xsc, ysc = GetBlueprintScale(bp)
                 DrawPaperSprite(sprite, CurrentTexture(), dx + sprite.AnchorX, dy + sprite.AnchorY, 0, xsc, ysc)
@@ -135,7 +139,7 @@ function PartBlueprintEditor()
                 if(sprite.Quad ~= nil) then
                     lg.setColor(0, 1, 0)
 
-                    self.CurrentBlueprintX = screenWidth - w
+                    self.CurrentBlueprintX = screenRight - w
                     self.CurrentBlueprintW = w
                     self.CurrentBlueprintH = h
                 end
@@ -147,7 +151,7 @@ function PartBlueprintEditor()
                 lg.rectangle("line", dx + w/3, dy + h/3, w/3, h/3)
                 lg.setColor(1, 1, 1)
 
-                self.ParentBlueprintX = screenWidth - w
+                self.ParentBlueprintX = screenRight - w
                 self.ParentBlueprintY = self.CurrentBlueprintY + self.CurrentBlueprintH + 10
                 self.ParentBlueprintW = w
                 self.ParentBlueprintH = h
@@ -182,7 +186,7 @@ function PartBlueprintEditor()
             })
             CheckClickableButton(self, button, mx, my)
 
-            dy = dy + h + 2
+            dy = dy + h + 20
         end
 
         -- draws the current blueprint in the top right
@@ -252,24 +256,7 @@ function PartBlueprintEditor()
     end
 
     function prog:Update()
-        local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
-        if(not ScrollLock) then
-            if(love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
-                self.Scale = Clamp(self.Scale + MouseWheel*0.05, 0.1, 10)
-            end
-        end
-
-        if(MousePressed[3]) then
-            ScreenDragX = mx
-            ScreenDragY = my
-        end
-        if(MouseDown[3] and not CtrlDown and not ShiftDown and not AltDown) then
-            self.OffsetX = self.OffsetX + (mx - ScreenDragX)
-            self.OffsetY = self.OffsetY + (my - ScreenDragY)
-            mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
-            ScreenDragX = mx
-            ScreenDragY = my
-        end
+        UpdateZoomAndOffset(self)
     end
 
     function prog:CurrentBlueprint()

@@ -16,28 +16,14 @@ require "PartBlueprint"
 function AnimationEditor()
     local prog = BlankProgram()
 
-    prog.Scale = 0.5
-    prog.OffsetX = 100
-    prog.OffsetY = 100
+    prog.LeftPanelWidth = 200
+    prog.BottomPanelHeight = 150
 
-    BlueprintIndex = nil
-    local skeleton = CurrentSkeleton()
-    if(#skeleton.PartBlueprints > 0) then
-        BlueprintIndex = 1
-    end
+    prog.Scale = 0.5
+    prog.OffsetX = prog.LeftPanelWidth + 20
+    prog.OffsetY = 20
 
     DisplayHitballs = true
-
-    -- copied from blueprint editor
-    prog.CurrentBlueprintX = nil
-    prog.CurrentBlueprintY = 0
-    prog.CurrentBlueprintW = 0
-    prog.CurrentBlueprintH = 0
-
-    prog.ParentBluePrintX = nil
-    prog.ParentBlueprintY = 0
-    prog.ParentBlueprintW = 0
-    prog.ParentBlueprintH = 0
 
     prog.ViewCenterX = 0
     prog.ViewCenterY = 0
@@ -59,8 +45,79 @@ function AnimationEditor()
         local lg = love.graphics
         lg.push("all")
 
-        lg.clear(0.4, 0.4, 0.4)
+        DrawEditorBackground()
+        lg.setLineWidth(4)
 
+        lg.translate(self.OffsetX, self.OffsetY)
+        lg.scale(self.Scale, self.Scale)
+
+        local screenWidth = ScreenWidth/self.Scale - self.OffsetX
+        local screenHeight = ScreenHeight/self.Scale - self.OffsetY
+
+        
+
+        local sheet = CurrentTexture()
+        self.ViewCenterX, self.ViewCenterY, self.ViewW, self.ViewH = sheet:getWidth()/2, sheet:getHeight()/2, sheet:getWidth(), sheet:getHeight()
+
+        local viewW = sheet:getWidth()
+        local viewH = sheet:getHeight()
+        
+        -- the basic rectangle for the sheet
+        DarkGray()
+        lg.rectangle("fill", 0, 0, viewW, viewH)
+        lg.setColor(1, 1, 1)
+        lg.rectangle("line", 0, 0, viewW, viewH)
+
+        lg.line(0, self.ViewCenterY, self.ViewW, self.ViewCenterY)
+        lg.line(self.ViewCenterX, 0, self.ViewCenterX, self.ViewH)
+
+        self.SkeletonX, self.SkeletonY = self.ViewCenterX, self.ViewCenterY
+        if(skeleton.X ~= nil) then
+            self.SkeletonX, self.SkeletonY = self.ViewCenterX, self.ViewH
+        end
+        --self:DrawSkeleton(self.SkeletonX, self.SkeletonY)
+        local x = self.SkeletonX
+        local y = self.SkeletonY
+        
+        
+        if(anim ~= nil and anim.Frames[CurrentFrameIndex] ~= nil) then
+            self.SkeletonFrame = anim.Frames[CurrentFrameIndex]
+        end
+
+        if(self.SkeletonFrame ~= nil and #self.SkeletonFrame.PartFrames == #frame.PartFrames) then
+            frame = self.SkeletonFrame
+        end
+
+        self.SkeletonFrame = frame
+
+        
+
+        local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
+        
+        -- the MEAT of the thing
+        DrawAndPoseSkeleton(skeleton, frame, x, y, mx, my)
+
+        if(anim ~= nil and anim.Frames[CurrentFrameIndex] ~= nil) then
+            anim.Frames[CurrentFrameIndex] = self.SkeletonFrame
+        end
+
+        lg.pop()
+
+        self:DrawControlPanels()
+    end
+
+    function prog:DrawControlPanels()
+        local lg = love.graphics
+        local mx, my = GetRelativeMouse(1, 0, 0)
+        local skeleton = CurrentSkeleton()
+        local frame = self.SkeletonFrame
+
+        DarkGray()
+        lg.rectangle("fill", 0, 0, self.LeftPanelWidth, ScreenHeight)
+        lg.setColor(0.4, 0.4, 0.4)
+        lg.rectangle("fill", self.LeftPanelWidth, ScreenHeight - self.BottomPanelHeight, ScreenWidth - self.LeftPanelWidth, self.BottomPanelHeight)
+
+        White()
         lg.setFont(Font_K)
         local str = "Current Skeleton: " .. SkeletonIndex
         lg.print(str, 10, 0)
@@ -79,67 +136,14 @@ function AnimationEditor()
 
         local str = "Current Frame: " .. tostring(CurrentFrameIndex) .. "/" .. totalFrames
         lg.print(str, 10, 40)
-        
-
-
-        lg.translate(self.OffsetX, self.OffsetY)
-        lg.scale(self.Scale, self.Scale)
-
-        local screenWidth = ScreenWidth/self.Scale - self.OffsetX
-        local screenHeight = ScreenHeight/self.Scale - self.OffsetY
-
-        
-
-        local sheet = CurrentTexture()
-        self.ViewCenterX, self.ViewCenterY, self.ViewW, self.ViewH = sheet:getWidth()/2, sheet:getHeight()/2, sheet:getWidth(), sheet:getHeight()
-
-        local viewW = sheet:getWidth()
-        local viewH = sheet:getHeight()
-        
-        -- the basic rectangle for the sheet
-        lg.rectangle("line", 0, 0, sheet:getWidth(), sheet:getHeight())
-        lg.line(0, self.ViewCenterY, self.ViewW, self.ViewCenterY)
-        lg.line(self.ViewCenterX, 0, self.ViewCenterX, self.ViewH)
-
-        self.SkeletonX, self.SkeletonY = self.ViewCenterX, self.ViewCenterY
-        if(skeleton.X ~= nil) then
-            self.SkeletonX, self.SkeletonY = self.ViewCenterX, self.ViewH
-        end
-        --self:DrawSkeleton(self.SkeletonX, self.SkeletonY)
-        local x = self.SkeletonX
-        local y = self.SkeletonY
-        
-        
-        if(anim ~= nil and anim.Frames[CurrentFrameIndex] ~= nil) then
-            self.SkeletonFrame = anim.Frames[CurrentFrameIndex]
-            --print("Frame valid")
-        end
-
-        if(self.SkeletonFrame ~= nil and #self.SkeletonFrame.PartFrames == #frame.PartFrames) then
-            frame = self.SkeletonFrame
-        end
-
-        self.SkeletonFrame = frame
-
-        
-
-        local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
-        
-        -- the MEAT of the thing
-        DrawAndPoseSkeleton(skeleton, frame, x, y, mx, my)
-
-        if(anim ~= nil and anim.Frames[CurrentFrameIndex] ~= nil) then
-            anim.Frames[CurrentFrameIndex] = self.SkeletonFrame
-            --print("Frame valid")
-        end
 
         -- Special features
 
-        -- Animation lis
+        -- Animation list
         local dy = ScreenHeight/5 
         local dx = ScreenWidth/5
         local y = 20
-        local x = sheet:getWidth() + 10
+        local x = 20
 
         local w = ScreenWidth/4
         local h = ScreenHeight/7
@@ -195,33 +199,30 @@ function AnimationEditor()
 
         
 
-        local saveAnimButton = ClickableButton(10, viewH + 20, 300, 120, {
+        local saveAnimButton = ClickableButton(10, 20, 300, 120, {
             LPressed = SaveSkeleton,
         })
         DrawCheckButton(self, saveAnimButton, "Save Skeleton", mx, my)
 
-        local newFrameButton = ClickableButton(320, viewH + 20, 300, 120, {
+        local newFrameButton = ClickableButton(320, 20, 300, 120, {
             LPressed = prog.NewFrame,
         })
         DrawCheckButton(self, newFrameButton, "New Frame", mx, my)
 
-        local delFrameButton = ClickableButton(640, viewH + 20, 300, 120, {
+        local delFrameButton = ClickableButton(640, 20, 300, 120, {
             LPressed = prog.DeleteFrame,
         })
         DrawCheckButton(self, delFrameButton, "Delete Frame", mx, my)
 
-        local copyFrameButton = ClickableButton(960, viewH + 20, 300, 120, {
+        local copyFrameButton = ClickableButton(960, 20, 300, 120, {
             LPressed = prog.CopyFrame,
         })
         DrawCheckButton(self, copyFrameButton, "Copy Frame", mx, my)
 
-        local pasteFrameButton = ClickableButton(960 + 320, viewH + 20, 300, 120, {
+        local pasteFrameButton = ClickableButton(960 + 320, 20, 300, 120, {
             LPressed = prog.PasteFrame,
         })
         DrawCheckButton(self, pasteFrameButton, "Paste Frame", mx, my)
-
-
-        lg.pop()
     end
 
     function prog:SetAnimation(button, mx, my)
@@ -295,6 +296,10 @@ function AnimationEditor()
         
         
         --SaveSkeleton()
+    end
+
+    function prog:Update()
+        UpdateZoomAndOffset(self)
     end
 
     function prog:KeyPressed(key, scancode, isrepeat)
