@@ -112,10 +112,16 @@ function AnimationEditor()
         local skeleton = CurrentSkeleton()
         local frame = self.SkeletonFrame
 
+        lg.setLineWidth(3)
+
         DarkGray()
         lg.rectangle("fill", 0, 0, self.LeftPanelWidth, ScreenHeight)
-        lg.setColor(0.4, 0.4, 0.4)
+        lg.setColor(0.5, 0.5, 0.5)
         lg.rectangle("fill", self.LeftPanelWidth, ScreenHeight - self.BottomPanelHeight, ScreenWidth - self.LeftPanelWidth, self.BottomPanelHeight)
+
+        lg.setColor(1, 1, 1)
+        lg.rectangle("line", 0, 0, self.LeftPanelWidth, ScreenHeight)
+        lg.rectangle("line", self.LeftPanelWidth, ScreenHeight - self.BottomPanelHeight, ScreenWidth - self.LeftPanelWidth, self.BottomPanelHeight)
 
         White()
         lg.setFont(Font_K)
