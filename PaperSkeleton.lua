@@ -231,7 +231,14 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
                 elseif(not blueprint.PositionLock) then
                     -- this is how much we're moving it in it's own local rotated space
                     -- that is, the actual change in X and Y to achieve this visible X and Y change
+
                     dx, dy = RotatePoint(dx, dy, -(part.CRotation - part.Rotation))
+
+                    if(blueprint.ParentIndex ~= nil) then
+                        local parent = GetParent(part, blueprint, pose)
+                        dx = dx * parent.XScale
+                        dy = dy * parent.YScale
+                    end
 
                     part.X = CurrentPartStartX + dx
                     part.Y = CurrentPartStartY + dy
