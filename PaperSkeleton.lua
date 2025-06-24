@@ -120,7 +120,7 @@ function IKDrag(skeleton, pose, part, dx, dy, alt)
 
     
     -- stretching
-    local desired_dist = PointDistance(0, 0, mx + ndx, my + ndy)
+    local desired_dist = math.max(PointDistance(0, 0, mx + ndx, my + ndy), (gplen + plen)/2)
     if(desired_dist > gplen + plen) then
         local ratio = desired_dist/(gplen + plen)
         local desired_gplen = gplen * ratio
