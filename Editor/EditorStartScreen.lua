@@ -34,8 +34,12 @@ function SelectionMenu()
         local lg = love.graphics
         lg.push("all")
 
+
+
         DrawEditorBackground()
         lg.setLineWidth(3)
+
+        lg.setColor(1, 1, 1)
 
         lg.setFont(Font_Consolas16)
 
@@ -62,7 +66,6 @@ function SelectionMenu()
         end
 
         -- textures
-        lg.setColor(1, 1, 1)
         PrintCentered("Select texture", x + w/2, y + h/2)
         y = y + dy
 

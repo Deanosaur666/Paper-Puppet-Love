@@ -146,6 +146,9 @@ function AnimationEditor()
         end
 
         local lg = love.graphics
+
+        lg.push("all")
+
         local mx, my = GetRelativeMouse(1, 0, 0)
         local skeleton = CurrentSkeleton()
         local frame = self.SkeletonFrame
@@ -383,6 +386,8 @@ function AnimationEditor()
             LPressed = self.DeleteAnimation,
         })
         DrawCheckButton(self, deleteAnimButton, "(Delete Animation)", mx, my)
+
+        lg.pop()
         
     end
 
@@ -438,6 +443,7 @@ function AnimationEditor()
             table.remove(skeleton.Animations, CurrentAnimationIndex)
             CurrentAnimationIndex = 0
 
+            SkeletonModified = true
         end
         
     end
@@ -447,6 +453,8 @@ function AnimationEditor()
         TextEntryPrompt = "Name new animation"
         TextEntered = ""
         TextEntryFinished = prog.CreateAnimation
+
+        SkeletonModified = true
     end
 
     function prog:NewFrame()
@@ -454,6 +462,7 @@ function AnimationEditor()
             local anim = prog.CurrentAnimation
             table.insert(anim.Frames, CurrentFrameIndex + 1, CopyPose(anim.Frames[CurrentFrameIndex] or BlankPose()))
             CurrentFrameIndex = CurrentFrameIndex + 1
+            SkeletonModified = true
         end
     end
 
@@ -462,8 +471,10 @@ function AnimationEditor()
             local anim = prog.CurrentAnimation
             table.remove(anim.Frames, CurrentFrameIndex)
             CurrentFrameIndex = math.max(1, CurrentFrameIndex - 1)
-            
+            SkeletonModified = true
         end
+
+
     end
 
     function prog:CopyFrame()
@@ -481,6 +492,7 @@ function AnimationEditor()
         if(CurrentAnimationIndex ~= 0 and prog.ClipboardPose ~= nil) then 
             local anim = prog.CurrentAnimation
             anim.Frames[CurrentFrameIndex] = CopyPose(prog.ClipboardPose)
+            SkeletonModified = true
         end
     end
 
@@ -500,6 +512,7 @@ function AnimationEditor()
 
         table.insert(anim.Frames, BlankPose())
         
+        SkeletonModified = true
         
         --SaveSkeleton()
     end
@@ -519,6 +532,8 @@ function AnimationEditor()
 
         local anim = prog.CurrentAnimation
         anim.Name = TextEntered
+
+        SkeletonModified = true
     end
 
     function prog:Update()
@@ -553,9 +568,11 @@ function AnimationEditor()
         elseif(key == "up" and anim ~= nil) then
             local frame = anim.Frames[CurrentFrameIndex]
             frame.Duration = frame.Duration + 1
+            SkeletonModified = true
         elseif(key == "down") then
             local frame = anim.Frames[CurrentFrameIndex]
             frame.Duration = math.max(1, frame.Duration - 1)
+            SkeletonModified = true
         elseif(key == "n") then
             prog:NewFrame()
         elseif(key == 'b') then
