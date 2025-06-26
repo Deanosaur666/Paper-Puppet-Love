@@ -1,5 +1,4 @@
 Jimbo says:
--Copy Global Coordinates for feet positions
 --(We may need an "apply global position" function that also updates IK and stuff)
 -Save if a part defaults to IK lock and IK alt 
 -Lock lower leg and lower arm position/rotation to avoid accidents
@@ -13,12 +12,6 @@ Jimbo says:
 
 "Extend Scale" which is a seperate scaling value which visually scales based on a ratio when extending an IK part
 
-Screens:
-
-
-
-Still have JSON issues actually :(
-
 Sort part update order based on parenting, rather than manually ordered...
     Parts with no parents first,
     Then, parts parented to that part,
@@ -27,13 +20,10 @@ Sort part update order based on parenting, rather than manually ordered...
 Labeling hitballs for gameplay purposes (may be useful if you want a projectile to spawn from a specific hitball, or want a weak spot)
 Labeling specific frames? (we probably want to know if a frame is considered active, recovery?, or is a charge frame?)
 
-Maybe shift+click to swap parts?
-
 Animation editor
     Move a frame in the timeline maybe
 
     Copy animation
     Copy animation with just starting frame (attack from idle, for example)
 
-    Buttons:
-        Cut frame
+    Filter or sort animations
