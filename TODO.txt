@@ -11,6 +11,7 @@ Jimbo says:
 
 -Undo functionality of some sort for the animation editor could be useful, because that is where the most "mistakes" occur
 
+"Extend Scale" which is a seperate scaling value which visually scales based on a ratio when extending an IK part
 
 Screens:
 
