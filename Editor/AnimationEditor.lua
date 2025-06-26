@@ -130,6 +130,8 @@ function AnimationEditor()
         -- the MEAT of the thing
         DrawAndPoseSkeleton(skeleton, frame, x, y, mx, my)
 
+        skeleton = CurrentSkeleton()
+
         if(anim ~= nil and anim.Frames[CurrentFrameIndex] ~= nil) then
             anim.Frames[CurrentFrameIndex] = self.SkeletonFrame
         end
