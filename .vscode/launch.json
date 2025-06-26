@@ -6,11 +6,11 @@
            {
             "type": "lua-local",
             "request": "launch",
-            "name": "Debug Love",
+            "name": "Run Editor (debug)",
             "program": {
                 "command": "love"
             },
-            "args": [ "'${workspaceFolder}' ",  "vsc_debug"]
+            "args": [ "'${workspaceFolder}' ", "editor", "debug", "vsc_debug"]
         }
     ]
 

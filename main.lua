@@ -9,9 +9,6 @@ utf8 = require("utf8")
 
 require "Puppets"
 
--- in the future, should depend on if we load in editor mode
-require "Editor"
-
 if arg[#arg] == "vsc_debug" then 
     require("lldebugger").start()
 
@@ -24,12 +21,15 @@ MouseWheel = 0
 
 KeysPressed = {}
 
+DebugMode = false
+EditorMode = false
+
 function love.conf(t)
 	t.console = true
     love.filesystem.setIdentity("Paper_Puppets_Love")
 end
 
-function  love.load()
+function  love.load(args)
 
     ScreenWidth, ScreenHeight = 1440, 810
     love.window.setMode( ScreenWidth, ScreenHeight )
@@ -46,10 +46,23 @@ function  love.load()
     Font_Consolas32 = love.graphics.newFont("Resources/fonts/CONSOLA.ttf", 32)
     Font_Consolas16 = love.graphics.newFont("Resources/fonts/CONSOLA.ttf", 16)
 
-    --CurrentProgram = BlankProgram()
-    CurrentProgram = EditorProgram
+    print("Command-line arguments:")
+    for i, e in ipairs(args) do
+        print(string.format("%d: %s", i, e))
+        if(e == "debug") then
+            DebugMode = true
+            print("DEBUG MODE")
+        elseif(e == "editor") then
+            print("RUNNING EDITOR")
+            EditorMode = true
+        end
+    end
 
-    CurrentProgram:Load()
+    if(EditorMode) then
+        require "Editor"
+        CurrentProgram = EditorProgram
+        CurrentProgram:Load()
+    end
 end
 
 
