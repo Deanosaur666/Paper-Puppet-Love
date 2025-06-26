@@ -5,7 +5,7 @@ function SaveSpriteSet()
         EnterSpriteSetName()
         return
     end
-    local file = io.open("spritesets/"..name, "w")
+    local file = io.open("Resources/spritesets/"..name, "w")
 
     for _, sprite in ipairs(spriteSet) do
         local line = PaperSpriteToString(sprite)
