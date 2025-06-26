@@ -62,6 +62,12 @@ IKPrevCX = {}
 IKPrevCY = {}
 IKPrevCRot = {}
 
+ClipboardX = nil
+ClipboardY = nil
+ClipboardRotation = nil
+ClipboardXScale = nil
+ClipboardYScale = nil
+
 
 function IKDrag(skeleton, pose, part, dx, dy, alt)
     -- we want the part's CX and CY to change by dx and dy without changing its actual X and Y
@@ -352,6 +358,47 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
         -- hiding and unhiding part with H
         if(KeysPressed["h"]) then
             part.Hidden = not part.Hidden
+        end
+
+        -- copying global transforms
+        if(KeysPressed["c"]) then
+            ClipboardX = part.CX
+            ClipboardY = part.CY
+            ClipboardRotation = part.CRotation
+            ClipboardXScale = part.XScale
+            ClipboardYScale = part.YScale
+        end
+
+        -- pasting global transforms
+        if(KeysPressed["v"] and ClipboardX ~= nil) then
+            local dx = ClipboardX - part.CX
+            local dy = ClipboardY - part.CY
+            local drot = ClipboardRotation - part.CRotation
+            if(blueprint.IK) then
+                IKDrag(skeleton, pose, part, dx, dy, IKAltParts[partIndex])
+                UpdatePose(pose, skeleton)
+            else
+                local prot = part.CRotation - part.Rotation
+                local pxscale = 1
+                local pyscale = 1
+
+                if(blueprint.ParentIndex ~= nil) then
+                    local parent = GetParent(part, blueprint, pose)
+                    pxscale = parent.XScale
+                    pyscale = parent.YScale
+                end
+
+                dx, dy = RotatePoint(dx, dy, -prot)
+                dx = dx * pxscale
+                dy = dy * pyscale
+
+                part.X = part.X + dx
+                part.Y = part.Y + dy
+            end
+
+            part.Rotation = part.Rotation + drot
+            part.XScale = ClipboardXScale
+            part.YScale = ClipboardYScale
         end
     end
 
