@@ -14,7 +14,6 @@ SpriteSetIndex = nil
 
 -- skeletons
 -- SCARY!
-Skeletons = { }
 SkeletonIndex = 1
 
 -- text entry
