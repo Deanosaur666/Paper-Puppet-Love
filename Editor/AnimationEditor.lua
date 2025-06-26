@@ -146,6 +146,9 @@ function AnimationEditor()
         end
 
         local lg = love.graphics
+
+        lg.push("all")
+
         local mx, my = GetRelativeMouse(1, 0, 0)
         local skeleton = CurrentSkeleton()
         local frame = self.SkeletonFrame
@@ -383,6 +386,8 @@ function AnimationEditor()
             LPressed = self.DeleteAnimation,
         })
         DrawCheckButton(self, deleteAnimButton, "(Delete Animation)", mx, my)
+
+        lg.pop()
         
     end
 
