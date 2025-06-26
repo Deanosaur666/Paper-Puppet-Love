@@ -49,3 +49,6 @@ Skeleton posing:
     Middle click:           Toggle part IK lock
     Shift + middle click:   Toggle part IK alt
     Ctrl + middle click:    Move skeleton (in blueprint editor)
+    
+    C:                      Copy global transforms from highlighted part
+    V:                      Paste global transforms to highlighted part

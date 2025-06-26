@@ -12,6 +12,8 @@ function SelectionMenu()
     prog.SpriteSetNames = {}
     prog.SkeletonNames = {}
 
+    prog.ScrollY = 0
+
     -- not used
     for _, filename in ipairs(SpriteSheetFiles) do
         table.insert(prog.SheetNames, filename)
@@ -45,7 +47,7 @@ function SelectionMenu()
         local h = dy*0.75
 
         local x = dx + (dx-w)/2
-        local y = dy
+        local y = dy + self.ScrollY
 
         local sheet = nil
         if(SheetIndex ~= nil) then
@@ -84,7 +86,7 @@ function SelectionMenu()
         end
 
         -- sprite sets
-        y = dy
+        y = dy + self.ScrollY
         x = x + dx
         lg.setColor(1, 1, 1)
         PrintCentered("Select spriteset", x + w/2, y + h/2)
@@ -121,7 +123,7 @@ function SelectionMenu()
         PrintCentered("NEW", x + w/2, y + h/2)
 
         -- skeletons
-        y = dy
+        y = dy + self.ScrollY
         x = x + dx
         lg.setColor(1, 1, 1)
         PrintCentered("Select skeleton", x + w/2, y + h/2)
@@ -159,7 +161,7 @@ function SelectionMenu()
 
         -- finish
         x = ScreenWidth/2 - w/2
-        y = dy/3
+        y = dy/3 + self.ScrollY
         local button = ClickableButton(x, y, w, h, {
             LPressed = prog.Finished,
         })
@@ -175,6 +177,10 @@ function SelectionMenu()
 
 
         lg.pop()
+    end
+
+    function prog:Update()
+        self.ScrollY = self.ScrollY + MouseWheel * 25
     end
 
     function prog:SetTexture(button, mx, my)
