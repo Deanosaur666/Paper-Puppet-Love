@@ -1,4 +1,7 @@
 Jimbo says:
+
+MAKE IK ALT/LOCK default SAVED IN BLUEPRINTS
+
 --(We may need an "apply global position" function that also updates IK and stuff)
 -Save if a part defaults to IK lock and IK alt 
 -Lock lower leg and lower arm position/rotation to avoid accidents
