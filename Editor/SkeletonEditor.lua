@@ -40,7 +40,14 @@ ClipboardRotation = nil
 ClipboardXScale = nil
 ClipboardYScale = nil
 
+-- for undo
+SkeletonUndoHistory = {}
+-- for redo
+SkeletonRedoHistory = {}
 
+SkeletonUndoMaxSize = 100 -- maximum history length
+
+SkeletonModified = false
 
 function IKDrag(skeleton, pose, part, dx, dy, alt)
     -- we want the part's CX and CY to change by dx and dy without changing its actual X and Y
@@ -186,6 +193,7 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
             lg.circle("line", px, py, 20)
             lg.line(px, py, mx, my)
 
+            -- look at IK locked parts
             for p, on in pairs(IKLockParts) do
                 -- record previous postion
                 if(on) then
@@ -223,12 +231,20 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
                     part.Y = CurrentPartStartY + dy
                 end
                 
+                if(dx ~= 0 or dy ~= 0) then
+                    SkeletonModified = true
+                end
+
             -- ctrl for scale
             elseif(love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
                 local dx, dy = RotatePoint(mx - PartDragMX, my - PartDragMY, -part.CRotation)
 
                 part.XScale = CurrentPartStartXScale * ((ball.Radius+dx) / ball.Radius)
                 part.YScale = CurrentPartStartYScale * ((ball.Radius+dy) / ball.Radius)
+
+                if(dx ~= 0 or dy ~= 0) then
+                    SkeletonModified = true
+                end
 
             -- no key for rotate
             else
@@ -241,6 +257,10 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
                 CurrentPartStartRotation = part.Rotation
 
                 DraggedPart = part
+
+                if(newangle ~= startangle) then
+                    SkeletonModified = true
+                end
             end
 
 
@@ -254,6 +274,10 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
                     -- drag back
                     local dx, dy = IKPrevCX[p] - ikpart.CX, IKPrevCY[p] - ikpart.CY
                     IKDrag(skeleton, pose, ikpart, dx, dy, IKAltParts[p])
+
+                    if(dx ~= 0 or dy ~= 0) then
+                        SkeletonModified = true
+                    end
                 end
             end
 
@@ -276,6 +300,7 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
                 fillArray(part.HitballScale, 1)
                 part.SpriteIndex = nil
                 part.Layer = nil
+                SkeletonModified = true
             -- no keys for reset transforms
             else
                 part.X = 0
@@ -283,6 +308,7 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
                 part.XScale = 1
                 part.YScale = 1
                 part.Rotation = 0
+                SkeletonModified = true
             end
         elseif(MousePressed[3]) then
             -- ctrl for IK lock
@@ -304,14 +330,17 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
             -- L for layer
             if(love.keyboard.isDown("l")) then
                 part.Layer = (part.Layer or blueprint.DefLayer) + wheel
+                SkeletonModified = true
             
             -- shift for change sprite
             elseif(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
                 part.SpriteIndex = tableChangeIndex((part.SpriteIndex or blueprint.DefSpriteIndex), spriteSet, wheel)
+                SkeletonModified = true
             
             -- ctrl for ball size
             elseif(love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
                 part.HitballScale[ball.Index] = Clamp((part.HitballScale[ball.Index] or 1) + wheel*0.1, 0.1, 10)
+                SkeletonModified = true
             
             -- alt for flipping
             elseif(love.keyboard.isDown("lalt") or love.keyboard.isDown("ralt")) then
@@ -320,17 +349,20 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
                 else
                     part.YScale = (part.YScale or 1) * -1
                 end
+                SkeletonModified = true
             
             -- no keys for change ball flags
             else
                 local ballNum = ball.Index
                 part.HitballFlags[ball.Index] = (ball.Flags + wheel) % #HITBALL_STATES
+                SkeletonModified = true
             end
         end
 
         -- hiding and unhiding part with H
         if(KeysPressed["h"]) then
             part.Hidden = not part.Hidden
+            SkeletonModified = true
         end
 
         -- copying global transforms
@@ -372,7 +404,15 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
             part.Rotation = part.Rotation + drot
             part.XScale = ClipboardXScale
             part.YScale = ClipboardYScale
+
+            SkeletonModified = true
         end
+    end
+
+    -- adding to undo history
+    if(SkeletonModified and not MouseDown[1] and not MouseDown[2] and not MouseDown[3] and MouseWheel == 0) then
+        local skeletonCopy = deepcopy(skeleton)
+        table.insert(SkeletonUndoHistory, skeletonCopy)
     end
 
     lg.pop()
