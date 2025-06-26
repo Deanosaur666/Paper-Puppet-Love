@@ -1,0 +1,6 @@
+require "Puppets.Hitballs"
+require "Puppets.PaperAnimation"
+require "Puppets.PaperSkeleton"
+require "Puppets.PaperSprite"
+require "Puppets.PartBlueprint"
+require "Puppets.PartPose"

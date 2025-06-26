@@ -1,5 +1,3 @@
-PriorityQueue = require "PriorityQueue"
-
 function BlankPose()
     return {
         Duration = 1,

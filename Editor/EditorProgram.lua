@@ -1,18 +1,8 @@
-require "PaperSprite"
-require "PaperSkeleton"
-require "PartBlueprint"
-require "PartFrame"
-require "PaperAnimation"
-require "EditorStartScreen"
-
-local utf8 = require("utf8")
 
 CurrentScreen = nil
 -- contains all sprite sets
 -- each set is a collection of PaperSprites
-SpriteSets = {}
 -- contains all skeletons
-Skeletons = {}
 
 -- name of current spriteset or skeleton
 SpriteSetName = nil
@@ -265,4 +255,110 @@ end
 
 function White()
     love.graphics.setColor(1, 1, 1)
+end
+
+function ClickableButton(x, y, w, h, props)
+    local button = {
+        X = x,
+        Y = y,
+        W = w,
+        H = h
+    }
+
+    function button.LPressed(prog, button, mx, my)
+        -- nothing
+    end
+    function button.RPressed(prog, button, mx, my)
+        -- nothing
+    end
+    function button.MPressed(prog, button, mx, my)
+        -- nothing
+    end
+    function button.LHeld(prog, button, mx, my)
+        -- nothing
+    end
+    function button.RHeld(prog, button, mx, my)
+        -- nothing
+    end
+    function button.MHeld(prog, button, mx, my)
+        -- nothing
+    end
+    function button.LReleased(prog, button, mx, my)
+        -- nothing
+    end
+    function button.RReleased(prog, button, mx, my)
+        -- nothing
+    end
+    function button.MReleased(prog, button, mx, my)
+        -- nothing
+    end
+
+    for k, v in pairs(props) do
+        button[k] = v
+    end
+
+    return button
+end
+
+function CheckClickableButton(prog, button, mx, my)
+    if(not PointInRectangle(mx, my, button.X, button.Y, button.W, button.H)) then
+        return
+    end
+    if(MousePressed[1]) then
+        button.LPressed(prog, button, mx, my)
+    end
+    if(MousePressed[2]) then
+        button.RPressed(prog, button, mx, my)
+    end
+    if(MousePressed[3]) then
+        button.MPressed(prog, button, mx, my)
+    end
+    if(MouseDown[1]) then
+        button.LHeld(prog, button, mx, my)
+    end
+    if(MouseDown[2]) then
+        button.RHeld(prog, button, mx, my)
+    end
+    if(MouseDown[3]) then
+        button.MHeld(prog, button, mx, my)
+    end
+    if(MouseDownPrev[1] and not MouseDown[1]) then
+        button.LReleased(prog, button, mx, my)
+    end
+    if(MouseDownPrev[2] and not MouseDown[2]) then
+        button.RReleased(prog, button, mx, my)
+    end
+    if(MouseDownPrev[3] and not MouseDown[3]) then
+        button.MReleased(prog, button, mx, my)
+    end
+end
+
+function GetRelativeMouse(scale, offsetX, offsetY)
+    local mx, my = love.mouse.getPosition()
+
+    mx = (mx - offsetX) / scale
+    my = (my - offsetY) / scale
+    
+    return mx, my
+end
+
+
+function DrawCheckButton(prog, button, text, mx, my, r, g, b)
+    local lg = love.graphics
+    lg.push("all")
+    CheckClickableButton(prog, button, mx, my)
+
+    r = r or 1
+    g = g or 1
+    b = b or 0
+    lg.setLineWidth(3)
+    lg.setColor(r, g, b)
+    
+    lg.rectangle("fill", button.X, button.Y, button.W, button.H)
+    lg.setColor(0, 0, 0)
+    lg.rectangle("line",  button.X, button.Y, button.W, button.H)
+
+    PrintCentered(text, button.X + button.W/2, button.Y + button.H/2)
+    lg.pop()
+    
 end

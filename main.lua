@@ -1,10 +1,16 @@
-require "sprites"
+require "Math"
+PriorityQueue = require "PriorityQueue"
 require "Screens"
-require "PaperSprite"
-require "AnimationEditor"
+require "sprites"
+require "tables"
+
+bit = require "bit"
+utf8 = require("utf8")
+
+require "Puppets"
 
 -- in the future, should depend on if we load in editor mode
-require "EditorProgram"
+require "Editor"
 
 if arg[#arg] == "vsc_debug" then 
     require("lldebugger").start()
@@ -33,12 +39,12 @@ function  love.load()
     LoadSpriteSets()
     LoadSkeletons()
 
-    Font_K = love.graphics.newFont("fonts/KOMTIT.ttf", 20)
-    Font_KBig = love.graphics.newFont("fonts/KOMTIT.ttf", 35)
+    Font_K = love.graphics.newFont("Resources/fonts/KOMTIT.ttf", 20)
+    Font_KBig = love.graphics.newFont("Resources/fonts/KOMTIT.ttf", 35)
     love.graphics.setFont(Font_K)
 
-    Font_Consolas32 = love.graphics.newFont("fonts/CONSOLA.ttf", 32)
-    Font_Consolas16 = love.graphics.newFont("fonts/CONSOLA.ttf", 16)
+    Font_Consolas32 = love.graphics.newFont("Resources/fonts/CONSOLA.ttf", 32)
+    Font_Consolas16 = love.graphics.newFont("Resources/fonts/CONSOLA.ttf", 16)
 
     --CurrentProgram = BlankProgram()
     CurrentProgram = EditorProgram

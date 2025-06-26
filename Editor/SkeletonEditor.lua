@@ -1,11 +1,3 @@
-
--- paper skeleton has:
--- sprite slots (should match sprite set)
--- paper parts
--- animations, which have:
---      frames, which are collections of parts
-require "tables"
-
 function SaveSkeleton()
     local skeleton = CurrentSkeleton()
     local name = SkeletonName
@@ -13,7 +5,7 @@ function SaveSkeleton()
         EnterSkeletonName()
         return
     end
-    jsonEncodeFile(skeleton, "skeletons/" .. name)
+    jsonEncodeFile(skeleton, "Resources/skeletons/" .. name)
 end
 
 function EnterSkeletonName()
@@ -34,26 +26,6 @@ function SkeletonNameEntered()
     Skeletons[SkeletonIndex] = skeleton
 
     SaveSkeleton()
-end
-
-function LoadSkeletons()
-    local files = love.filesystem.getDirectoryItems("skeletons")
-    for _, value in ipairs(files) do
-        Skeletons[value] = jsonDecodeFile("skeletons/" .. value)
-    end
-end
-
-function PaperSkeleton()
-    return {
-        Name = "",
-        PartBlueprints = {}, -- full of PartBluePrints
-        Animations = {},
-        -- global offset so that 0,0 can be their feet, for example
-        X = nil,
-        Y = nil,
-        -- Used for ease of use in animation editor
-        IdlePose = nil,
-    }
 end
 
 IKLockParts = {}

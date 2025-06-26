@@ -1,6 +1,3 @@
-require "Math"
-bit = require "bit"
-
 -- hitball flags
 HITBALL_HITTABLE = 1
 HITBALL_ACTIVE = 2

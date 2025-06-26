@@ -1,5 +1,3 @@
-require "PartBlueprint"
-
 -- TODO:
 --[[
     Set the "Idle Pose" with a button  (I)

@@ -1,9 +1,7 @@
--- paper part frame has:
+-- paper part pose has:
 -- current sprite index,
 -- rotation, position
 -- stretch (for arms and legs, defined by ik)
-
-require "Math"
 
 -- TODO: add hit ball type for current part for current frame (hittable, unhittable, active+hitabble, active+unhittable (disjoint))
 

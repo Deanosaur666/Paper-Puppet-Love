@@ -1,0 +1,6 @@
+require "Editor.AnimationEditor"
+require "Editor.BlueprintEditor"
+require "Editor.EditorProgram"
+require "Editor.EditorStartScreen"
+require "Editor.PaperSpriteEditor"
+require "Editor.SkeletonEditor"
