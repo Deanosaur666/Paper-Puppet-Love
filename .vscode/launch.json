@@ -3,7 +3,7 @@
     "version": "0.2.0",
     "configurations": [        
        
-           {
+        {
             "type": "lua-local",
             "request": "launch",
             "name": "Run Editor (debug)",
@@ -11,7 +11,17 @@
                 "command": "love"
             },
             "args": [ "'${workspaceFolder}' ", "editor", "debug", "vsc_debug"]
-        }
+        },
+
+        {
+            "type": "lua-local",
+            "request": "launch",
+            "name": "Run Game (debug)",
+            "program": {
+                "command": "love"
+            },
+            "args": [ "'${workspaceFolder}' ", "debug", "vsc_debug"]
+        },
     ]
 
 }
