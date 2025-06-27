@@ -1,0 +1,3 @@
+-- an instance of a fighter on screen
+-- needs: a reference to a Fighter sheet
+-- x, y, facing, current animation, current frame
