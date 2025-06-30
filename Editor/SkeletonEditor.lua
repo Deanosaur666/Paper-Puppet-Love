@@ -449,6 +449,9 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
         print("UNDO " .. #SkeletonUndoHistory)
     end
 
+    -- redo
+    -- TODO later
+
     lg.pop()
 end
 
