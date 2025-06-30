@@ -445,8 +445,6 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
         -- get the previous state
         state = SkeletonUndoHistory[#SkeletonUndoHistory]
         Skeletons[SkeletonIndex] = deepcopy(state)
-           
-        print("UNDO " .. #SkeletonUndoHistory)
     end
 
     -- redo
@@ -461,5 +459,4 @@ function SaveUndoHistory(skeleton)
     -- clear redo history
     SkeletonRedoHistory = {}
     SkeletonModified = false
-    print("MODIFIED - " .. #SkeletonUndoHistory)
 end

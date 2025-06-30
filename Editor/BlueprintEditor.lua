@@ -67,10 +67,7 @@ function PartBlueprintEditor()
         lg.line(0, self.ViewCenterY, self.ViewW, self.ViewCenterY)
         lg.line(self.ViewCenterX, 0, self.ViewCenterX, self.ViewH)
 
-        self.SkeletonX, self.SkeletonY = self.ViewCenterX, self.ViewCenterY
-        if(skeleton.X ~= nil) then
-            self.SkeletonX, self.SkeletonY = self.ViewCenterX, self.ViewH
-        end
+        self.SkeletonX, self.SkeletonY = self.ViewCenterX, self.ViewH
         self:DrawSkeleton(self.SkeletonX, self.SkeletonY)
 
         local mx, my = GetRelativeMouse(self.Scale, self.OffsetX, self.OffsetY)
