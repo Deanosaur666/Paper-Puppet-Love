@@ -1,4 +1,5 @@
 Skeletons = {}
+SkeletonAnimNameMap = {}
 
 CURRENT_VERSION = "2025.06.29"
 
@@ -18,7 +19,14 @@ end
 
 function LoadSkeletons()
     local files = love.filesystem.getDirectoryItems("Resources/skeletons")
-    for _, value in ipairs(files) do
-        Skeletons[value] = jsonDecodeFile("Resources/skeletons/" .. value)
+    for _, skelName in ipairs(files) do
+        local skeleton = jsonDecodeFile("Resources/skeletons/" .. skelName)
+        Skeletons[skelName] = skeleton
+        SkeletonAnimNameMap[skelName] = {}
+
+        for _, anim in ipairs(skeleton.Animations) do
+            SkeletonAnimNameMap[skelName][anim.Name] = anim
+            print(skelName .. " ANIM: " .. anim.Name)
+        end
     end
 end

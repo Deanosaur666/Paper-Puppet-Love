@@ -1,2 +1,2 @@
-require "Game.Fighter"
+require "Game.FighterState"
 require "Game.GameProgram"
