@@ -68,6 +68,8 @@ function SkeletonSelected()
             IKLockParts[i] = true
         end
     end
+
+    SaveUndoHistory(skeleton)
 end
 
 function IKDrag(skeleton, pose, part, dx, dy, alt)
@@ -432,37 +434,29 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
 
     -- adding to undo history
     if(SkeletonModified and not MouseDown[1] and not MouseDown[2] and not MouseDown[3] and MouseWheel == 0) then
-        local skeletonCopy = deepcopy(skeleton)
-        table.insert(SkeletonUndoHistory, skeletonCopy)
-        -- clear redo history
-        SkeletonRedoHistory = {}
-        SkeletonModified = false
-        print("MODIFIED")
+        SaveUndoHistory(skeleton)
     end
 
     -- undo
-    if(CtrlDown and KeysPressed["z"] and #SkeletonUndoHistory > 0) then
-        print("UNDO")
+    if(CtrlDown and KeysPressed["z"] and #SkeletonUndoHistory > 1) then
          -- get current state
-        local state = deepcopy(Skeletons[SkeletonIndex])
+        local state = table.remove(SkeletonUndoHistory)
         table.insert(SkeletonRedoHistory, state)
         -- get the previous state
-        state = table.remove(SkeletonUndoHistory, #SkeletonUndoHistory)
+        state = SkeletonUndoHistory[#SkeletonUndoHistory]
         Skeletons[SkeletonIndex] = deepcopy(state)
-
-        if(#SkeletonRedoHistory == 0 and false) then
-            -- remove top state. It's same as current state
-            table.remove(SkeletonUndoHistory)
-            -- get current state
-            local state = deepcopy(Skeletons[SkeletonIndex])
-            table.insert(SkeletonRedoHistory, state)
-            -- get the previous state
-            state = table.remove(SkeletonUndoHistory)
-            Skeletons[SkeletonIndex] = deepcopy(state)
-        else
            
-        end
+        print("UNDO " .. #SkeletonUndoHistory)
     end
 
     lg.pop()
+end
+
+function SaveUndoHistory(skeleton)
+    local skeletonCopy = deepcopy(skeleton)
+    table.insert(SkeletonUndoHistory, skeletonCopy)
+    -- clear redo history
+    SkeletonRedoHistory = {}
+    SkeletonModified = false
+    print("MODIFIED - " .. #SkeletonUndoHistory)
 end
