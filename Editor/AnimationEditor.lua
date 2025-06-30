@@ -12,6 +12,9 @@
 ]]
 
 function AnimationEditor()
+    
+    SkeletonSelected()
+    
     local prog = BlankProgram()
 
     prog.LeftPanelWidth = 200

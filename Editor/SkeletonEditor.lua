@@ -49,6 +49,27 @@ SkeletonUndoMaxSize = 100 -- maximum history length
 
 SkeletonModified = false
 
+function SkeletonSelected()
+    local skeleton = CurrentSkeleton()
+
+    SkeletonUndoHistory = {}
+    SkeletonRedoHistory = {}
+    SkeletonModified = false
+
+    IKLockParts = {}
+    IKAltParts = {}
+
+    for i, bp in ipairs(skeleton.PartBlueprints) do
+        local ik_state = (bp.IK_State or 0)
+        if(bit.band(ik_state, IK_ALT) ~= 0) then
+            IKAltParts[i] = true
+        end
+        if(bit.band(ik_state, IK_LOCK) ~= 0) then
+            IKLockParts[i] = true
+        end
+    end
+end
+
 function IKDrag(skeleton, pose, part, dx, dy, alt)
     -- we want the part's CX and CY to change by dx and dy without changing its actual X and Y
     -- we also want to preserve the part's orignal rotation
@@ -207,7 +228,7 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
             if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
                 local dx, dy = mx - PartDragMX, my - PartDragMY
 
-                if(blueprint.IK) then
+                if(bit.band(blueprint.IK_State or 0, IK_ON) ~= 0) then
                     -- drag with IK
                     IKDrag(skeleton, pose, part, dx, dy, IKAltParts[partIndex])
                     PartDragMX = mx
@@ -313,12 +334,12 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
         elseif(MousePressed[3]) then
             -- ctrl for IK lock
             if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
-                if(blueprint.IK) then
+                if(bit.band(blueprint.IK_State, IK_ON) ~= 0) then
                     IKAltParts[partIndex] = not IKAltParts[partIndex]
                 end
             -- alt for IK alt
             else
-                if(blueprint.IK) then
+                if(bit.band(blueprint.IK_State, IK_ON) ~= 0) then
                     IKLockParts[partIndex] = not IKLockParts[partIndex]
                 end
             end
@@ -379,7 +400,7 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
             local dx = ClipboardX - part.CX
             local dy = ClipboardY - part.CY
             local drot = ClipboardRotation - part.CRotation
-            if(blueprint.IK) then
+            if(bit.band(blueprint.IK_State, IK_ON) ~= 0) then
                 IKDrag(skeleton, pose, part, dx, dy, IKAltParts[partIndex])
                 UpdatePose(pose, skeleton)
             else

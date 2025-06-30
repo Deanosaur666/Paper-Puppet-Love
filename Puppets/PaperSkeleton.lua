@@ -1,5 +1,7 @@
 Skeletons = {}
 
+CURRENT_VERSION = "2025.06.29"
+
 function PaperSkeleton()
     return {
         Name = "",
@@ -10,6 +12,7 @@ function PaperSkeleton()
         Y = nil,
         -- Used for ease of use in animation editor
         IdlePose = nil,
+        Version = CURRENT_VERSION,
     }
 end
 

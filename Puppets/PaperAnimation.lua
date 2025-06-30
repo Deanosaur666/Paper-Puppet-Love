@@ -94,7 +94,7 @@ function DrawPoseHitballs(pose, skeleton, x, y, rot, xscale, yscale)
             local hr = hitball.Radius
             local r, g, b = HitballColor(hitball.Flags)
             lg.setColor(r, g, b)
-            if(blueprint.IK) then
+            if(bit.band(blueprint.IK_State or 0, IK_ON) ~= 0) then
                 lg.line(hx - hr*0.9, hy, hx, hy - hr*0.9, hx + hr*0.9, hy, hx, hy + hr*0.9, hx - hr*0.9, hy)
             end
 

@@ -5,6 +5,10 @@
 -- ik flag (for hands and feet that can drag limbs)
 -- position lock flag (for elbows and stuff that can't be moved from anchor)
 
+IK_ON = 1
+IK_ALT = 2
+IK_LOCK = 4
+
 function PartBlueprint(parentIndex, x, y, defSpriteIndex)
     return {
         ParentIndex = parentIndex,
@@ -12,7 +16,7 @@ function PartBlueprint(parentIndex, x, y, defSpriteIndex)
         Y = y,
         DefSpriteIndex = defSpriteIndex,
         DefLayer = 0,
-        IK = false,
+        IK_State = 0,
         PositionLock = false,
         Hitballs = {},
         FlippedX = false,

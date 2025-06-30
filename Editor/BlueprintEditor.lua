@@ -1,4 +1,7 @@
 function PartBlueprintEditor()
+    
+    SkeletonSelected()
+    
     local prog = BlankProgram()
     prog.Scale = 0.5
     prog.OffsetX = 20
@@ -129,7 +132,7 @@ function PartBlueprintEditor()
                 self.ParentBlueprintH = h
             end
             lg.print(tostring(i) .. " - L " .. bp.DefLayer, dx + 10, dy + 10)
-            if(bp.IK) then
+            if((bit.band(bp.IK_State or 0, IK_ON) ~= 0)) then
                 lg.print("IK", dx + 10, dy + 60)
             end
             if(bp.PositionLock) then
@@ -161,6 +164,8 @@ function PartBlueprintEditor()
             dy = dy + h + 20
         end
 
+        local y = 0
+
         -- draws the current blueprint in the top right
         if(self.CurrentBlueprintX ~= nil) then
             local sprite = spriteSet[self:CurrentBlueprint().DefSpriteIndex]
@@ -181,6 +186,8 @@ function PartBlueprintEditor()
             })
             CheckClickableButton(self, button, mx, my)
 
+            y = self.CurrentBlueprintY + self.CurrentBlueprintH
+
         end
 
         -- draws the parent below it
@@ -196,6 +203,79 @@ function PartBlueprintEditor()
                 LPressed = self.SetParentOffset,
             })
             CheckClickableButton(self, button, mx, my)
+
+            y = self.ParentBlueprintY + self.ParentBlueprintH
+
+        end
+
+        -- draw IK toggle buttons below it
+        if(currentBP ~= nil) then
+        
+            local ik_state = currentBP.IK_State or 0
+
+            local w = 300
+            local h = 50
+            dy = h + 20
+            local x = screenRight - w - 10
+            
+            y = y + 20
+
+            -- toggle ik
+            local r, g, b = 1, 1, 0
+
+            if(bit.band(ik_state, IK_ON) ~= 0) then
+                r, g, b = 1, 0, 0
+            end
+
+            local ik_toggle = ClickableButton(x, y, w, h, {
+                LPressed = self.ToggleIK
+            })
+            DrawCheckButton(self, ik_toggle, "IK", mx, my, r, g, b)
+
+            y = y + dy
+
+            -- toggle ik alt
+            r, g, b = 1, 1, 0
+
+            if(bit.band(ik_state, IK_ALT) ~= 0) then
+                r, g, b = 1, 0, 0
+            end
+
+            local ik_alt = ClickableButton(x, y, w, h, {
+                LPressed = self.ToggleIKAlt
+            })
+            DrawCheckButton(self, ik_alt, "IK Alt", mx, my, r, g, b)
+
+            y = y + dy
+
+            -- toggle ik lock
+            r, g, b = 1, 1, 0
+
+            if(bit.band(ik_state, IK_LOCK) ~= 0) then
+                r, g, b = 1, 0, 0
+            end
+
+            local ik_lock = ClickableButton(x, y, w, h, {
+                LPressed = self.ToggleIKLock
+            })
+            DrawCheckButton(self, ik_lock, "IK Lock", mx, my, r, g, b)
+
+            y = y + dy
+
+            -- toggle position lock
+            r, g, b = 1, 1, 0
+
+            if(currentBP.PositionLock) then
+                r, g, b = 1, 0, 0
+            end
+
+            local pos_lock = ClickableButton(x, y, w, h, {
+                LPressed = self.TogglePositionLock
+            })
+            DrawCheckButton(self, pos_lock, "Pos. Lock", mx, my, r, g, b)
+
+            y = y + dy
+
 
         end
 
@@ -399,6 +479,41 @@ function PartBlueprintEditor()
         local bluePrint = self:CurrentBlueprint()
         local spriteSet = CurrentSpriteSet()
         bluePrint.DefSpriteIndex = ((bluePrint.DefSpriteIndex - 2) % #spriteSet) + 1
+    end
+
+    function prog:ToggleIK()
+        local blueprint = self:CurrentBlueprint()
+        local ik_state = blueprint.IK_State or 0
+        if(ik_state ~= 0) then
+            blueprint.IK_State = 0
+        else
+            blueprint.IK_State = IK_ON
+        end
+    end
+
+    function prog:ToggleIKAlt()
+        local blueprint = self:CurrentBlueprint()
+        local ik_state = blueprint.IK_State or 0
+        if(bit.band(ik_state, IK_ALT) ~= 0) then
+            blueprint.IK_State = bit.band(ik_state, bit.bnot(IK_ALT))
+        else
+            blueprint.IK_State = bit.bor(ik_state, IK_ON, IK_ALT)
+        end
+    end
+
+    function prog:ToggleIKLock()
+        local blueprint = self:CurrentBlueprint()
+        local ik_state = blueprint.IK_State or 0
+        if(bit.band(ik_state, IK_LOCK) ~= 0) then
+            blueprint.IK_State = bit.band(ik_state, bit.bnot(IK_LOCK))
+        else
+            blueprint.IK_State = bit.bor(ik_state, IK_ON, IK_LOCK)
+        end
+    end
+
+    function prog:TogglePositionLock()
+        local blueprint = self:CurrentBlueprint()
+        blueprint.PositionLock = not blueprint.PositionLock
     end
 
     return prog
