@@ -486,6 +486,8 @@ function PartBlueprintEditor()
         local ik_state = blueprint.IK_State or 0
         if(ik_state ~= 0) then
             blueprint.IK_State = 0
+            IKLockParts[BlueprintIndex] = false
+            IKAltParts[BlueprintIndex] = false
         else
             blueprint.IK_State = IK_ON
         end
@@ -496,8 +498,10 @@ function PartBlueprintEditor()
         local ik_state = blueprint.IK_State or 0
         if(bit.band(ik_state, IK_ALT) ~= 0) then
             blueprint.IK_State = bit.band(ik_state, bit.bnot(IK_ALT))
+            IKAltParts[BlueprintIndex] = false
         else
             blueprint.IK_State = bit.bor(ik_state, IK_ON, IK_ALT)
+            IKAltParts[BlueprintIndex] = true
         end
     end
 
@@ -506,8 +510,10 @@ function PartBlueprintEditor()
         local ik_state = blueprint.IK_State or 0
         if(bit.band(ik_state, IK_LOCK) ~= 0) then
             blueprint.IK_State = bit.band(ik_state, bit.bnot(IK_LOCK))
+            IKLockParts[BlueprintIndex] = false
         else
             blueprint.IK_State = bit.bor(ik_state, IK_ON, IK_LOCK)
+            IKLockParts[BlueprintIndex] = true
         end
     end
 
