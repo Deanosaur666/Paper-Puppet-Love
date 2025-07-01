@@ -140,6 +140,15 @@ function IKDrag(skeleton, pose, part, dx, dy, alt)
 
         parent.XScale = ratio * Sign(parent.XScale)
         parent.YScale = ratio * Sign(parent.YScale)
+
+        -- this is where we should set the XScale faking...
+        -- "Extend Scale"
+        parent.XScaleLock = true
+        grandparent.XScaleLock = true
+
+
+        --parent.XScale = 1
+        --grandparent.XScale = 1
     end
 end
 
