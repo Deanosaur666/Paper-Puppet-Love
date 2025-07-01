@@ -72,14 +72,19 @@ function DrawHitBall(x, y, radius, flags)
     lg.pop()
 end
 
-function GetPoseHitballs(pose, skeleton)
+function GetPoseHitballs(pose, skeleton, x, y, xscale, yscale)
+    x = x or 0
+    y = y or 0
+    xscale = xscale or 1
+    yscale = yscale or 1
+    
     local balls = {}
     for p, part in ipairs(pose.PartFrames) do
         local blueprint = GetPartBluePrint(part, skeleton)
         for h, _ in ipairs(blueprint.Hitballs) do
             local hitball = HitballFromPart(skeleton, part, h)
-            hitball.X = hitball.X + (skeleton.X or 0) + (pose.X or 0)
-            hitball.Y = hitball.Y + (skeleton.Y or 0) + (pose.Y or 0)
+            hitball.X = (hitball.X + (skeleton.X or 0)) * xscale + x
+            hitball.Y = (hitball.Y + (skeleton.Y or 0)) * yscale + y
             hitball.PartIndex = p
             table.insert(balls, hitball)
         end

@@ -17,24 +17,41 @@ function FighterState()
     }
 end
 
-function GetFighterPose(fstate, fsheet)
+function FighterFrame(fstate, fsheet)
     local skeletonName = fsheet.SkeletonIndex
+    local skeleton = Skeletons[skeletonName]
     local action = fsheet.Actions[fstate.CurrentAction]
     local anim = SkeletonAnimNameMap[skeletonName][action.AnimName]
-
-    return anim.Frames[fstate.CurrentFrame]
-end
-
-function DrawFighter(fstate, fsheet)
-    local pose = GetFighterPose(fstate, fsheet)
-    local skeleton = Skeletons[fsheet.SkeletonIndex]
-    local spriteSet = SpriteSets[fsheet.SpriteSetIndex]
-    local tex = SpriteSheets[fsheet.TextureIndex]
-
+    local pose = anim.Frames[fstate.CurrentFrame]
+    
     local xsc = 1
     if(not fstate.Facing) then
         xsc = -1
     end
 
-    DrawPose(pose, skeleton, spriteSet, tex, fstate.X, fstate.Y, 0, xsc, 1)
+    local fframe = {
+
+        State = fstate,
+        Sheet = fsheet,
+
+        Skeleton = skeleton,
+        Action = action,
+        Animation = anim,
+        Pose = pose,
+        Hitballs = GetPoseHitballs(pose, skeleton, fstate.X, fstate.Y, xsc, 1),
+        XScale = xsc,
+    }
+end
+
+function UpdateFighter(fstate, fframe)
+
+    return fstate
+end
+
+function DrawFighter(fframe)
+    local fstate = fframe.State
+    local spriteSet = SpriteSets[fframe.Sheet.SpriteSetIndex]
+    local tex = SpriteSheets[fframe.Sheet.TextureIndex]
+
+    DrawPose(fframe.Pose, fframe.Skeleton, spriteSet, tex, fstate.X, fstate.Y, 0, fframe.XScale, 1)
 end
