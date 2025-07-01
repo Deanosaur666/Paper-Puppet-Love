@@ -1,14 +1,14 @@
 
 GameProgram = BlankProgram()
 
-TonySkel = Skeletons["Tony"]
-TonyTex = SpriteSheets["Tony W.png"]
-TonySpriteSet = SpriteSets["Tony"]
+TonyState = tableMerge(FighterState(), {
+    X = -ScreenWidth/4
+})
 
-KitSkel = Skeletons["Kitv2Skel"]
-KitTex = SpriteSheets["Kit v2.png"]
---KitTex = SpriteSheets["Agent J.png"]
-KitSpriteSet = SpriteSets["Kitv2Sprite"]
+KitState = tableMerge(FighterState(), {
+    X = ScreenWidth/4,
+    Facing = false,
+})
 
 function GameProgram:Load()
     
@@ -18,11 +18,10 @@ function GameProgram:Draw()
     local lg = love.graphics
     lg.clear(0.3, 0.3, 0.3)
 
-    local tonyPose = SkeletonAnimNameMap["Tony"]["Idle"].Frames[1]
-    local kitPose = SkeletonAnimNameMap["Kitv2Skel"]["Idle"].Frames[1]
+    lg.translate(ScreenWidth/2, ScreenHeight - 50)
 
-    DrawPose(tonyPose, TonySkel, TonySpriteSet, TonyTex, 200, ScreenHeight - 20, 0, 1, 1)
-    DrawPose(kitPose, KitSkel, KitSpriteSet, KitTex, ScreenWidth - 200, ScreenHeight - 20, 0, -1, 1)
+    DrawFighter(TonyState, FighterSheets["Tony"])
+    DrawFighter(KitState, FighterSheets["Kit"])
 end
 
 function GameProgram:Update()

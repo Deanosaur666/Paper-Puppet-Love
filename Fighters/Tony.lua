@@ -11,3 +11,7 @@ tony.TextureIndex = "Tony R2.png"
 tony.SpriteSetIndex = "Tony"
 
 tony.IdleAnimation = "Idle"
+
+local idle = AddAction(tony, "Idle", Action("Idle", {
+    NextAction = "Idle"
+}))

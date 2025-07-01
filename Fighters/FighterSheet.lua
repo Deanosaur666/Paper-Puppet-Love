@@ -27,3 +27,23 @@ function BaseFighterSheet()
         Actions = {}
     }
 end
+
+function AddAction(fighterSheet, actionName, action)
+    fighterSheet.Actions[actionName] = action
+    return action
+end
+
+function Action(animName, props)
+    local action = {
+        AnimName = animName,
+        NextAction = nil,
+        Startup = 0,
+        Active = 0,
+        Recovery = 0,
+    }
+    for k, v in pairs(props) do
+        action[k] = v
+    end
+
+    return action
+end
