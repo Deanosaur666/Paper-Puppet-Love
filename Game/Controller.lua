@@ -183,3 +183,8 @@ function ControllerInputReleased(controller, button)
     return bit.band(controller.PressedThisFrame, button) == 0 and 
             bit.band(controller.PressedLastFrame, button) ~= 0
 end
+
+-- TODO
+-- input buffered
+-- input held since time (for charging)
+-- dash shortcut (double tap)
