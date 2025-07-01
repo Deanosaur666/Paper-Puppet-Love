@@ -7,12 +7,6 @@ Jimbo says:
 -Hotkeys to change sprite sheet in blueprint and animation editors (So you don't need to return to sprite editor)
 -Button or key to discard all changes and reload (without exiting and re-opening)
 
-"Extend Scale" which is a seperate scaling value which visually scales based on a ratio when extending an IK part
-
-Sort part update order based on parenting, rather than manually ordered...
-    Parts with no parents first,
-    Then, parts parented to that part,
-    Etc...
 
 Labeling hitballs for gameplay purposes (may be useful if you want a projectile to spawn from a specific hitball, or want a weak spot)
 Labeling specific frames? (we probably want to know if a frame is considered active, recovery?, or is a charge frame?)

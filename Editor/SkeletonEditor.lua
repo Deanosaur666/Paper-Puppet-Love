@@ -273,6 +273,7 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
 
                 part.XScale = CurrentPartStartXScale * ((ball.Radius+dx) / ball.Radius)
                 part.YScale = CurrentPartStartYScale * ((ball.Radius+dy) / ball.Radius)
+                part.XScaleLock = false
 
                 if(dx ~= 0 or dy ~= 0) then
                     SkeletonModified = true
