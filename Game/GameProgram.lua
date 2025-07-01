@@ -47,4 +47,25 @@ function GameProgram:Update()
         TonyState.Facing = not TonyState.Facing
         KitState.Facing = not KitState.Facing
     end
+
+    local dx = 20
+
+    if(love.keyboard.isDown("left")) then
+        if(AltDown) then
+            TonyFrame.Skeleton.X = TonyFrame.Skeleton.X - dx
+            KitFrame.Skeleton.X = KitFrame.Skeleton.X - dx
+        else
+            TonyState.X = TonyState.X - dx*TonyFrame.XScale
+            KitState.X = KitState.X - dx*KitFrame.XScale
+        end
+    end
+    if(love.keyboard.isDown("right")) then
+        if(AltDown) then
+            TonyFrame.Skeleton.X = TonyFrame.Skeleton.X + dx
+            KitFrame.Skeleton.X = KitFrame.Skeleton.X + dx
+        else
+            TonyState.X = TonyState.X + dx*TonyFrame.XScale
+            KitState.X = KitState.X + dx*KitFrame.XScale
+        end
+    end
 end

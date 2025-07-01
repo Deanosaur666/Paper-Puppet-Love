@@ -45,8 +45,9 @@ function DrawPose(frame, skeleton, spriteset, texture, x, y, rot, xscale, yscale
     local lg = love.graphics
 
     lg.push("all")
-    lg.translate(x + (skeleton.X or 0) + (frame.X or 0), y + (skeleton.Y or 0) + (frame.Y or 0))
+    lg.translate(x, y)
     lg.scale(xscale, yscale)
+    lg.translate(skeleton.X or 0, skeleton.Y or 0)
     lg.rotate(rot)
 
 
