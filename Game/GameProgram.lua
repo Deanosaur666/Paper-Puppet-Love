@@ -14,6 +14,7 @@ KitState = tableMerge(FighterState(), {
 
 KitFrame = FighterFrame(KitState, FighterSheets["Kit"])
 
+
 function GameProgram:Load()
     
 end
@@ -27,6 +28,9 @@ function GameProgram:Draw()
 
     DrawFighter(TonyFrame)
     DrawFighter(KitFrame)
+
+    DrawHitballs(TonyFrame.Hitballs)
+    DrawHitballs(KitFrame.Hitballs)
 end
 
 function GameProgram:Update()
@@ -37,4 +41,10 @@ function GameProgram:Update()
     -- update frame info based on state and sheet
     TonyFrame = FighterFrame(TonyState, FighterSheets["Tony"])
     KitFrame = FighterFrame(KitState, FighterSheets["Kit"])
+
+    -- flip
+    if(KeysPressed["f"]) then
+        TonyState.Facing = not TonyState.Facing
+        KitState.Facing = not KitState.Facing
+    end
 end

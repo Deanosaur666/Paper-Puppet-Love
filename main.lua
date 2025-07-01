@@ -63,8 +63,8 @@ function  love.load(args)
         CurrentProgram = EditorProgram
         CurrentProgram:Load()
     else
-        require "Game"
         require "Fighters"
+        require "Game"
         CurrentProgram = GameProgram
         CurrentProgram:Load()
         print("RUNNING GAME")

@@ -72,6 +72,24 @@ function DrawHitBall(x, y, radius, flags)
     lg.pop()
 end
 
+function DrawHitballs(hitballs)    
+    local lg = love.graphics
+
+    lg.push("all")
+
+    for _, hitball in ipairs(hitballs) do
+        local hx = hitball.X
+        local hy = hitball.Y
+        local hr = hitball.Radius
+        local r, g, b = HitballColor(hitball.Flags)
+        lg.setColor(r, g, b)
+
+        DrawHitBall(hx, hy, hr, hitball.Flags)        
+    end
+
+    lg.pop()
+end
+
 function GetPoseHitballs(pose, skeleton, x, y, xscale, yscale)
     x = x or 0
     y = y or 0

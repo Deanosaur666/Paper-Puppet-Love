@@ -41,6 +41,8 @@ function FighterFrame(fstate, fsheet)
         Hitballs = GetPoseHitballs(pose, skeleton, fstate.X, fstate.Y, xsc, 1),
         XScale = xsc,
     }
+
+    return fframe
 end
 
 function UpdateFighter(fstate, fframe)
