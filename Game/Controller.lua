@@ -26,6 +26,8 @@ BUTTON_START = 1024
 BUTTON_CONFIRM = 2048
 BUTTON_CANCEL = 2048*2
 
+BUTTON_FIRST = BUTTON_RIGHT
+BUTTON_LAST = BUTTON_CANCEL
 
 function FlipInput(facing, input)
     -- no change if facing right
@@ -42,10 +44,27 @@ function FlipInput(facing, input)
     return input
 end
 
+function Controller(player)
+    return {
+        Player = player,
+        PressedThisFrame = 0,
+        PressedLastFrame = 0,
+
+        -- record of previous inputs
+        InputFrame = {},
+        InputTime = {},
+
+        -- input buffering
+        LastBuffered = nil,
+        BufferTime = nil,
+    }
+end
+
 function ControllerMapping(player)
     local keys = {}
     local gpButtons = {}
     local mapping = {
+        Player = player,
         Keys = keys,
         GPButtons = gpButtons,
     }
@@ -91,5 +110,44 @@ function ControllerMapping(player)
     -- gamepad stuff
 
     return mapping
+
+end
+
+function GetButtons(controls)
+    
+    local button = BUTTON_FIRST
+    local input = 0
+
+    -- iterate through all buttons
+    while(button <= BUTTON_LAST) do
+        local keys = controls.Keys[button]
+
+        for _, key in ipairs(keys) do
+            if(love.keyboard.isDown(key)) then
+                input = bit.bor(input, button)
+            end
+        end
+
+        -- TODO: check gamepad input
+
+        button = button * 2
+    end
+
+    -- SOCD
+    local updown = bit.bor(BUTTON_UP, BUTTON_DOWN)
+    local leftright = bit.bor(BUTTON_LEFT, BUTTON_RIGHT)
+
+    if(bit.band(input, updown) == updown) then
+        input = bit.band(input, bit.bnot(updown))
+    end
+    if(bit.band(input, leftright) == leftright) then
+        input = bit.band(input, bit.bnot(leftright))
+    end
+
+    return input
+
+end
+
+function UpdateController(controller, currentframe)
 
 end
