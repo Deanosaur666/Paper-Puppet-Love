@@ -1,4 +1,6 @@
 
+CurrentFrame = 0
+
 GameProgram = BlankProgram()
 
 TonyState = tableMerge(FighterState(), {

@@ -23,6 +23,14 @@ function FighterFrame(fstate, fsheet)
     local action = fsheet.Actions[fstate.CurrentAction]
     local anim = SkeletonAnimNameMap[skeletonName][action.AnimName]
     local pose = anim.Frames[fstate.CurrentFrame]
+
+    -- TWEEN test
+    --pose = TweenedPose(skeleton, pose, anim.Frames[fstate.CurrentFrame+3], (CurrentFrame % 30)/30)
+    --UpdatePose(pose, skeleton)
+    
+    --if(math.random(0, 10) > 5) then
+    --    pose = anim.Frames[fstate.CurrentFrame+1]
+    --end
     
     local xsc = 1
     if(not fstate.Facing) then
