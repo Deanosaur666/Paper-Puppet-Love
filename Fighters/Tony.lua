@@ -15,3 +15,5 @@ tony.IdleAnimation = "Idle"
 local idle = AddAction(tony, "Idle", Action("Idle", {
     NextAction = "Idle"
 }))
+
+local jab = AddAction(tony, "Jab", Action("Jab", {}))

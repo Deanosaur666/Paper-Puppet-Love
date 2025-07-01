@@ -143,6 +143,10 @@ function EditorProgram:KeyPressed(key, scancode, isrepeat)
     elseif(key == "3" and filesSelected) then
         CurrentScreen = AnimationEditor()
         return
+    elseif(key == "0") then
+        --CurrentProgram = GameProgram
+        LaunchGame()
+        return
     end
 
     if(CurrentScreen ~= nil) then

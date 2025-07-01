@@ -12,3 +12,5 @@ kit.IdleAnimation = "Idle"
 local idle = AddAction(kit, "Idle", Action("Idle", {
     NextAction = "Idle"
 }))
+
+local jab = AddAction(kit, "Jab", Action("Punch", {}))

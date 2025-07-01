@@ -6,6 +6,8 @@ function FighterState()
     return {
         -- basically their current animation
         CurrentAction = "Idle",
+        -- I cut the "time left" value, because it's unnecessary, and you can find this by just looking at the animation
+        -- so rather than frame index, this is just a timer
         CurrentFrame = 1,
 
         X = 0,
@@ -16,13 +18,23 @@ function FighterState()
     }
 end
 
+function BeginAction(fstate, action)
+    fstate.CurrentAction = action
+    fstate.CurrentFrame = 1
+end
+
 function FighterFrame(fstate, fsheet)
     local skeletonName = fsheet.SkeletonIndex
     local skeleton = Skeletons[skeletonName]
     local action = fsheet.Actions[fstate.CurrentAction]
     local anim = SkeletonAnimNameMap[skeletonName][action.AnimName]
     --local pose = anim.Frames[fstate.CurrentFrame]
-    local pose = GetAnimationFrame(anim, fstate.CurrentFrame, true)
+    local pose = GetAnimationFrame(anim, fstate.CurrentFrame, fstate.CurrentAction == "Idle")
+    
+    if(pose == nil) then
+        BeginAction(fstate, "Idle")
+        pose = GetAnimationFrame(anim, fstate.CurrentFrame, false)
+    end
     
 
     -- TWEEN test

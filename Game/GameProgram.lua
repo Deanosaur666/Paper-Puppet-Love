@@ -2,6 +2,7 @@
 CurrentFrame = 0
 
 GameProgram = BlankProgram()
+DisplayHitballs = true
 
 TonyState = tableMerge(FighterState(), {
     X = -ScreenWidth/4
@@ -15,6 +16,12 @@ KitState = tableMerge(FighterState(), {
 })
 
 KitFrame = FighterFrame(KitState, FighterSheets["Kit"])
+
+function GameProgram:KeyPressed(key, scancode, isrepeat)
+    if(key == 'b') then
+        DisplayHitballs = not DisplayHitballs
+    end
+end
 
 
 function GameProgram:Load()
@@ -37,12 +44,17 @@ function GameProgram:Draw()
     DrawFighter(TonyFrame)
     DrawFighter(KitFrame)
 
-    DrawHitballs(TonyFrame.Hitballs)
-    DrawHitballs(KitFrame.Hitballs)
+    if(DisplayHitballs) then
+        DrawHitballs(TonyFrame.Hitballs)
+        DrawHitballs(KitFrame.Hitballs)
+    end
 end
 
 function GameProgram:Update()
     CurrentFrame = CurrentFrame + 1
+
+    local tonyAttack = "Jab"
+    local kitAttack = "Jab"
     
     UpdateController(P1Controller, P1Controls, CurrentFrame)
     UpdateController(P2Controller, P2Controls, CurrentFrame)
@@ -58,11 +70,13 @@ function GameProgram:Update()
     local dx = 10
 
     if(ControllerInputPressed(P1Controller, BUTTON_A)) then
-        TonyState.Facing = not TonyState.Facing
+        --TonyState.Facing = not TonyState.Facing
+        BeginAction(TonyState, tonyAttack)
     end
 
     if(ControllerInputPressed(P2Controller, BUTTON_A)) then
-        KitState.Facing = not KitState.Facing
+        --KitState.Facing = not KitState.Facing
+        BeginAction(KitState, kitAttack)
     end
 
     if(ControllerInputDown(P1Controller, BUTTON_LEFT)) then
