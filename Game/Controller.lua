@@ -26,8 +26,12 @@ BUTTON_START = 1024
 BUTTON_CONFIRM = 2048
 BUTTON_CANCEL = 2048*2
 
+BUTTON_MENUBUTTONS = bit.bor(BUTTON_START, BUTTON_CONFIRM, BUTTON_CANCEL)
+
 BUTTON_FIRST = BUTTON_RIGHT
 BUTTON_LAST = BUTTON_CANCEL
+
+MAX_INPUTS = 100
 
 function FlipInput(facing, input)
     -- no change if facing right
@@ -102,7 +106,7 @@ function ControllerMapping(player)
         keys[BUTTON_LEFT] = { "left" }
         keys[BUTTON_RIGHT] = { "right" }
 
-        keys[BUTTON_START] = { "kpenter", "enter" }
+        keys[BUTTON_START] = { "kpenter", "return" }
         keys[BUTTON_CONFIRM] = { "kp1" }
         keys[BUTTON_CANCEL] = { "kp2" }
     end
@@ -148,6 +152,34 @@ function GetButtons(controls)
 
 end
 
-function UpdateController(controller, currentframe)
+function UpdateController(controller, controls, currentframe)
+    controller.PressedLastFrame = controller.PressedThisFrame
+    controller.PressedThisFrame = 0
+    controller.PressedThisFrame = GetButtons(controls)
+    -- remove menu buttons so they don't end up in timeline
+    controller.PressedThisFrame = bit.band(controller.PressedThisFrame, bit.bnot(BUTTON_MENUBUTTONS))
 
+    if(controller.PressedThisFrame ~= controller.PressedLastFrame) then
+        table.insert(controller.InputFrame, 1, controller.PressedLastFrame)
+        table.insert(controller.InputTime, 1, currentframe)
+    end
+
+    while(#controller.InputTime > MAX_INPUTS) do
+        table.remove(controller.InputFrame)
+        table.remove(controller.InputTime)
+    end
+end
+
+function ControllerInputDown(controller, button)
+    return bit.band(controller.PressedThisFrame, button) ~= 0
+end
+
+function ControllerInputPressed(controller, button)
+    return bit.band(controller.PressedThisFrame, button) ~= 0 and 
+            bit.band(controller.PressedLastFrame, button) == 0
+end
+
+function ControllerInputReleased(controller, button)
+    return bit.band(controller.PressedThisFrame, button) == 0 and 
+            bit.band(controller.PressedLastFrame, button) ~= 0
 end

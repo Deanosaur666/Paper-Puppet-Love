@@ -16,7 +16,13 @@ KitFrame = FighterFrame(KitState, FighterSheets["Kit"])
 
 
 function GameProgram:Load()
-    
+    P1Controls = ControllerMapping(1)
+    P2Controls = ControllerMapping(2)
+
+    P1Controller = Controller(1)
+    P2Controller = Controller(2)
+
+    CurrentFrame = 0
 end
 
 function GameProgram:Draw()
@@ -34,6 +40,11 @@ function GameProgram:Draw()
 end
 
 function GameProgram:Update()
+    CurrentFrame = CurrentFrame + 1
+    
+    UpdateController(P1Controller, P1Controls, CurrentFrame)
+    UpdateController(P2Controller, P2Controls, CurrentFrame)
+
     -- update state with previous state and frame info
     TonyState = UpdateFighter(TonyState, TonyFrame)
     KitState = UpdateFighter(KitState, KitFrame)
@@ -42,30 +53,28 @@ function GameProgram:Update()
     TonyFrame = FighterFrame(TonyState, FighterSheets["Tony"])
     KitFrame = FighterFrame(KitState, FighterSheets["Kit"])
 
-    -- flip
-    if(KeysPressed["f"]) then
+    local dx = 10
+
+    if(ControllerInputPressed(P1Controller, BUTTON_A)) then
         TonyState.Facing = not TonyState.Facing
+    end
+
+    if(ControllerInputPressed(P2Controller, BUTTON_A)) then
         KitState.Facing = not KitState.Facing
     end
 
-    local dx = 20
+    if(ControllerInputDown(P1Controller, BUTTON_LEFT)) then
+        TonyState.X = TonyState.X - dx
+    end
+    if(ControllerInputDown(P1Controller, BUTTON_RIGHT)) then
+        TonyState.X = TonyState.X + dx
+    end
 
-    if(love.keyboard.isDown("left")) then
-        if(AltDown) then
-            TonyFrame.Skeleton.X = TonyFrame.Skeleton.X - dx
-            KitFrame.Skeleton.X = KitFrame.Skeleton.X - dx
-        else
-            TonyState.X = TonyState.X - dx*TonyFrame.XScale
-            KitState.X = KitState.X - dx*KitFrame.XScale
-        end
+    if(ControllerInputDown(P2Controller, BUTTON_LEFT)) then
+        KitState.X = KitState.X - dx
     end
-    if(love.keyboard.isDown("right")) then
-        if(AltDown) then
-            TonyFrame.Skeleton.X = TonyFrame.Skeleton.X + dx
-            KitFrame.Skeleton.X = KitFrame.Skeleton.X + dx
-        else
-            TonyState.X = TonyState.X + dx*TonyFrame.XScale
-            KitState.X = KitState.X + dx*KitFrame.XScale
-        end
+    if(ControllerInputDown(P2Controller, BUTTON_RIGHT)) then
+        KitState.X = KitState.X + dx
     end
+    
 end
