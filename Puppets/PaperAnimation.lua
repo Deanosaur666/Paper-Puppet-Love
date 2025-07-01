@@ -195,3 +195,23 @@ function Animation(name)
         Frames = {}, -- an array of poses
     }
 end
+
+function GetAnimationFrame(anim, time, loop)
+    local duration = 0
+    for _, f in ipairs(anim.Frames) do
+        duration = duration + f.Duration
+    end
+    if(loop) then
+        time = time % duration
+    end
+    
+    local counter = 0
+    for _, f in ipairs(anim.Frames) do
+        counter = counter + f.Duration
+        if(counter > time) then
+            return f
+        end
+    end
+
+    return nil
+end

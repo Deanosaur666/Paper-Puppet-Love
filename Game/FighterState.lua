@@ -7,7 +7,6 @@ function FighterState()
         -- basically their current animation
         CurrentAction = "Idle",
         CurrentFrame = 1,
-        FrameTimeLeft = 0,
 
         X = 0,
         Y = 0,
@@ -22,7 +21,9 @@ function FighterFrame(fstate, fsheet)
     local skeleton = Skeletons[skeletonName]
     local action = fsheet.Actions[fstate.CurrentAction]
     local anim = SkeletonAnimNameMap[skeletonName][action.AnimName]
-    local pose = anim.Frames[fstate.CurrentFrame]
+    --local pose = anim.Frames[fstate.CurrentFrame]
+    local pose = GetAnimationFrame(anim, fstate.CurrentFrame, true)
+    
 
     -- TWEEN test
     --pose = TweenedPose(skeleton, pose, anim.Frames[fstate.CurrentFrame+3], (CurrentFrame % 30)/30)
@@ -54,6 +55,7 @@ function FighterFrame(fstate, fsheet)
 end
 
 function UpdateFighter(fstate, fframe)
+    fstate.CurrentFrame = fstate.CurrentFrame + 1
 
     return fstate
 end
