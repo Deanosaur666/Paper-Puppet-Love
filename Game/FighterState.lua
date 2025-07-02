@@ -69,9 +69,21 @@ function FighterFrame(fstate, fsheet)
     return fframe
 end
 
-function UpdateFighter(fstate, fframe)
+function UpdateFighter(fstate, fframe, controller)
     fstate.CurrentFrame = fstate.CurrentFrame + 1
 
+    if(ControllerInputPressed(controller, BUTTON_A)) then
+        BeginAction(fstate, "Jab")
+    end
+
+    if(ControllerInputDown(controller, BUTTON_LEFT)) then
+        fstate.X = fstate.X - 10
+    end
+    if(ControllerInputDown(controller, BUTTON_RIGHT)) then
+        fstate.X = fstate.X + 10
+    end
+
+    -- create new fighter frame at the end, after updating state a bunch
     fframe = FighterFrame(fstate, fframe.Sheet)
     return fstate, fframe
 end
