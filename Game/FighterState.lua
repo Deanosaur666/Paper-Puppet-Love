@@ -70,7 +70,14 @@ function FighterFrame(fstate, fsheet)
     return fframe
 end
 
-function UpdateFighter(fstate, fframe, controller)
+-- fsheet is only needed if fframe is nil
+-- might be useful for rollback. IDK
+function UpdateFighter(fstate, fframe, controller, fsheet)
+    
+    if(fframe == nil) then
+        fframe = FighterFrame(fstate, fsheet)
+    end
+    
     fstate.CurrentFrame = fstate.CurrentFrame + 1
 
     local pose = GetAnimationFrame(fframe.Animation, fstate.CurrentFrame)
