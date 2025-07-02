@@ -21,23 +21,22 @@ function FighterState(props)
     return state
 end
 
-function BeginAction(fstate, action)
-    fstate.CurrentAction = action
-    fstate.CurrentFrame = 1
+function BeginAction(fstate, fframe, actionName, override)
+
+    local action = fframe.Sheet.Actions[actionName]
+    if(override or bit.band(fframe.StateFlags, action.ReqStateFlags) == action.ReqStateFlags) then
+        fstate.CurrentAction = actionName
+        fstate.CurrentFrame = 1
+    end
 end
 
 function FighterFrame(fstate, fsheet)
     local skeletonName = fsheet.SkeletonIndex
     local skeleton = Skeletons[skeletonName]
     local action = fsheet.Actions[fstate.CurrentAction]
-    local anim = SkeletonAnimNameMap[skeletonName][action.AnimName]
+    local anim = action.Animation
     --local pose = anim.Frames[fstate.CurrentFrame]
     local pose = GetAnimationFrame(anim, fstate.CurrentFrame, fstate.CurrentAction == "Idle")
-    
-    if(pose == nil) then
-        BeginAction(fstate, "Idle")
-        pose = GetAnimationFrame(anim, fstate.CurrentFrame, false)
-    end
     
 
     -- TWEEN test
@@ -64,6 +63,8 @@ function FighterFrame(fstate, fsheet)
         Pose = pose,
         Hitballs = GetPoseHitballs(pose, skeleton, fstate.X, fstate.Y, xsc, 1),
         XScale = xsc,
+
+        StateFlags = action.StateFlags,
     }
 
     return fframe
@@ -72,8 +73,13 @@ end
 function UpdateFighter(fstate, fframe, controller)
     fstate.CurrentFrame = fstate.CurrentFrame + 1
 
+    local pose = GetAnimationFrame(fframe.Animation, fstate.CurrentFrame)
+    if(pose == nil) then
+        BeginAction(fstate, fframe, "Idle")
+    end
+
     if(ControllerInputPressed(controller, BUTTON_A)) then
-        BeginAction(fstate, "Jab")
+        BeginAction(fstate, fframe, "Jab")
     end
 
     if(ControllerInputDown(controller, BUTTON_LEFT)) then

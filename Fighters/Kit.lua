@@ -9,8 +9,11 @@ kit.SpriteSetIndex = "Kitv2Sprite"
 
 kit.IdleAnimation = "Idle"
 
-local idle = AddAction(kit, "Idle", Action("Idle", {
-    NextAction = "Idle"
-}))
+local idle = AddAction(kit, "Idle", "Idle", {
+    NextAction = "Idle",
+    StateFlags = STATE_IDLE,
+})
 
-local jab = AddAction(kit, "Jab", Action("Punch", {}))
+local jab = AddAction(kit, "Jab", "Punch", {
+    ReqStateFlags = STATE_CANATTACK,
+})

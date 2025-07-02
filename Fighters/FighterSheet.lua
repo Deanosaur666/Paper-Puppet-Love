@@ -1,13 +1,9 @@
--- basic fighter sheet that other fighters effectively inherit from
+-- state flags
+STATE_CANMOVE = 2^0
+STATE_CANATTACK = 2^1
+STATE_IDLE = bit.bor(STATE_CANMOVE, STATE_CANATTACK)
 
--- a fighter has:
--- a skeleton
--- a texture
--- a spriteset
-
--- base values for movement speed, health, et cetera
--- actions (animations tied to states or attacks)
-
+-- stores all fighter sheets
 FighterSheets = {}
 
 function BaseFighterSheet()
@@ -28,15 +24,22 @@ function BaseFighterSheet()
     }
 end
 
-function AddAction(fighterSheet, actionName, action)
-    fighterSheet.Actions[actionName] = action
+-- actions
+-- actions are tied to a single animation, and have state and input information
+function AddAction(fighterSheet, actionName, animName, props)
+    fighterSheet.Actions[actionName] = Action(fighterSheet, animName, props)
     return action
 end
 
-function Action(animName, props)
+function Action(fighterSheet, animName, props)
+    props = props or {}
     local action = {
-        AnimName = animName,
+        Animation = SkeletonAnimNameMap[fighterSheet.SkeletonIndex][animName],
         NextAction = nil,
+
+        StateFlags = 0,
+        ReqStateFlags = 0,
+
         Startup = 0,
         Active = 0,
         Recovery = 0,

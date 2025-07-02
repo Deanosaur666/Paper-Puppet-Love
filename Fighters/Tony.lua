@@ -12,8 +12,11 @@ tony.SpriteSetIndex = "Tony"
 
 tony.IdleAnimation = "Idle"
 
-local idle = AddAction(tony, "Idle", Action("Idle", {
-    NextAction = "Idle"
-}))
+local idle = AddAction(tony, "Idle", "Idle", {
+    NextAction = "Idle",
+    StateFlags = STATE_IDLE,
+})
 
-local jab = AddAction(tony, "Jab", Action("Jab", {}))
+local jab = AddAction(tony, "Jab", "Jab", {
+    ReqStateFlags = STATE_CANATTACK,
+})
