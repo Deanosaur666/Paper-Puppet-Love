@@ -1,6 +1,6 @@
 
 local agentJ = deepcopy(FighterSheets["Kit"])
 
-FighterSheets["AgentJ"] = agentJ
+FighterSheets["Agent J"] = agentJ
 
 agentJ.TextureIndex = "Agent J.png"

@@ -43,8 +43,8 @@ function GameProgram:Load()
     P2Controller = Controller(2)
 
 
-    ControlMappings = { P1Controls, P2Controls }
-    Controllers = { P1Controller, P2Controller }
+    PlayerControls = { P1Controls, P2Controls }
+    PlayerControllers = { P1Controller, P2Controller }
 
     StartGame()
 end
@@ -68,8 +68,9 @@ function GameProgram:Update()
 
     local attack = "Jab"
     
-    UpdateController(P1Controller, P1Controls, CurrentFrame)
-    UpdateController(P2Controller, P2Controls, CurrentFrame)
+    for i, controller in pairs(PlayerControllers) do
+        UpdateController(controller, PlayerControls[i], CurrentFrame)
+    end
 
     -- update state and frame with previous state and frame info
     for i, state in pairs(ActiveFighterStates) do
@@ -80,14 +81,14 @@ function GameProgram:Update()
 
 
     for i, state in pairs(ActiveFighterStates) do
-        if(ControllerInputPressed(Controllers[i], BUTTON_A)) then
+        if(ControllerInputPressed(PlayerControllers[i], BUTTON_A)) then
             BeginAction(ActiveFighterStates[i], attack)
         end
 
-        if(ControllerInputDown(Controllers[i], BUTTON_LEFT)) then
+        if(ControllerInputDown(PlayerControllers[i], BUTTON_LEFT)) then
             state.X = state.X - dx
         end
-        if(ControllerInputDown(Controllers[i], BUTTON_RIGHT)) then
+        if(ControllerInputDown(PlayerControllers[i], BUTTON_RIGHT)) then
             state.X = state.X + dx
         end
     end
