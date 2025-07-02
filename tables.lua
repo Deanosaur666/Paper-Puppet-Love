@@ -41,6 +41,7 @@ function fillArray(t, val, len)
 end
 
 function tableMerge(t1, t2)
+  t2 = t2 or {}
   for k, v in pairs(t2) do
     t1[k] = v
   end

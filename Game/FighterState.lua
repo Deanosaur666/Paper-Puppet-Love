@@ -2,8 +2,8 @@
 -- needs: a reference to a Fighter sheet
 -- x, y, facing, current animation, current frame
 
-function FighterState()
-    return {
+function FighterState(props)
+    local state = {
         -- basically their current animation
         CurrentAction = "Idle",
         -- I cut the "time left" value, because it's unnecessary, and you can find this by just looking at the animation
@@ -16,6 +16,9 @@ function FighterState()
         -- facing right
         Facing = true,
     }
+    state = tableMerge(state, props)
+
+    return state
 end
 
 function BeginAction(fstate, action)
@@ -69,7 +72,8 @@ end
 function UpdateFighter(fstate, fframe)
     fstate.CurrentFrame = fstate.CurrentFrame + 1
 
-    return fstate
+    fframe = FighterFrame(fstate, fframe.Sheet)
+    return fstate, fframe
 end
 
 function DrawFighter(fframe)

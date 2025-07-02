@@ -4,18 +4,29 @@ CurrentFrame = 0
 GameProgram = BlankProgram()
 DisplayHitballs = true
 
-TonyState = tableMerge(FighterState(), {
-    X = -ScreenWidth/4
-})
+StartOffset = ScreenWidth/4
 
-TonyFrame = FighterFrame(TonyState, FighterSheets["Tony"])
+ActiveFighterSheets = {}
+ActiveFighterStates = {}
+ActiveFighterFrames = {}
 
-KitState = tableMerge(FighterState(), {
-    X = ScreenWidth/4,
-    Facing = false,
-})
+Controllers = {}
+ControlMappings = {}
 
-KitFrame = FighterFrame(KitState, FighterSheets["Kit"])
+function AddActiveFighter(player, sheetName)
+    ActiveFighterSheets[player] = FighterSheets[sheetName]
+    local x = -StartOffset
+    local facing = true
+    if(player == 2) then
+        x = StartOffset
+        facing = false
+    end
+    ActiveFighterStates[player] = FighterState({
+        X = x,
+        Facing = facing
+    })
+    ActiveFighterFrames[player] = FighterFrame(ActiveFighterStates[player], ActiveFighterSheets[player])
+end
 
 function GameProgram:KeyPressed(key, scancode, isrepeat)
     if(key == 'b') then
@@ -31,7 +42,11 @@ function GameProgram:Load()
     P1Controller = Controller(1)
     P2Controller = Controller(2)
 
-    CurrentFrame = 0
+
+    ControlMappings = { P1Controls, P2Controls }
+    Controllers = { P1Controller, P2Controller }
+
+    StartGame()
 end
 
 function GameProgram:Draw()
@@ -40,57 +55,52 @@ function GameProgram:Draw()
 
     lg.translate(ScreenWidth/2, ScreenHeight - 50)
 
-
-    DrawFighter(TonyFrame)
-    DrawFighter(KitFrame)
-
-    if(DisplayHitballs) then
-        DrawHitballs(TonyFrame.Hitballs)
-        DrawHitballs(KitFrame.Hitballs)
+    for _, frame in pairs(ActiveFighterFrames) do
+        DrawFighter(frame)
+        if(DisplayHitballs) then
+            DrawHitballs(frame.Hitballs)
+        end
     end
 end
 
 function GameProgram:Update()
     CurrentFrame = CurrentFrame + 1
 
-    local tonyAttack = "Jab"
-    local kitAttack = "Jab"
+    local attack = "Jab"
     
     UpdateController(P1Controller, P1Controls, CurrentFrame)
     UpdateController(P2Controller, P2Controls, CurrentFrame)
 
-    -- update state with previous state and frame info
-    TonyState = UpdateFighter(TonyState, TonyFrame)
-    KitState = UpdateFighter(KitState, KitFrame)
-    
-    -- update frame info based on state and sheet
-    TonyFrame = FighterFrame(TonyState, FighterSheets["Tony"])
-    KitFrame = FighterFrame(KitState, FighterSheets["Kit"])
+    -- update state and frame with previous state and frame info
+    for i, state in pairs(ActiveFighterStates) do
+        ActiveFighterStates[i], ActiveFighterFrames[i] = UpdateFighter(state, ActiveFighterFrames[i])
+    end
 
     local dx = 10
 
-    if(ControllerInputPressed(P1Controller, BUTTON_A)) then
-        --TonyState.Facing = not TonyState.Facing
-        BeginAction(TonyState, tonyAttack)
-    end
 
-    if(ControllerInputPressed(P2Controller, BUTTON_A)) then
-        --KitState.Facing = not KitState.Facing
-        BeginAction(KitState, kitAttack)
-    end
+    for i, state in pairs(ActiveFighterStates) do
+        if(ControllerInputPressed(Controllers[i], BUTTON_A)) then
+            BeginAction(ActiveFighterStates[i], attack)
+        end
 
-    if(ControllerInputDown(P1Controller, BUTTON_LEFT)) then
-        TonyState.X = TonyState.X - dx
-    end
-    if(ControllerInputDown(P1Controller, BUTTON_RIGHT)) then
-        TonyState.X = TonyState.X + dx
-    end
-
-    if(ControllerInputDown(P2Controller, BUTTON_LEFT)) then
-        KitState.X = KitState.X - dx
-    end
-    if(ControllerInputDown(P2Controller, BUTTON_RIGHT)) then
-        KitState.X = KitState.X + dx
+        if(ControllerInputDown(Controllers[i], BUTTON_LEFT)) then
+            state.X = state.X - dx
+        end
+        if(ControllerInputDown(Controllers[i], BUTTON_RIGHT)) then
+            state.X = state.X + dx
+        end
     end
     
+end
+
+function StartGame()
+    CurrentFrame = 0
+
+    AddActiveFighter(1, "Tony")
+    AddActiveFighter(2, "Kit")
+end
+
+function UpdateGame()
+
 end
