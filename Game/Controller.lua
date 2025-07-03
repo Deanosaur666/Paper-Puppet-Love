@@ -198,13 +198,111 @@ function ControllerInputReleased(controller, button)
 end
 
 -- TODO
--- input buffered
--- input held since time (for charging)
--- dash shortcut (double tap)
+
+function InputBuffered(controller, button, bufferLength)
+    local lastPressed = nil
+    local lastNotPressed = nil
+
+    -- if nil, become 10
+    bufferLength = bufferLength or 10
+
+    local maxTime = math.max(60, bufferLength*4)
+
+    for i = 1, #controller.InputFrame, 1 do
+        local input = controller.InputFrame[i]
+        local time = controller.InputTime[i]
+
+        if(lastNotPressed == nil and bit.band(input, button) == button) then
+            lastPressed = time
+        end
+
+        if(lastPressed ~= nil and not (bit.band(input, button) == button)) then
+            lastNotPressed = time
+        end
+
+        if(CurrentFrame - time > maxTime and lastPressed == nil) then
+            return false
+        end
+
+        if(lastPressed ~= nil and lastNotPressed ~= nil) then
+            if(CurrentFrame - lastPressed < bufferLength) then
+                -- we use this for "lastbuffered" so once an attack is performed...
+                -- we don't check the buffer for inputs that occurred BEFORE it was buffered
+                controller.BufferTime = lastPressed
+                return true
+            else
+                return false
+            end
+        end
+    end
+
+    return false
+end
 
 -- Has the button been held for at LEAST [length] frames?
 function ControllerInputHeld(controller, button, length)
     if (not ControllerInputDown(controller, button) or (not ControllerInputDownLastFrame(controller, button))) then
         return false
     end
+
+    for i = 1, #controller.InputFrame, 1 do
+        local input = controller.InputFrame[i]
+        local time = controller.InputTime[i]
+
+        -- we are progressing BACK in time...
+        -- So if it is late enough (within the window), and not pressed...
+        -- then the button has not been held for long enough
+        if(time > CurrentFrame - length and bit.band(input, button) ~= button) then
+            return false
+        end
+
+        if(time < CurrentFrame - length) then
+            return true
+        end
+    end
+
+    return true
+end
+
+function CheckDashShortcut(controller, dir, input, bufferLength)
+    local i = 1
+    local time = nil
+
+    bufferLength = bufferLength or 14
+    
+    -- start with the second input, and go back to find ther non-input
+    -- loop through inputs to find the non-input
+    while bit.band(input, dir) ~= 0 do
+        input = controller.InputFrame[i]
+        time = controller.InputTime[i]
+        i = i + 1
+
+        if(i > #controller.InputFrame) then
+            return false
+        end
+
+        if(CurrentFrame - time > bufferLength) then
+            return false
+        end
+    end
+    -- if we exit the while loop, we've found a "direction release" within time (the "middle" of the input)
+    -- then we go again to find the first input
+    
+    -- loop through non-inputs
+    while bit.band(input, dir) ~= dir do
+        input = controller.InputFrame[i]
+        time = controller.InputTime[i]
+        i = i + 1
+
+        if(i > #controller.InputFrame) then
+            return false
+        end
+
+        if(CurrentFrame - time > bufferLength) then
+            return false
+        end
+    end
+    -- if we exit, we've found the first input
+
+    return true
 end
