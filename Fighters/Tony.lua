@@ -12,21 +12,22 @@ tony.SpriteSetIndex = "Tony"
 
 tony.IdleAnimation = "Idle"
 
-local idle = AddAction(tony, "Idle", "Idle", {
+local idle = AddAction(tony, "Idle", "Idle", nil, nil, {
     NextAction = "Idle",
     StateFlags = STATE_IDLE,
 })
 
-AddAction(tony, "Jab", "Jab", {
+local jab = AddAction(tony, "Jab", "Jab", BUTTON_A, 0, {
     StateFlags = SetStateAttackLevel(0, 1),
     ReqStateFlags = STATE_CANATTACK,
-    InputPressed = BUTTON_A,
     Startup = 8,
     Active = 1,
     Recovery = 12,
 })
 
-AddAction(tony, "Kick", "Kick", {
+print("JAB INPUT PRESSED: " .. jab.InputPressed)
+
+AddAction(tony, "Kick", "Kick", BUTTON_B, 0, {
     StateFlags = SetStateAttackLevel(0, 2),
     ReqStateFlags = STATE_CANATTACK,
     CancelReqStateFlags = SetStateAttackPhase(0, PHASE_RECOVERY),

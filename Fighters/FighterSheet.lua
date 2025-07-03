@@ -77,8 +77,12 @@ end
 
 -- actions
 -- actions are tied to a single animation, and have state and input information
-function AddAction(fighterSheet, actionName, animName, props)
-    fighterSheet.Actions[actionName] = Action(fighterSheet, animName, props)
+function AddAction(fighterSheet, actionName, animName, inputPressed, inputHeld, props)
+    local action = Action(fighterSheet, animName, props)
+    action.InputPressed = inputPressed
+    action.InputHeld = inputHeld
+    action.Name = actionName
+    fighterSheet.Actions[actionName] = action
     return action
 end
 
@@ -102,8 +106,12 @@ function Action(fighterSheet, animName, props)
         InputPressed = nil,
         InputHeld = nil,
     }
+    
+    print(animName)
     for k, v in pairs(props) do
         action[k] = v
+
+        print(string.format("Action[%s] = %s", k, v))
     end
 
     return action
