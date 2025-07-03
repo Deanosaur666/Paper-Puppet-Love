@@ -23,14 +23,11 @@ function FighterState(props)
     return state
 end
 
-function BeginAction(fstate, fframe, actionName, override)
-
+function BeginAction(fstate, fframe, actionName)
     local action = fframe.Sheet.Actions[actionName]
-    if(override or bit.band(fstate.StateFlags, action.ReqStateFlags) == action.ReqStateFlags) then
-        fstate.CurrentAction = actionName
-        fstate.CurrentFrame = 1
-        fstate.StateFlags = action.StateFlags
-    end
+    fstate.CurrentAction = actionName
+    fstate.CurrentFrame = 1
+    fstate.StateFlags = action.StateFlags
 end
 
 function FighterFrame(fstate, fsheet)
@@ -86,9 +83,7 @@ function UpdateFighter(fstate, fframe, controller, fsheet)
         BeginAction(fstate, fframe, "Idle")
     end
 
-    if(ControllerInputPressed(controller, BUTTON_A)) then
-        BeginAction(fstate, fframe, "Jab")
-    end
+    CheckActions(fstate, fframe, controller)
 
     if(ControllerInputDown(controller, BUTTON_LEFT)) then
         fstate.X = fstate.X - 10
@@ -100,6 +95,20 @@ function UpdateFighter(fstate, fframe, controller, fsheet)
     -- create new fighter frame at the end, after updating state a bunch
     fframe = FighterFrame(fstate, fframe.Sheet)
     return fstate, fframe
+end
+
+function CheckActions(fstate, fframe, controller)
+    local actions = fframe.Sheet.Actions
+    local perform = nil
+    for name, action in pairs(actions) do
+        if(CanPerformAction(action, fstate, controller)) then
+            perform = name
+        end
+    end
+
+    if(perform ~= nil) then
+        BeginAction(fstate, fframe, perform)
+    end
 end
 
 function DrawFighter(fframe)

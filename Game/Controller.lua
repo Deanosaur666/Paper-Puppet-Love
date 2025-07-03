@@ -191,12 +191,18 @@ function ControllerInputPressed(controller, button)
 end
 
 function ControllerInputReleased(controller, button)
+    if(button == nil) then
+        return false
+    end
     return bit.band(controller.PressedThisFrame, button) == 0 and 
             bit.band(controller.PressedLastFrame, button) ~= 0
 end
 
 
 function InputBuffered(controller, button, bufferLength)
+    if(button == nil) then
+        return false
+    end
     local lastPressed = nil
     local lastNotPressed = nil
 
