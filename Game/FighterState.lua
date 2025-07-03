@@ -112,9 +112,12 @@ end
 function CheckActions(fstate, fframe, controller)
     local actions = fframe.Sheet.Actions
     local perform = nil
+    local biggestInput = 0
     for name, action in pairs(actions) do
-        if(CanPerformAction(action, fstate, controller)) then
+        local input = bit.bor(action.InputPressed or 0, action.InputHeld or 0)
+        if(CanPerformAction(action, fstate, controller) and input >= biggestInput) then
             perform = name
+            biggestInput = input
         end
     end
 

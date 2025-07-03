@@ -107,11 +107,8 @@ function Action(fighterSheet, animName, props)
         InputHeld = nil,
     }
     
-    print(animName)
     for k, v in pairs(props) do
         action[k] = v
-
-        print(string.format("Action[%s] = %s", k, v))
     end
 
     return action
@@ -128,8 +125,8 @@ function CanPerformAction(action, fstate, controller)
         return false
     end
 
-    local canPerform = bit.band(fstate.StateFlags, action.ReqStateFlags) == action.ReqStateFlags
-    local canCancel = bit.band(fstate.StateFlags, action.CancelReqStateFlags) == action.CancelReqStateFlags 
+    local canPerform = bit.band(fstate.StateFlags, action.ReqStateFlags) == action.ReqStateFlags and action.ReqStateFlags ~= 0
+    local canCancel = bit.band(fstate.StateFlags, action.CancelReqStateFlags) == action.CancelReqStateFlags  and action.CancelReqStateFlags ~= 0
         and GetStateAttackLevel(fstate.StateFlags) <= action.CancelMaxAttackLevel
     
     -- right now we don't worry about any sort of cancel cost
