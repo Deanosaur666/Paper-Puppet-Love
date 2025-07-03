@@ -37,6 +37,21 @@ function PointInRectangle(px, py, rx, ry, rw, rh)
             (py >= ry and py < ry + rh)
 end
 
+function RectangleCollision(r1x, r1y, r1w, r1h, r2x, r2y, r2w, r2h)
+  return (r1x + r1w >= r2x and      -- r1 right edge past r2 left
+      r1x <= r2x + r2w and          -- r1 left edge past r2 right
+      r1y + r1h >= r2y and          -- r1 top edge past r2 bottom
+      r1y <= r2y + r2h)             -- r1 bottom edge past r2 top
+
+end
+
+-- flip a rectangle horizontally
+-- we don't change anything but rx
+function FlipRectangle(rx, ry, rw, rh)
+    rx = -rx - rw
+    return rx, ry, rw, rh
+end
+
 function Sign(n)
    return n == 0 and 0 or math.abs(n)/n 
 end

@@ -57,10 +57,26 @@ function GameProgram:Draw()
 
     lg.translate(ScreenWidth/2, ScreenHeight - 50)
 
-    for _, frame in pairs(ActiveFighterFrames) do
+    for i, frame in pairs(ActiveFighterFrames) do
         DrawFighter(frame)
         if(DisplayHitballs) then
             DrawHitballs(frame.Hitballs)
+            local sheet = ActiveFighterSheets[i]
+            local state = ActiveFighterStates[i]
+            local rx, ry, rw, rh = sheet.PBX, sheet.PBY, sheet.PBW, sheet.PBH
+            if(not state.Facing) then
+                rx, ry, rw, rh = FlipRectangle(rx, ry, rw, rh)
+            end
+
+            rx = rx + state.X
+            ry = ry + state.Y
+
+            lg.push("all")
+
+            lg.setColor(0, 1, 1)
+            lg.rectangle("line", rx, ry, rw, rh)
+
+            lg.pop()
         end
     end
 end

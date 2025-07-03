@@ -75,6 +75,12 @@ function BaseFighterSheet()
 
         ForwardWalkSpeed = 10,
         BackWalkSpeed = 8,
+
+        -- pushbox
+        PBX = -80,
+        PBW = 160,
+        PBY = -500,
+        PBH = 500,
     }
 end
 
