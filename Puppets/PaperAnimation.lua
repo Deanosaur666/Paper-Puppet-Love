@@ -43,7 +43,7 @@ function TweenedPose(skeleton, pose1, pose2, ratio)
     return newPose
 end
 
-require "Editor"
+--require "Editor"
 function TweenedPartPoseIK(skeleton, pose, bp, p1, p2, ratio) 
      
     

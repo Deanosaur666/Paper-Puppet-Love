@@ -63,9 +63,10 @@ function jsonDecodeFile(filename)
 end
 
 function jsonEncodeFile(t, filename)
+  local text = json.encode(t)
   local file = io.open(filename, "w")
 
-  file:write(json.encode(t))
+  file:write(text)
 
   io.close(file)
 end
