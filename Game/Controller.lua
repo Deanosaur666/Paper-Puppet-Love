@@ -199,8 +199,47 @@ end
 
 -- TODO
 -- input buffered
--- input held since time (for charging)
 -- dash shortcut (double tap)
+
+function InputBuffered(controller, button, bufferLength)
+    local lastPressed = nil
+    local lastNotPressed = nil
+
+    -- if nil, become 10
+    bufferLength = bufferLength or 10
+
+    local maxTime = math.max(60, bufferLength*4)
+
+    for i = 1, #controller.InputFrame, 1 do
+        local input = controller.InputFrame[i]
+        local time = controller.InputTime[i]
+
+        if(lastNotPressed == nil and bit.band(input, button) == button) then
+            lastPressed = time
+        end
+
+        if(lastPressed ~= nil and not (bit.band(input, button) == button)) then
+            lastNotPressed = time
+        end
+
+        if(CurrentFrame - time > maxTime and lastPressed == nil) then
+            return false
+        end
+
+        if(lastPressed ~= nil and lastNotPressed ~= nil) then
+            if(CurrentFrame - lastPressed < bufferLength) then
+                -- we use this for "lastbuffered" so once an attack is performed...
+                -- we don't check the buffer for inputs that occurred BEFORE it was buffered
+                controller.BufferTime = lastPressed
+                return true
+            else
+                return false
+            end
+        end
+    end
+
+    return false
+end
 
 -- Has the button been held for at LEAST [length] frames?
 function ControllerInputHeld(controller, button, length)
