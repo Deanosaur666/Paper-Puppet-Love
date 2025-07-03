@@ -77,6 +77,18 @@ function UpdateFighter(fstate, fframe, controller, fsheet)
     end
     
     fstate.CurrentFrame = fstate.CurrentFrame + 1
+    local action = fframe.Action
+    if(action.Startup and action.Active and action.Recovery) then
+        if(fstate.CurrentFrame <= action.Startup) then
+            fstate.StateFlags = SetStateAttackPhase(fstate.StateFlags, PHASE_STARTUP)
+        elseif(fstate.CurrentFrame <= action.Startup + action.Active) then
+            fstate.StateFlags = SetStateAttackPhase(fstate.StateFlags, PHASE_ACTIVE)
+        elseif(fstate.CurrentFrame <= action.Startup + action.Active + action.Recovery) then
+            fstate.StateFlags = SetStateAttackPhase(fstate.StateFlags, PHASE_RECOVERY)
+        else
+            -- TODO: fake idle
+        end
+    end
 
     local pose = GetAnimationFrame(fframe.Animation, fstate.CurrentFrame)
     if(pose == nil) then

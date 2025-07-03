@@ -99,9 +99,9 @@ function Action(fighterSheet, animName, props)
         CancelReqStateFlags = 0,
         CancelMaxAttackLevel = 0,
 
-        Startup = 0,
-        Active = 0,
-        Recovery = 0,
+        Startup = nil,
+        Active = nil,
+        Recovery = nil,
 
         InputPressed = nil,
         InputHeld = nil,
