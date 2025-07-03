@@ -1,5 +1,8 @@
 Jimbo says:
 
+"Delayed" controller for online play
+    In MojoFighter, we basically just add our inputs a few frames "into the future"
+
 Give Kit "front facing" face/body, hips, for if she is turning away from the opponent
 
 Highlight parts in selection so it's easier to see what part is selected.
