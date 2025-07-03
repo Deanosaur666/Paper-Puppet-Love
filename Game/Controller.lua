@@ -55,8 +55,8 @@ function Controller(player)
         PressedLastFrame = 0,
 
         -- record of previous inputs
-        InputFrame = {},
-        InputTime = {},
+        InputFrame = { 0 },
+        InputTime = { 0 },
 
         -- input buffering
         LastBuffered = 0,
