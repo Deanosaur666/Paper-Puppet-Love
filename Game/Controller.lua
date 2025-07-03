@@ -59,8 +59,8 @@ function Controller(player)
         InputTime = {},
 
         -- input buffering
-        LastBuffered = nil,
-        BufferTime = nil,
+        LastBuffered = 0,
+        BufferTime = 0,
     }
 end
 

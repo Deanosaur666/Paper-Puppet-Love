@@ -114,12 +114,12 @@ function Action(fighterSheet, animName, props)
     return action
 end
 
-function CanPerformAction(action, fstate, controller)
+function CanPerformAction(action, fstate, controller, buffer)
     local inputted = true
     -- controller isn't nil
     if(controller) then
-        inputted = (action.InputPressed == 0 or InputBuffered(controller, action.InputPressed)) and 
-                    (action.InputHeld == 0 or ControllerInputDown(controller, action.InputHeld))
+        inputted = (action.InputPressed == 0 or InputBuffered(controller, action.InputPressed, buffer)) and 
+                    (action.InputHeld == 0 or ControllerInputDown(controller, action.InputHeld, buffer))
     end
     if(not inputted) then
         return false

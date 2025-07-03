@@ -110,6 +110,10 @@ function UpdateFighter(fstate, fframe, controller, fsheet)
 end
 
 function CheckActions(fstate, fframe, controller)
+    local bufferLength = 10
+    
+    bufferLength = math.min(bufferLength, CurrentFrame - controller.LastBuffered)
+
     local actions = fframe.Sheet.Actions
     local perform = nil
     local biggestInput = 0
@@ -122,6 +126,8 @@ function CheckActions(fstate, fframe, controller)
     end
 
     if(perform ~= nil) then
+        -- do buffer cutoff
+        controller.LastBuffered = controller.BufferTime
         BeginAction(fstate, fframe, perform)
     end
 end
