@@ -190,8 +190,6 @@ function ControllerInputPressed(controller, button)
             bit.band(controller.PressedLastFrame, button) == 0
 end
 
--- BUFFER
-
 function ControllerInputReleased(controller, button)
     if(button == nil) then
         return false
@@ -200,7 +198,6 @@ function ControllerInputReleased(controller, button)
             bit.band(controller.PressedLastFrame, button) ~= 0
 end
 
--- TODO
 
 function InputBuffered(controller, button, bufferLength)
     if(button == nil) then
