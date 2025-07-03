@@ -13,6 +13,8 @@ function FighterState(props)
         X = 0,
         Y = 0,
 
+        StateFlags = 0,
+
         -- facing right
         Facing = true,
     }
@@ -24,9 +26,10 @@ end
 function BeginAction(fstate, fframe, actionName, override)
 
     local action = fframe.Sheet.Actions[actionName]
-    if(override or bit.band(fframe.StateFlags, action.ReqStateFlags) == action.ReqStateFlags) then
+    if(override or bit.band(fstate.StateFlags, action.ReqStateFlags) == action.ReqStateFlags) then
         fstate.CurrentAction = actionName
         fstate.CurrentFrame = 1
+        fstate.StateFlags = action.StateFlags
     end
 end
 
@@ -63,8 +66,6 @@ function FighterFrame(fstate, fsheet)
         Pose = pose,
         Hitballs = GetPoseHitballs(pose, skeleton, fstate.X, fstate.Y, xsc, 1),
         XScale = xsc,
-
-        StateFlags = action.StateFlags,
     }
 
     return fframe

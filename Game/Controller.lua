@@ -171,10 +171,16 @@ function UpdateController(controller, controls, currentframe)
 end
 
 function ControllerInputDown(controller, button)
+    if(button == nil) then
+        return false
+    end
     return bit.band(controller.PressedThisFrame, button) ~= 0
 end
 
 function ControllerInputPressed(controller, button)
+    if(button == nil) then
+        return false
+    end
     return bit.band(controller.PressedThisFrame, button) ~= 0 and 
             bit.band(controller.PressedLastFrame, button) == 0
 end

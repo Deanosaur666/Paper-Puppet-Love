@@ -17,6 +17,19 @@ local idle = AddAction(tony, "Idle", "Idle", {
     StateFlags = STATE_IDLE,
 })
 
-local jab = AddAction(tony, "Jab", "Jab", {
+AddAction(tony, "Jab", "Jab", {
+    StateFlags = SetStateAttackLevel(0, 1),
     ReqStateFlags = STATE_CANATTACK,
+    InputPressed = BUTTON_A,
+    Startup = 8,
+    Active = 1,
+    Recovery = 12,
+})
+
+AddAction(tony, "Kick", "Kick", {
+    StateFlags = SetStateAttackLevel(0, 2),
+    ReqStateFlags = STATE_CANATTACK,
+    CancelReqStateFlags = SetStateAttackPhase(0, PHASE_RECOVERY),
+    CancelMaxAttackLevel = ATTACK_LIGHT,
+    InputPressed = BUTTON_B,
 })
