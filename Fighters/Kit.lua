@@ -25,6 +25,15 @@ local jab = AddAction(kit, "Jab", "Punch", BUTTON_A, 0, {
     Recovery = 10, -- 3 fake recovery frames?
 })
 
+AddAction(kit, "Cross", "Cross", BUTTON_A, 0, {
+    StateFlags = SetStateAttackLevel(0, ATTACK_MEDIUM),
+    CancelReqStateFlags = SetStateAttackPhase(0, PHASE_RECOVERY),
+    CancelMaxAttackLevel = ATTACK_LIGHT,
+    Startup = 10,
+    Active = 7,
+    Recovery = 14,
+})
+
 AddAction(kit, "Kick", "High Kick", BUTTON_B, 0, {
     StateFlags = SetStateAttackLevel(0, 2),
     ReqStateFlags = STATE_CANATTACK,
