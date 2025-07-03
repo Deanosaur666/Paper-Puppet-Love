@@ -26,6 +26,8 @@ function AddActiveFighter(player, sheetName)
         Facing = facing
     })
     ActiveFighterFrames[player] = FighterFrame(ActiveFighterStates[player], ActiveFighterSheets[player])
+
+    BeginAction(ActiveFighterStates[player], ActiveFighterFrames[player], "Idle")
 end
 
 function GameProgram:KeyPressed(key, scancode, isrepeat)

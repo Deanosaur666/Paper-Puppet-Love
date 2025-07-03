@@ -64,14 +64,17 @@ function BaseFighterSheet()
         SpriteSetIndex = nil,
 
         WalkForwardSpeed = 10,
-        WalkBackSpeed = -8,
+        WalkBackSpeed = 8,
 
         -- a string
         IdleAnimation = nil,
 
         -- each action will have a reference to an animation
         -- this includes attacks
-        Actions = {}
+        Actions = {},
+
+        ForwardWalkSpeed = 10,
+        BackWalkSpeed = 8,
     }
 end
 
@@ -119,7 +122,7 @@ function CanPerformAction(action, fstate, controller, buffer)
     -- controller isn't nil
     if(controller) then
         inputted = (action.InputPressed == 0 or InputBuffered(controller, action.InputPressed, buffer)) and 
-                    (action.InputHeld == 0 or ControllerInputDown(controller, action.InputHeld, buffer))
+                    (action.InputHeld == 0 or ControllerInputDown(controller, FlipInput(fstate.Facing, action.InputHeld), buffer))
     end
     if(not inputted) then
         return false
