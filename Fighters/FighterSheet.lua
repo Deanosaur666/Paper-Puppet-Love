@@ -121,7 +121,7 @@ function CanPerformAction(action, fstate, controller)
     local inputted = true
     -- controller isn't nil
     if(controller) then
-        inputted = (action.InputPressed == 0 or ControllerInputPressed(controller, action.InputPressed)) and 
+        inputted = (action.InputPressed == 0 or InputBuffered(controller, action.InputPressed)) and 
                     (action.InputHeld == 0 or ControllerInputDown(controller, action.InputHeld))
     end
     if(not inputted) then
