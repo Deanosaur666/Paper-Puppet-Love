@@ -207,4 +207,22 @@ function ControllerInputHeld(controller, button, length)
     if (not ControllerInputDown(controller, button) or (not ControllerInputDownLastFrame(controller, button))) then
         return false
     end
+
+    for i = 1, #controller.InputFrame, 1 do
+        local input = controller.InputFrame[i]
+        local time = controller.InputTime[i]
+
+        -- we are progressing BACK in time...
+        -- So if it is late enough (within the window), and not pressed...
+        -- then the button has not been held for long enough
+        if(time > CurrentFrame - length and bit.band(input, button) ~= button) then
+            return false
+        end
+
+        if(time < CurrentFrame - length) then
+            return true
+        end
+    end
+
+    return true
 end
