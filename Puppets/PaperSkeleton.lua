@@ -26,7 +26,6 @@ function LoadSkeletons()
 
         for _, anim in ipairs(skeleton.Animations) do
             SkeletonAnimNameMap[skelName][anim.Name] = anim
-            print(skelName .. " ANIM: " .. anim.Name)
         end
     end
 end
