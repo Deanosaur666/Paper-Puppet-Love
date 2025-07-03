@@ -174,10 +174,17 @@ function ControllerInputDown(controller, button)
     return bit.band(controller.PressedThisFrame, button) ~= 0
 end
 
+function ControllerInputDownLastFrame(controller, button)
+    return bit.band(controller.PressedLastFrame, button) ~= 0
+end
+
+-- this one will get buffering added in
 function ControllerInputPressed(controller, button)
     return bit.band(controller.PressedThisFrame, button) ~= 0 and 
             bit.band(controller.PressedLastFrame, button) == 0
 end
+
+-- BUFFER
 
 function ControllerInputReleased(controller, button)
     return bit.band(controller.PressedThisFrame, button) == 0 and 
@@ -188,3 +195,10 @@ end
 -- input buffered
 -- input held since time (for charging)
 -- dash shortcut (double tap)
+
+-- Has the button been held for at LEAST [length] frames?
+function ControllerInputHeld(controller, button, length)
+    if (not ControllerInputDown(controller, button) or (not ControllerInputDownLastFrame(controller, button))) then
+        return false
+    end
+end
