@@ -344,7 +344,8 @@ function PartBlueprintEditor()
             BlueprintIndex = tableNextIndex(BlueprintIndex, skeleton.PartBlueprints)
         elseif(key == "s") then
             if(love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
-                SaveSkeleton(skeleton, SkeletonIndex)
+                --SaveSkeleton(skeleton, SkeletonIndex)
+                SaveSkeleton()
             end
         elseif(key == "i" and bluePrint ~= nil) then
             bluePrint.IK = not bluePrint.IK
