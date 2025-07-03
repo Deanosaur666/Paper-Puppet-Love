@@ -65,6 +65,7 @@ local function encode_table(val, stack)
 
   stack[val] = true
 
+  -- if there is a key of "1" in the table, it is treated as an array
   if rawget(val, 1) ~= nil or next(val) == nil then
     -- Treat as array -- check keys are valid and it is not sparse
     local n = 0
@@ -139,7 +140,7 @@ end
 
 
 -------------------------------------------------------------------------------
--- Decode
+-- DecodeScreenshot from 2025-07-03 00-54-24
 -------------------------------------------------------------------------------
 
 local parse

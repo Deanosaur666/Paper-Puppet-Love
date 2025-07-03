@@ -5,6 +5,12 @@ function SaveSkeleton()
         EnterSkeletonName()
         return
     end
+
+    -- if it exists, we create a backup copy
+
+    -- we do this first, to make sure it doesn't cause an error on save, first
+    jsonEncodeFile(skeleton, "Resources/temp/" .. name)
+    -- then we overwrite the original file
     jsonEncodeFile(skeleton, "Resources/skeletons/" .. name)
 end
 
