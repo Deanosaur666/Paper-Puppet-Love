@@ -160,8 +160,9 @@ function UpdateController(controller, controls, currentframe)
     controller.PressedThisFrame = bit.band(controller.PressedThisFrame, bit.bnot(BUTTON_MENUBUTTONS))
 
     if(controller.PressedThisFrame ~= controller.PressedLastFrame) then
-        table.insert(controller.InputFrame, 1, controller.PressedLastFrame)
+        table.insert(controller.InputFrame, 1, controller.PressedThisFrame)
         table.insert(controller.InputTime, 1, currentframe)
+        --print("Input on: " .. CurrentFrame .. " " .. controller.PressedThisFrame)
     end
 
     while(#controller.InputTime > MAX_INPUTS) do
@@ -217,6 +218,7 @@ function InputBuffered(controller, button, bufferLength)
 
         if(lastNotPressed == nil and bit.band(input, button) == button) then
             lastPressed = time
+            --print(lastPressed)
         end
 
         if(lastPressed ~= nil and not (bit.band(input, button) == button)) then
