@@ -198,8 +198,6 @@ function ControllerInputReleased(controller, button)
 end
 
 -- TODO
--- input buffered
--- dash shortcut (double tap)
 
 function InputBuffered(controller, button, bufferLength)
     local lastPressed = nil
@@ -262,6 +260,49 @@ function ControllerInputHeld(controller, button, length)
             return true
         end
     end
+
+    return true
+end
+
+function CheckDashShortcut(controller, dir, input, bufferLength)
+    local i = 1
+    local time = nil
+
+    bufferLength = bufferLength or 14
+    
+    -- start with the second input, and go back to find ther non-input
+    -- loop through inputs to find the non-input
+    while bit.band(input, dir) ~= 0 do
+        input = controller.InputFrame[i]
+        time = controller.InputTime[i]
+        i = i + 1
+
+        if(i > #controller.InputFrame) then
+            return false
+        end
+
+        if(CurrentFrame - time > bufferLength) then
+            return false
+        end
+    end
+    -- if we exit the while loop, we've found a "direction release" within time (the "middle" of the input)
+    -- then we go again to find the first input
+    
+    -- loop through non-inputs
+    while bit.band(input, dir) ~= dir do
+        input = controller.InputFrame[i]
+        time = controller.InputTime[i]
+        i = i + 1
+
+        if(i > #controller.InputFrame) then
+            return false
+        end
+
+        if(CurrentFrame - time > bufferLength) then
+            return false
+        end
+    end
+    -- if we exit, we've found the first input
 
     return true
 end
