@@ -36,7 +36,7 @@ tony.Hurt = AddAction(tony, "Hurt", "Hurt Head", nil, nil, {
     StateFlags = STATE_HURT,
 })
 
-AddAction(tony, "Jab", "Jab", BUTTON_A, 0, {
+AddAttack(tony, "Jab", "Jab", BUTTON_A, 0, 1, {
     StateFlags = SetStateAttackLevel(0, ATTACK_LIGHT),
     ReqStateFlags = STATE_CANATTACK,
     Startup = 8,
@@ -44,7 +44,7 @@ AddAction(tony, "Jab", "Jab", BUTTON_A, 0, {
     Recovery = 12,
 })
 
-AddAction(tony, "Cross", "Cross", BUTTON_A, 0, {
+AddAttack(tony, "Cross", "Cross", BUTTON_A, 0, 1.5, {
     StateFlags = SetStateAttackLevel(0, ATTACK_MEDIUM),
     CancelReqStateFlags = SetStateAttackPhase(0, PHASE_RECOVERY),
     CancelMaxAttackLevel = ATTACK_LIGHT,
@@ -53,7 +53,7 @@ AddAction(tony, "Cross", "Cross", BUTTON_A, 0, {
     Recovery = 12,
 })
 
-AddAction(tony, "Elbow", "Elbow", BUTTON_A, 0, {
+AddAttack(tony, "Elbow", "Elbow", BUTTON_A, 0, 2, {
     StateFlags = SetStateAttackLevel(0, ATTACK_HEAVY),
     CancelReqStateFlags = SetStateAttackPhase(SetStateAttackLevel(0, ATTACK_MEDIUM), PHASE_RECOVERY),
     CancelMaxAttackLevel = ATTACK_MEDIUM,
@@ -62,7 +62,7 @@ AddAction(tony, "Elbow", "Elbow", BUTTON_A, 0, {
     Recovery = 12,
 })
 
-AddAction(tony, "L Upper", "Left Uppercut", BUTTON_A, BUTTON_DOWN, {
+AddAttack(tony, "L Upper", "Left Uppercut", BUTTON_A, BUTTON_DOWN, 20, {
     StateFlags = SetStateAttackLevel(0, ATTACK_MEDIUM),
     ReqStateFlags = STATE_CANATTACK,
     CancelReqStateFlags = SetStateAttackPhase(0, PHASE_RECOVERY),
@@ -72,17 +72,18 @@ AddAction(tony, "L Upper", "Left Uppercut", BUTTON_A, BUTTON_DOWN, {
     Recovery = 10,
 })
 
-AddAction(tony, "Kick", "Kick", BUTTON_B, 0, {
+AddAttack(tony, "Kick", "Kick", BUTTON_B, 0, 3, {
     StateFlags = SetStateAttackLevel(0, ATTACK_HEAVY),
     ReqStateFlags = STATE_CANATTACK,
 })
 
-AddAction(tony, "Roundhouse", "Roundhouse", BUTTON_B, BUTTON_RIGHT, {
+AddAttack(tony, "Roundhouse", "Roundhouse", BUTTON_B, BUTTON_RIGHT, 3.5, {
     StateFlags = SetStateAttackLevel(0, ATTACK_HEAVY),
     ReqStateFlags = STATE_CANATTACK,
 })
 
-AddAction(tony, "Stomp", "Stomp", BUTTON_B, BUTTON_DOWN, {
+AddAttack(tony, "Stomp", "Stomp", BUTTON_B, BUTTON_DOWN, 2.5, {
     StateFlags = SetStateAttackLevel(0, ATTACK_HEAVY),
     ReqStateFlags = STATE_CANATTACK,
 })
+

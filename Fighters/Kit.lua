@@ -35,7 +35,7 @@ kit.Hurt = AddAction(kit, "Hurt", "Hurt Head", nil, nil, {
     StateFlags = STATE_HURT,
 })
 
-local jab = AddAction(kit, "Jab", "Punch", BUTTON_A, 0, {
+local jab = AddAttack(kit, "Jab", "Punch", BUTTON_A, 0, 1, {
     StateFlags = SetStateAttackLevel(0, 1),
     ReqStateFlags = STATE_CANATTACK,
     Startup = 8,
@@ -46,7 +46,7 @@ local jab = AddAction(kit, "Jab", "Punch", BUTTON_A, 0, {
     AnimSpeed = 0.5,
 })
 
-AddAction(kit, "Cross", "Cross", BUTTON_A, 0, {
+AddAttack(kit, "Cross", "Cross", BUTTON_A, 0, 1.5, {
     StateFlags = SetStateAttackLevel(0, ATTACK_MEDIUM),
     CancelReqStateFlags = SetStateAttackPhase(0, PHASE_RECOVERY),
     CancelMaxAttackLevel = ATTACK_LIGHT,
@@ -55,7 +55,7 @@ AddAction(kit, "Cross", "Cross", BUTTON_A, 0, {
     Recovery = 14,
 })
 
-AddAction(kit, "Kick", "High Kick", BUTTON_B, 0, {
+AddAttack(kit, "Kick", "High Kick", BUTTON_B, 0, 3, {
     StateFlags = SetStateAttackLevel(0, 2),
     ReqStateFlags = STATE_CANATTACK,
     CancelReqStateFlags = SetStateAttackPhase(0, PHASE_RECOVERY),
@@ -65,7 +65,7 @@ AddAction(kit, "Kick", "High Kick", BUTTON_B, 0, {
     Recovery = 14, -- 4 fake recovery frames
 })
 
-AddAction(kit, "Crouch Punch", "Crouch Punch", BUTTON_A, BUTTON_DOWN, {
+AddAttack(kit, "Crouch Punch", "Crouch Punch", BUTTON_A, BUTTON_DOWN, 1, {
     StateFlags = SetStateAttackLevel(0, ATTACK_MEDIUM),
     ReqStateFlags = STATE_CANATTACK,
     CancelReqStateFlags = SetStateAttackPhase(0, PHASE_RECOVERY),

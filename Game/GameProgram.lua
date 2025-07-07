@@ -46,7 +46,7 @@ function AddActiveFighter(player, sheetName)
         X = x,
         Facing = facing
     })
-    ActiveFighterFrames[player] = FighterFrame(ActiveFighterStates[player], ActiveFighterSheets[player])
+    ActiveFighterFrames[player] = FighterFrame(ActiveFighterStates[player], ActiveFighterSheets[player], player)
 
     BeginAction(ActiveFighterStates[player], ActiveFighterFrames[player], "Idle")
 end
@@ -154,7 +154,7 @@ function GameProgram:Update()
 
     -- update frames
     for i, state in pairs(ActiveFighterStates) do
-        ActiveFighterFrames[i] = FighterFrame(ActiveFighterStates[i], ActiveFighterSheets[i])
+        ActiveFighterFrames[i] = FighterFrame(ActiveFighterStates[i], ActiveFighterSheets[i], i)
 
         local frame = ActiveFighterFrames[i]
 
@@ -171,9 +171,39 @@ function GameProgram:Update()
         end
     end
 
+    -- check for hitball collision
+    for i, state in ipairs(ActiveFighterStates) do
+        local enemy = ActiveFighterEnemies[i]
+        local hurtBy = nil
+
+        for _, ball in ipairs(Hitballs[enemy]) do
+            local attacker = ActiveFighterStates[ball.Player]
+            -- check if they have hit yet
+            if(bit.band(attacker.StateFlags, STATE_ATTACK_CONTACT) == 0) then
+                local hit = HitballAtPoint(Hurtballs[i], ball.X, ball.Y, ball.Radius)
+                if(hit) then
+                    hurtBy = ball
+                end
+            end
+        end
+
+        if(hurtBy) then
+            BeginAction(state, ActiveFighterFrames[i], "Hurt")
+            local attackData = hurtBy.AttackData -- or AttackData_Power(1)
+            state.HurtTime = attackData.Stun
+            local knockback = attackData.Knockback
+            local attacker = ActiveFighterStates[hurtBy.Player]
+            attacker.StateFlags = bit.bor(attacker.StateFlags, STATE_ATTACK_CONTACT)
+            if(not attacker.Facing) then
+                knockback = -knockback
+            end
+            state.HurtKnockback = knockback
+        end
+    end
+
     -- update state with previous state and frame info
     for i, state in pairs(ActiveFighterStates) do
-        ActiveFighterStates[i] = UpdateFighter(state, ActiveFighterFrames[i], PlayerControllers[i])
+        ActiveFighterStates[i] = UpdateFighter(state, ActiveFighterFrames[i], PlayerControllers[i], i)
 
         -- check position for scrolling and wall clamping
         local sheet = ActiveFighterSheets[i]
@@ -228,23 +258,6 @@ function GameProgram:Update()
     ScrollX = middleX
     local newZoom = ScreenWidth/(xRange + maxW*2)
     Zoom = Clamp(newZoom, MinZoom, MaxZoom)
-
-    -- check for hitball collision
-    for i, state in ipairs(ActiveFighterStates) do
-        local enemy = ActiveFighterEnemies[i]
-        local hurtBy = nil
-
-        for _, ball in ipairs(Hitballs[enemy]) do
-            local hit = HitballAtPoint(Hurtballs[i], ball.X, ball.Y, ball.Radius)
-            if(hit) then
-                hurtBy = hit
-            end
-        end
-
-        if(hurtBy) then
-            BeginAction(state, ActiveFighterFrames[i], "Hurt")
-        end
-    end
 
 end
 

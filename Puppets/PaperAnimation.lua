@@ -196,10 +196,12 @@ function Animation(name)
     }
 end
 
-function GetAnimationFrame(action, time)
+function GetAnimationFrame(action, fstate)
+    local time = fstate.CurrentFrame
     local duration = 0
     local loop = action.AnimLoop
     local anim = action.Animation
+    local speed = action.AnimSpeed
     for _, f in ipairs(anim.Frames) do
         duration = duration + f.Duration
     end
@@ -217,7 +219,11 @@ function GetAnimationFrame(action, time)
         end
     end
 
-    duration = duration/action.AnimSpeed
+    if(fstate.HurtTime) then
+        speed = duration/fstate.HurtTime
+    end
+
+    duration = duration/speed
 
     if(loop) then
         time = time % duration
@@ -230,7 +236,7 @@ function GetAnimationFrame(action, time)
         for i = #anim.Frames, 1, -1 do
             local f = anim.Frames[i]
             counter = counter + (f.Duration)
-            if(counter > time*action.AnimSpeed + endOffset) then
+            if(counter > time*speed + endOffset) then
                 return f
             end
         end
@@ -238,7 +244,7 @@ function GetAnimationFrame(action, time)
         for i = 1, #anim.Frames do
             local f = anim.Frames[i]
             counter = counter + (f.Duration)
-            if(counter > time*action.AnimSpeed + start) then
+            if(counter > time*speed + start) then
                 return f
             end
         end

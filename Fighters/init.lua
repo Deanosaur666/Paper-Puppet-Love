@@ -1,4 +1,5 @@
 require "Game.Controller"
+require "Game.AttackData"
 require "Fighters.FighterSheet"
 require "Fighters.Tony"
 require "Fighters.Kit"

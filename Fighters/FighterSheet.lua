@@ -97,6 +97,18 @@ function AddAction(fighterSheet, actionName, animName, inputPressed, inputHeld, 
     return action
 end
 
+function AddAttack(fighterSheet, actionName, animName, inputPressed, inputHeld, power, props)
+    local action = Action(fighterSheet, animName)
+    action.InputPressed = inputPressed
+    action.InputHeld = inputHeld
+    action.Name = actionName
+    action.AttackData = AttackData_Power(power)
+    fighterSheet.Actions[actionName] = action
+
+    action = tableMerge(action, props)
+    return action
+end
+
 function Action(fighterSheet, animName, props)
     props = props or {}
     local action = {
@@ -120,6 +132,8 @@ function Action(fighterSheet, animName, props)
 
         InputPressed = nil,
         InputHeld = nil,
+
+        AttackData = nil,
     }
     
     for k, v in pairs(props) do

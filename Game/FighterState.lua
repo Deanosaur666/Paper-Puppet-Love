@@ -17,6 +17,10 @@ function FighterState(props)
 
         -- facing right
         Facing = true,
+
+        -- duration of hurt animation
+        -- nil if not being hurt
+        HurtTime = nil,
     }
     state = tableMerge(state, props)
 
@@ -26,8 +30,9 @@ end
 function BeginAction(fstate, fframe, actionName)
     local action = fframe.Sheet.Actions[actionName]
     fstate.CurrentAction = actionName
-    fstate.CurrentFrame = 1
+    fstate.CurrentFrame = 0
     fstate.StateFlags = action.StateFlags
+    fstate.HurtTime = nil
 end
 
 function ContinueAction(fstate, fframe, actionName)
@@ -36,14 +41,15 @@ function ContinueAction(fstate, fframe, actionName)
     end
 end
 
-function FighterFrame(fstate, fsheet)
+function FighterFrame(fstate, fsheet, player)
     local skeletonName = fsheet.SkeletonIndex
     local skeleton = Skeletons[skeletonName]
     local action = fsheet.Actions[fstate.CurrentAction]
     local anim = action.Animation
     --local pose = anim.Frames[fstate.CurrentFrame]
-    local pose = GetAnimationFrame(action, fstate.CurrentFrame)
+    local pose = GetAnimationFrame(action, fstate)
     
+    local attackData = action.AttackData
 
     -- TWEEN test
     --pose = TweenedPose(skeleton, pose, anim.Frames[fstate.CurrentFrame+3], (CurrentFrame % 30)/30)
@@ -63,11 +69,16 @@ function FighterFrame(fstate, fsheet)
         State = fstate,
         Sheet = fsheet,
 
+        Player = player,
+
         Skeleton = skeleton,
         Action = action,
         Animation = anim,
         Pose = pose,
-        Hitballs = GetPoseHitballs(pose, skeleton, fstate.X, fstate.Y, xsc, 1),
+        Hitballs = GetPoseHitballs(pose, skeleton, fstate.X, fstate.Y, xsc, 1, {
+            AttackData = attackData,
+            Player = player,
+        }),
         XScale = xsc,
     }
 
@@ -76,10 +87,12 @@ end
 
 -- fsheet is only needed if fframe is nil
 -- might be useful for rollback. IDK
-function UpdateFighter(fstate, fframe, controller, fsheet)
+function UpdateFighter(fstate, fframe, controller, player, fsheet)
+    
+    fstate = deepcopy(fstate) -- make a new state, just in case old was stored in state history
     
     if(fframe == nil) then
-        fframe = FighterFrame(fstate, fsheet)
+        fframe = FighterFrame(fstate, fsheet, player)
     end
     
     fstate.CurrentFrame = fstate.CurrentFrame + 1
@@ -96,7 +109,7 @@ function UpdateFighter(fstate, fframe, controller, fsheet)
         end
     end
 
-    local pose = GetAnimationFrame(action, fstate.CurrentFrame)
+    local pose = GetAnimationFrame(action, fstate)
     if(pose == nil) then
         BeginAction(fstate, fframe, "Idle")
     end
@@ -127,6 +140,10 @@ function UpdateFighter(fstate, fframe, controller, fsheet)
         end
     end
     fstate.X = fstate.X + dx
+
+    if(fstate.HurtTime) then
+        fstate.X = fstate.X + fstate.HurtKnockback / fstate.HurtTime
+    end
 
     -- create new fighter frame at the end, after updating state a bunch
     return fstate

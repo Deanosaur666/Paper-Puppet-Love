@@ -90,7 +90,7 @@ function DrawHitballs(hitballs)
     lg.pop()
 end
 
-function GetPoseHitballs(pose, skeleton, x, y, xscale, yscale)
+function GetPoseHitballs(pose, skeleton, x, y, xscale, yscale, props)
     x = x or 0
     y = y or 0
     xscale = xscale or 1
@@ -104,6 +104,7 @@ function GetPoseHitballs(pose, skeleton, x, y, xscale, yscale)
             hitball.X = (hitball.X + (skeleton.X or 0)) * xscale + x
             hitball.Y = (hitball.Y + (skeleton.Y or 0)) * yscale + y
             hitball.PartIndex = p
+            hitball = tableMerge(hitball, props)
             table.insert(balls, hitball)
         end
     end
