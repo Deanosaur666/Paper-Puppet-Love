@@ -101,6 +101,10 @@ function Action(fighterSheet, animName, props)
     props = props or {}
     local action = {
         Animation = SkeletonAnimNameMap[fighterSheet.SkeletonIndex][animName],
+        AnimStart = nil,
+        AnimEnd = nil,
+        AnimReverse = false,
+        AnimSpeed = 1,
         NextAction = nil,
 
         StateFlags = 0,

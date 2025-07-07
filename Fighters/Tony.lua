@@ -15,6 +15,21 @@ tony.IdleAnimation = "Idle"
 local idle = AddAction(tony, "Idle", "Idle", nil, nil, {
     NextAction = "Idle",
     StateFlags = STATE_IDLE,
+    AnimLoop = true,
+})
+
+tony.FWalk = AddAction(tony, "FWalk", "Walk", nil, nil,
+{
+    StateFlags = STATE_IDLE,
+    AnimLoop = true,
+})
+
+tony.BWalk = AddAction(tony, "BWalk", "Walk", nil, nil,
+{
+    StateFlags = STATE_IDLE,
+    AnimReverse = true,
+    AnimLoop = true,
+    AnimSpeed = 0.8,
 })
 
 tony.Hurt = AddAction(tony, "Hurt", "Hurt Head", nil, nil, {

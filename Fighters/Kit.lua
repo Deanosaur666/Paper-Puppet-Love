@@ -12,10 +12,24 @@ kit.IdleAnimation = "Idle"
 local idle = AddAction(kit, "Idle", "Idle", nil, nil, {
     NextAction = "Idle",
     StateFlags = STATE_IDLE,
-
-    InputPressed = nil,
-    InputHeld = nil,
+    AnimLoop = true,
 })
+
+kit.FWalk = AddAction(kit, "FWalk", "Walk", nil, nil,
+{
+    StateFlags = STATE_IDLE,
+    AnimLoop = true,
+})
+
+kit.BWalk = AddAction(kit, "BWalk", "Walk", nil, nil,
+{
+    StateFlags = STATE_IDLE,
+    AnimReverse = true,
+    AnimLoop = true,
+    AnimSpeed = 0.8,
+})
+
+
 
 kit.Hurt = AddAction(kit, "Hurt", "Hurt Head", nil, nil, {
     StateFlags = STATE_HURT,
@@ -27,6 +41,9 @@ local jab = AddAction(kit, "Jab", "Punch", BUTTON_A, 0, {
     Startup = 8,
     Active = 3,
     Recovery = 10, -- 3 fake recovery frames?
+
+    AnimStart = 8,
+    AnimSpeed = 0.5,
 })
 
 AddAction(kit, "Cross", "Cross", BUTTON_A, 0, {

@@ -30,13 +30,19 @@ function BeginAction(fstate, fframe, actionName)
     fstate.StateFlags = action.StateFlags
 end
 
+function ContinueAction(fstate, fframe, actionName)
+    if(fstate.CurrentAction ~= actionName) then
+        BeginAction(fstate, fframe, actionName)
+    end
+end
+
 function FighterFrame(fstate, fsheet)
     local skeletonName = fsheet.SkeletonIndex
     local skeleton = Skeletons[skeletonName]
     local action = fsheet.Actions[fstate.CurrentAction]
     local anim = action.Animation
     --local pose = anim.Frames[fstate.CurrentFrame]
-    local pose = GetAnimationFrame(anim, fstate.CurrentFrame, fstate.CurrentAction == "Idle")
+    local pose = GetAnimationFrame(action, fstate.CurrentFrame)
     
 
     -- TWEEN test
@@ -90,7 +96,7 @@ function UpdateFighter(fstate, fframe, controller, fsheet)
         end
     end
 
-    local pose = GetAnimationFrame(fframe.Animation, fstate.CurrentFrame)
+    local pose = GetAnimationFrame(action, fstate.CurrentFrame)
     if(pose == nil) then
         BeginAction(fstate, fframe, "Idle")
     end
@@ -104,11 +110,21 @@ function UpdateFighter(fstate, fframe, controller, fsheet)
 
     local dx = 0
 
-    if(ControllerInputDown(controller, FlipInput(fstate.Facing, BUTTON_LEFT)) and bit.band(fstate.StateFlags, STATE_CANMOVE) ~= 0) then
-        dx = - fframe.Sheet.WalkBackSpeed*xsc
-    end
-    if(ControllerInputDown(controller, FlipInput(fstate.Facing, BUTTON_RIGHT)) and bit.band(fstate.StateFlags, STATE_CANMOVE) ~= 0) then
-        dx = fframe.Sheet.WalkForwardSpeed*xsc
+    if(bit.band(fstate.StateFlags, STATE_CANMOVE) ~= 0) then
+
+        local walked = false
+        if(ControllerInputDown(controller, FlipInput(fstate.Facing, BUTTON_LEFT))) then
+            dx = - fframe.Sheet.WalkBackSpeed*xsc
+            ContinueAction(fstate, fframe, "BWalk")
+            walked = true
+        elseif(ControllerInputDown(controller, FlipInput(fstate.Facing, BUTTON_RIGHT)) and bit.band(fstate.StateFlags, STATE_CANMOVE) ~= 0) then
+            dx = fframe.Sheet.WalkForwardSpeed*xsc
+            ContinueAction(fstate, fframe, "FWalk")
+            walked = true
+        -- TODO: Crouching
+        else
+            ContinueAction(fstate, fframe, "Idle")
+        end
     end
     fstate.X = fstate.X + dx
 

@@ -196,20 +196,51 @@ function Animation(name)
     }
 end
 
-function GetAnimationFrame(anim, time, loop)
+function GetAnimationFrame(action, time)
     local duration = 0
+    local loop = action.AnimLoop
+    local anim = action.Animation
     for _, f in ipairs(anim.Frames) do
         duration = duration + f.Duration
     end
+
+    local counter = 0
+    local start = action.AnimStart or 0
+    local endOffset = 0
+    
+    if(action.AnimStart ~= nil) then
+        if(action.AnimEnd ~= nil) then
+            endOffset = duration - action.AnimEnd
+            duration = action.AnimEnd - action.AnimStart
+        else
+            duration = duration - action.AnimStart
+        end
+    end
+
+    duration = duration/action.AnimSpeed
+
     if(loop) then
         time = time % duration
+    elseif(time > duration) then
+        return nil
     end
     
-    local counter = 0
-    for _, f in ipairs(anim.Frames) do
-        counter = counter + f.Duration
-        if(counter > time) then
-            return f
+    
+    if(action.AnimReverse) then
+        for i = #anim.Frames, 1, -1 do
+            local f = anim.Frames[i]
+            counter = counter + (f.Duration)
+            if(counter > time*action.AnimSpeed + endOffset) then
+                return f
+            end
+        end
+    else
+        for i = 1, #anim.Frames do
+            local f = anim.Frames[i]
+            counter = counter + (f.Duration)
+            if(counter > time*action.AnimSpeed + start) then
+                return f
+            end
         end
     end
 

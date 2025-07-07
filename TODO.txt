@@ -2,16 +2,16 @@ Offset during animations (for moving)
 
 Hit freeze
 
-GetAnimationFrame needs to be able to account for actions that only select part of it
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 GAME
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Walking
-(BWalk should reverse the animation right?)
+Crouching
+Guarding
 
 Hurt states
+
+Dashing
 
 "Delayed" controller for online play
     In MojoFighter, we basically just add our inputs a few frames "into the future"

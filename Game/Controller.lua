@@ -158,6 +158,15 @@ function UpdateController(controller, controls, currentframe)
     controller.PressedThisFrame = GetButtons(controls)
     -- remove menu buttons so they don't end up in timeline
     controller.PressedThisFrame = bit.band(controller.PressedThisFrame, bit.bnot(BUTTON_MENUBUTTONS))
+    local dashShortcut = false
+    
+    if(controller.PressedThisFrame ~= controller.PressedLastFrame and
+        bit.band(controller.PressedThisFrame, bit.bor(BUTTON_LEFT, BUTTON_RIGHT)) ~= 0) then
+        dashShortcut = CheckDashShortcut(controller, bit.band(controller.PressedThisFrame, bit.bor(BUTTON_LEFT, BUTTON_RIGHT)), controller.PressedThisFrame, currentframe)
+        if(dashShortcut) then
+            controller.PressedThisFrame = bit.bor(controller.PressedThisFrame, BUTTON_DASH)
+        end
+    end
 
     if(controller.PressedThisFrame ~= controller.PressedLastFrame) then
         table.insert(controller.InputFrame, 1, controller.PressedThisFrame)
@@ -175,11 +184,11 @@ function ControllerInputDown(controller, button)
     if(button == nil) then
         return false
     end
-    return bit.band(controller.PressedThisFrame, button) ~= 0
+    return bit.band(controller.PressedThisFrame, button) == button
 end
 
 function ControllerInputDownLastFrame(controller, button)
-    return bit.band(controller.PressedLastFrame, button) ~= 0
+    return bit.band(controller.PressedLastFrame, button) == button
 end
 
 -- this one will get buffering added in
@@ -187,7 +196,7 @@ function ControllerInputPressed(controller, button)
     if(button == nil) then
         return false
     end
-    return bit.band(controller.PressedThisFrame, button) ~= 0 and 
+    return bit.band(controller.PressedThisFrame, button) == button and 
             bit.band(controller.PressedLastFrame, button) == 0
 end
 
@@ -196,7 +205,7 @@ function ControllerInputReleased(controller, button)
         return false
     end
     return bit.band(controller.PressedThisFrame, button) == 0 and 
-            bit.band(controller.PressedLastFrame, button) ~= 0
+            bit.band(controller.PressedLastFrame, button) == button
 end
 
 
@@ -269,9 +278,9 @@ function ControllerInputHeld(controller, button, length)
     return true
 end
 
-function CheckDashShortcut(controller, dir, input, bufferLength)
+function CheckDashShortcut(controller, dir, input, time, bufferLength)
     local i = 1
-    local time = nil
+    local currentTime = time
 
     bufferLength = bufferLength or 14
     
@@ -286,7 +295,7 @@ function CheckDashShortcut(controller, dir, input, bufferLength)
             return false
         end
 
-        if(CurrentFrame - time > bufferLength) then
+        if(currentTime - time > bufferLength) then
             return false
         end
     end
@@ -303,7 +312,7 @@ function CheckDashShortcut(controller, dir, input, bufferLength)
             return false
         end
 
-        if(CurrentFrame - time > bufferLength) then
+        if(currentTime - time > bufferLength) then
             return false
         end
     end
