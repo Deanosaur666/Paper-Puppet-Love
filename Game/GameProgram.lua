@@ -10,6 +10,27 @@ ActiveFighterSheets = {}
 ActiveFighterStates = {}
 ActiveFighterFrames = {}
 
+ActivePushBoxes = {}
+
+-- a constant??
+--PUSHSPEED = 7
+
+ActiveFighterColors = {
+
+} -- the colors of each fighter
+ActiveFighterEnemies = {
+    [1] = 2, [2] = 1
+}
+
+Hurtballs = {
+    [1] = nil,
+    [2] = nil
+}
+Hitballs = {
+    [1] = nil,
+    [2] = nil,
+}
+
 Controllers = {}
 ControlMappings = {}
 
@@ -60,6 +81,9 @@ ScrollY = 0
 
 WallMargin = 50
 
+Leftwall = nil
+Rightwall = nil
+
 function GameProgram:Draw()
     local lg = love.graphics
     lg.clear(0.3, 0.3, 0.3)
@@ -98,8 +122,23 @@ function GameProgram:Draw()
     end
 end
 
+function GetFighterPushBox(state, sheet)
+    
+    local rx, ry, rw, rh = sheet.PBX, sheet.PBY, sheet.PBW, sheet.PBH
+    if(not state.Facing) then
+        rx, ry, rw, rh = FlipRectangle(rx, ry, rw, rh)
+    end
+    local crx = rx + state.X
+    local cry = ry + state.Y
+
+    return {X = rx, Y = ry, CX = crx, CY = cry, W = rw, H = rh}
+end
+
 function GameProgram:Update()
     CurrentFrame = CurrentFrame + 1
+
+    Leftwall = ScrollX - (ScreenWidth/2)/Zoom + WallMargin
+    Rightwall = ScrollX + (ScreenWidth/2)/Zoom - WallMargin
 
     local minX = math.huge
     local maxX = -math.huge
@@ -113,38 +152,73 @@ function GameProgram:Update()
         UpdateController(controller, PlayerControls[i], CurrentFrame)
     end
 
-    -- update state and frame with previous state and frame info
+    -- update frames
     for i, state in pairs(ActiveFighterStates) do
-        ActiveFighterStates[i], ActiveFighterFrames[i] = UpdateFighter(state, ActiveFighterFrames[i], PlayerControllers[i])
+        ActiveFighterFrames[i] = FighterFrame(ActiveFighterStates[i], ActiveFighterSheets[i])
 
+        local frame = ActiveFighterFrames[i]
+
+        Hurtballs[i] = {}
+        Hitballs[i] = {}
+        -- hitballs
+        for b, ball in ipairs(frame.Hitballs) do
+            if(bit.band(ball.Flags, HITBALL_HITTABLE) ~= 0) then
+                table.insert(Hurtballs[i], ball)
+            end
+            if(bit.band(ball.Flags, HITBALL_ACTIVE) ~= 0) then
+                table.insert(Hitballs[i], ball)
+            end
+        end
+    end
+
+    -- update state with previous state and frame info
+    for i, state in pairs(ActiveFighterStates) do
+        ActiveFighterStates[i] = UpdateFighter(state, ActiveFighterFrames[i], PlayerControllers[i])
+
+        -- check position for scrolling and wall clamping
         local sheet = ActiveFighterSheets[i]
         local state = ActiveFighterStates[i]
-        local rx, ry, rw, rh = sheet.PBX, sheet.PBY, sheet.PBW, sheet.PBH
-        if(not state.Facing) then
-            rx, ry, rw, rh = FlipRectangle(rx, ry, rw, rh)
+
+        ActivePushBoxes[i] = GetFighterPushBox(state, sheet)
+        local pbox = ActivePushBoxes[i]
+
+        if(pbox.CX < Leftwall) then
+            state.X = Leftwall - pbox.X
+            pbox.CX = pbox.X + state.X
+        end
+        if(pbox.CX + pbox.W > Rightwall) then
+            state.X = Rightwall - pbox.X - pbox.W
+            pbox.CX = pbox.X + state.X
         end
 
-        local crx = rx + state.X
-        local cry = ry + state.Y
+        minX = math.min(minX, pbox.CX)
+        maxX = math.max(maxX, pbox.CX + pbox.W)
+        minY = math.min(minY, pbox.CY)
+        maxY = math.max(maxY, pbox.CY + pbox.H)
 
-        local leftwall = ScrollX - (ScreenWidth/2)/Zoom + WallMargin
-        local rightwall = ScrollX + (ScreenWidth/2)/Zoom - WallMargin
+        maxW = math.max(maxW, pbox.W)
+    end
+    --local push = PUSHSPEED
+    -- check push boxes
+    for i, state in pairs(ActiveFighterStates) do
+        --UpdatePushBox(state)
+        local p1box = ActivePushBoxes[i]
+        for j, box in pairs(ActivePushBoxes) do
+            if(j ~= i) then
+                local p2box = ActivePushBoxes[j]
+                local ix, iy, iw, ih = RectangleIntersection(p1box.CX, p1box.CY, p1box.W, p1box.H,
+                                    p2box.CX, p2box.CY, p2box.W, p2box.H)
 
-        if(crx < leftwall) then
-            state.X = leftwall - rx
-            crx = rx + state.X
+                if(iw ~= nil) then
+                    local s = Sign((p1box.CX + p1box.W/2) - (p2box.CX + p2box.W/2) )
+                    --local s = iw
+                    state.X = state.X + (s*math.max(5, iw))
+
+                    state.Pushed = true
+                end
+            end
+            
         end
-        if(crx + rw > rightwall) then
-            state.X = rightwall - rx - rw
-            crx = rx + state.X
-        end
-
-        minX = math.min(minX, crx)
-        maxX = math.max(maxX, crx + rw)
-        minY = math.min(minY, cry)
-        maxY = math.max(maxY, cry + rh)
-
-        maxW = math.max(maxW, rw)
     end
 
     -- adjust zoom and scroll based on min and max x and y
@@ -154,6 +228,23 @@ function GameProgram:Update()
     ScrollX = middleX
     local newZoom = ScreenWidth/(xRange + maxW*2)
     Zoom = Clamp(newZoom, MinZoom, MaxZoom)
+
+    -- check for hitball collision
+    for i, state in ipairs(ActiveFighterStates) do
+        local enemy = ActiveFighterEnemies[i]
+        local hurtBy = nil
+
+        for _, ball in ipairs(Hitballs[enemy]) do
+            local hit = HitballAtPoint(Hurtballs[i], ball.X, ball.Y, ball.Radius)
+            if(hit) then
+                hurtBy = hit
+            end
+        end
+
+        if(hurtBy) then
+            BeginAction(state, ActiveFighterFrames[i], "Hurt")
+        end
+    end
 
 end
 

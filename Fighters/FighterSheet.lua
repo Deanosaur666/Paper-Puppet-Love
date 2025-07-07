@@ -52,6 +52,8 @@ STATE_ATTACK_CONTACT = 2^7
 -- if this is also true, we hit, but if not, it was guarded
 STATE_ATTACK_HIT = 2^8
 
+STATE_HURT = 2^9
+
 
 
 -- stores all fighter sheets

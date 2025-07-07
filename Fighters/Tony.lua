@@ -17,6 +17,10 @@ local idle = AddAction(tony, "Idle", "Idle", nil, nil, {
     StateFlags = STATE_IDLE,
 })
 
+tony.Hurt = AddAction(tony, "Hurt", "Hurt Head", nil, nil, {
+    StateFlags = STATE_HURT,
+})
+
 AddAction(tony, "Jab", "Jab", BUTTON_A, 0, {
     StateFlags = SetStateAttackLevel(0, ATTACK_LIGHT),
     ReqStateFlags = STATE_CANATTACK,

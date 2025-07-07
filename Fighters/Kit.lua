@@ -17,6 +17,10 @@ local idle = AddAction(kit, "Idle", "Idle", nil, nil, {
     InputHeld = nil,
 })
 
+kit.Hurt = AddAction(kit, "Hurt", "Hurt Head", nil, nil, {
+    StateFlags = STATE_HURT,
+})
+
 local jab = AddAction(kit, "Jab", "Punch", BUTTON_A, 0, {
     StateFlags = SetStateAttackLevel(0, 1),
     ReqStateFlags = STATE_CANATTACK,
@@ -42,4 +46,14 @@ AddAction(kit, "Kick", "High Kick", BUTTON_B, 0, {
     Startup = 12,
     Active = 7,
     Recovery = 14, -- 4 fake recovery frames
+})
+
+AddAction(kit, "Crouch Punch", "Crouch Punch", BUTTON_A, BUTTON_DOWN, {
+    StateFlags = SetStateAttackLevel(0, ATTACK_MEDIUM),
+    ReqStateFlags = STATE_CANATTACK,
+    CancelReqStateFlags = SetStateAttackPhase(0, PHASE_RECOVERY),
+    CancelMaxAttackLevel = ATTACK_LIGHT,
+    Startup = 8,
+    Active = 1,
+    Recovery = 8,
 })

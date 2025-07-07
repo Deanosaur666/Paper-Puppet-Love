@@ -45,6 +45,41 @@ function RectangleCollision(r1x, r1y, r1w, r1h, r2x, r2y, r2w, r2h)
 
 end
 
+function RectangleIntersection(r1x, r1y, r1w, r1h, r2x, r2y, r2w, r2h)
+    if(not RectangleCollision(r1x, r1y, r1w, r1h, r2x, r2y, r2w, r2h)) then
+        return nil
+    end
+    -- left and right
+    local lx = r1x
+    local lw = r1w
+    local rx = r2x
+    if(r2x < r1x) then
+        lx = r2x
+        lw = r2w
+        rx = r1x
+    end
+
+    -- intersection x and width
+    local ix = rx
+    local iw = (lx + lw) - rx
+
+    -- top and bottom
+    local ty = r1y
+    local th = r1h
+    local by = r2y
+    if(r2y < r1y) then
+        ty = r2y
+        th = r2h
+        by = r1y
+    end
+
+    -- intersection y and height
+    local iy = by
+    local ih = (ty + th) - by
+
+    return ix, iy, iw, ih
+end
+
 -- flip a rectangle horizontally
 -- we don't change anything but rx
 function FlipRectangle(rx, ry, rw, rh)

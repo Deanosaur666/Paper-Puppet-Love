@@ -102,16 +102,18 @@ function UpdateFighter(fstate, fframe, controller, fsheet)
         xsc = -1
     end
 
+    local dx = 0
+
     if(ControllerInputDown(controller, FlipInput(fstate.Facing, BUTTON_LEFT)) and bit.band(fstate.StateFlags, STATE_CANMOVE) ~= 0) then
-        fstate.X = fstate.X - fframe.Sheet.WalkBackSpeed*xsc
+        dx = - fframe.Sheet.WalkBackSpeed*xsc
     end
     if(ControllerInputDown(controller, FlipInput(fstate.Facing, BUTTON_RIGHT)) and bit.band(fstate.StateFlags, STATE_CANMOVE) ~= 0) then
-        fstate.X = fstate.X + fframe.Sheet.WalkForwardSpeed*xsc
+        dx = fframe.Sheet.WalkForwardSpeed*xsc
     end
+    fstate.X = fstate.X + dx
 
     -- create new fighter frame at the end, after updating state a bunch
-    fframe = FighterFrame(fstate, fframe.Sheet)
-    return fstate, fframe
+    return fstate
 end
 
 function CheckActions(fstate, fframe, controller)
