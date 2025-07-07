@@ -53,6 +53,9 @@ STATE_ATTACK_CONTACT = 2^7
 STATE_ATTACK_HIT = 2^8
 
 STATE_HURT = 2^9
+STATE_AERIAL = 2^10 -- if launched is aerial and hurt
+
+STATE_GUARD = 2^11
 
 
 

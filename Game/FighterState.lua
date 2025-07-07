@@ -21,6 +21,8 @@ function FighterState(props)
         -- duration of hurt animation
         -- nil if not being hurt
         HurtTime = nil,
+
+        Freeze = 0,
     }
     state = tableMerge(state, props)
 
@@ -91,10 +93,15 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
     
     fstate = deepcopy(fstate) -- make a new state, just in case old was stored in state history
     
+    if(fstate.Freeze > 0) then
+        fstate.Freeze = fstate.Freeze - 1
+        return fstate
+    end
+
     if(fframe == nil) then
         fframe = FighterFrame(fstate, fsheet, player)
     end
-    
+
     fstate.CurrentFrame = fstate.CurrentFrame + 1
     local action = fframe.Action
     if(action.Startup and action.Active and action.Recovery) then
@@ -152,7 +159,7 @@ end
 function CheckActions(fstate, fframe, controller)
     local bufferLength = 10
     
-    bufferLength = math.min(bufferLength, CurrentFrame - controller.LastBuffered)
+    bufferLength = math.min(bufferLength, GameState.CurrentFrame - controller.LastBuffered)
 
     local actions = fframe.Sheet.Actions
     local perform = nil
@@ -178,4 +185,18 @@ function DrawFighter(fframe)
     local tex = SpriteSheets[fframe.Sheet.TextureIndex]
 
     DrawPose(fframe.Pose, fframe.Skeleton, spriteSet, tex, fstate.X, fstate.Y, 0, fframe.XScale, 1)
+end
+
+function HurtFighter(state, frame, attackData, attacker)
+    BeginAction(state, frame, "Hurt")
+    state.HurtTime = attackData.Stun
+    local knockback = attackData.Knockback
+    attacker.StateFlags = bit.bor(attacker.StateFlags, STATE_ATTACK_CONTACT)
+    if(not attacker.Facing) then
+        knockback = -knockback
+    end
+    state.HurtKnockback = knockback
+
+    state.Freeze = attackData.HitFreeze
+    attacker.Freeze = attackData.HitFreeze
 end

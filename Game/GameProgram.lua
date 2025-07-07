@@ -1,5 +1,13 @@
 
-CurrentFrame = 0
+GameState = {
+
+    CurrentFrame = 0,
+    Zoom = 1,
+    ScrollX = 0,
+    -- ScrollY might not really be used...
+    ScrollY = 0,
+}
+
 
 GameProgram = BlankProgram()
 DisplayHitballs = true
@@ -72,12 +80,10 @@ function GameProgram:Load()
     StartGame()
 end
 
-Zoom = 1
+
 MinZoom = 0.4
 MaxZoom = 1.1
-ScrollX = 0
--- ScrollY might not really be used...
-ScrollY = 0
+
 
 WallMargin = 50
 
@@ -89,14 +95,14 @@ function GameProgram:Draw()
     lg.clear(0.3, 0.3, 0.3)
 
     lg.translate(ScreenWidth/2, ScreenHeight*0.6)
-    lg.scale(Zoom)
-    lg.translate(-ScrollX, -ScrollY)
+    lg.scale(GameState.Zoom)
+    lg.translate(-GameState.ScrollX, -GameState.ScrollY)
     lg.translate(0, ScreenHeight*0.4 - 80)
 
     -- vertical line at center of stage
-    lg.line(0, -ScreenHeight/Zoom, 0, 0)
+    lg.line(0, -ScreenHeight/GameState.Zoom, 0, 0)
     -- horizontal line
-    lg.line(ScrollX - (ScreenWidth/2)/Zoom, 0, ScrollX + (ScreenWidth/2)/Zoom, 0)
+    lg.line(GameState.ScrollX - (ScreenWidth/2)/GameState.Zoom, 0, GameState.ScrollX + (ScreenWidth/2)/GameState.Zoom, 0)
 
     for i, frame in pairs(ActiveFighterFrames) do
         DrawFighter(frame)
@@ -135,10 +141,10 @@ function GetFighterPushBox(state, sheet)
 end
 
 function GameProgram:Update()
-    CurrentFrame = CurrentFrame + 1
+    GameState.CurrentFrame = GameState.CurrentFrame + 1
 
-    Leftwall = ScrollX - (ScreenWidth/2)/Zoom + WallMargin
-    Rightwall = ScrollX + (ScreenWidth/2)/Zoom - WallMargin
+    Leftwall = GameState.ScrollX - (ScreenWidth/2)/GameState.Zoom + WallMargin
+    Rightwall = GameState.ScrollX + (ScreenWidth/2)/GameState.Zoom - WallMargin
 
     local minX = math.huge
     local maxX = -math.huge
@@ -149,7 +155,7 @@ function GameProgram:Update()
 
     -- update controllers
     for i, controller in pairs(PlayerControllers) do
-        UpdateController(controller, PlayerControls[i], CurrentFrame)
+        UpdateController(controller, PlayerControls[i], GameState.CurrentFrame)
     end
 
     -- update frames
@@ -173,6 +179,7 @@ function GameProgram:Update()
 
     -- check for hitball collision
     for i, state in ipairs(ActiveFighterStates) do
+        local frame = ActiveFighterFrames[i]
         local enemy = ActiveFighterEnemies[i]
         local hurtBy = nil
 
@@ -188,16 +195,7 @@ function GameProgram:Update()
         end
 
         if(hurtBy) then
-            BeginAction(state, ActiveFighterFrames[i], "Hurt")
-            local attackData = hurtBy.AttackData -- or AttackData_Power(1)
-            state.HurtTime = attackData.Stun
-            local knockback = attackData.Knockback
-            local attacker = ActiveFighterStates[hurtBy.Player]
-            attacker.StateFlags = bit.bor(attacker.StateFlags, STATE_ATTACK_CONTACT)
-            if(not attacker.Facing) then
-                knockback = -knockback
-            end
-            state.HurtKnockback = knockback
+            HurtFighter(state, frame, hurtBy.AttackData, ActiveFighterStates[hurtBy.Player])
         end
     end
 
@@ -255,19 +253,19 @@ function GameProgram:Update()
     
     local middleX = (minX + maxX)/2
     local xRange = maxX - minX
-    ScrollX = middleX
+    GameState.ScrollX = middleX
     local newZoom = ScreenWidth/(xRange + maxW*2)
-    Zoom = Clamp(newZoom, MinZoom, MaxZoom)
+    GameState.Zoom = Clamp(newZoom, MinZoom, MaxZoom)
 
 end
 
 function StartGame()
-    CurrentFrame = 0
+    GameState.CurrentFrame = 0
 
     AddActiveFighter(1, "Tony")
     AddActiveFighter(2, "Kit")
 end
 
 function UpdateGame()
-
+    -- TODO: Add previous game states for roll-back
 end

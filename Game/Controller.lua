@@ -234,12 +234,12 @@ function InputBuffered(controller, button, bufferLength)
             lastNotPressed = time
         end
 
-        if(CurrentFrame - time > maxTime and lastPressed == nil) then
+        if(GameState.CurrentFrame - time > maxTime and lastPressed == nil) then
             return false
         end
 
         if(lastPressed ~= nil and lastNotPressed ~= nil) then
-            if(CurrentFrame - lastPressed < bufferLength) then
+            if(GameState.CurrentFrame - lastPressed < bufferLength) then
                 -- we use this for "lastbuffered" so once an attack is performed...
                 -- we don't check the buffer for inputs that occurred BEFORE it was buffered
                 controller.BufferTime = lastPressed
@@ -270,7 +270,7 @@ function ControllerInputHeld(controller, button, length)
             return false
         end
 
-        if(time < CurrentFrame - length) then
+        if(time < GameState.CurrentFrame - length) then
             return true
         end
     end
