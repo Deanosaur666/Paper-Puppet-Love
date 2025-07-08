@@ -6,6 +6,10 @@ GameState = {
     ScrollX = 0,
     -- ScrollY might not really be used...
     ScrollY = 0,
+
+    FrontFighter = 1,
+
+    ActiveFighterStates = {}
 }
 
 
@@ -15,7 +19,7 @@ DisplayHitballs = true
 StartOffset = ScreenWidth/4
 
 ActiveFighterSheets = {}
-ActiveFighterStates = {}
+
 ActiveFighterFrames = {}
 
 ActivePushBoxes = {}
@@ -50,13 +54,14 @@ function AddActiveFighter(player, sheetName)
         x = StartOffset
         facing = false
     end
-    ActiveFighterStates[player] = FighterState({
+    GameState.ActiveFighterStates[player] = FighterState({
         X = x,
-        Facing = facing
+        Facing = facing,
+        Player = player,
     })
-    ActiveFighterFrames[player] = FighterFrame(ActiveFighterStates[player], ActiveFighterSheets[player], player)
+    ActiveFighterFrames[player] = FighterFrame(GameState.ActiveFighterStates[player], ActiveFighterSheets[player], player)
 
-    BeginAction(ActiveFighterStates[player], ActiveFighterFrames[player], "Idle")
+    BeginAction(GameState.ActiveFighterStates[player], ActiveFighterFrames[player], "Idle")
 end
 
 function GameProgram:KeyPressed(key, scancode, isrepeat)
@@ -105,11 +110,18 @@ function GameProgram:Draw()
     lg.line(GameState.ScrollX - (ScreenWidth/2)/GameState.Zoom, 0, GameState.ScrollX + (ScreenWidth/2)/GameState.Zoom, 0)
 
     for i, frame in pairs(ActiveFighterFrames) do
-        DrawFighter(frame)
-        if(DisplayHitballs) then
+        if(GameState.FrontFighter ~= frame.Player) then
+            DrawFighter(frame)
+        end
+    end
+
+    DrawFighter(ActiveFighterFrames[GameState.FrontFighter])
+
+    if(DisplayHitballs) then
+        for i, frame in pairs(ActiveFighterFrames) do
             DrawHitballs(frame.Hitballs)
             local sheet = ActiveFighterSheets[i]
-            local state = ActiveFighterStates[i]
+            local state = GameState.ActiveFighterStates[i]
             local rx, ry, rw, rh = sheet.PBX, sheet.PBY, sheet.PBW, sheet.PBH
             if(not state.Facing) then
                 rx, ry, rw, rh = FlipRectangle(rx, ry, rw, rh)
@@ -126,6 +138,7 @@ function GameProgram:Draw()
             lg.pop()
         end
     end
+
 end
 
 function GetFighterPushBox(state, sheet)
@@ -159,8 +172,8 @@ function GameProgram:Update()
     end
 
     -- update frames
-    for i, state in pairs(ActiveFighterStates) do
-        ActiveFighterFrames[i] = FighterFrame(ActiveFighterStates[i], ActiveFighterSheets[i], i)
+    for i, state in pairs(GameState.ActiveFighterStates) do
+        ActiveFighterFrames[i] = FighterFrame(GameState.ActiveFighterStates[i], ActiveFighterSheets[i], i)
 
         local frame = ActiveFighterFrames[i]
 
@@ -178,13 +191,13 @@ function GameProgram:Update()
     end
 
     -- check for hitball collision
-    for i, state in ipairs(ActiveFighterStates) do
+    for i, state in ipairs(GameState.ActiveFighterStates) do
         local frame = ActiveFighterFrames[i]
         local enemy = ActiveFighterEnemies[i]
         local hurtBy = nil
 
         for _, ball in ipairs(Hitballs[enemy]) do
-            local attacker = ActiveFighterStates[ball.Player]
+            local attacker = GameState.ActiveFighterStates[ball.Player]
             -- check if they have hit yet
             if(bit.band(attacker.StateFlags, STATE_ATTACK_CONTACT) == 0) then
                 local hit = HitballAtPoint(Hurtballs[i], ball.X, ball.Y, ball.Radius)
@@ -195,17 +208,17 @@ function GameProgram:Update()
         end
 
         if(hurtBy) then
-            HurtFighter(state, frame, hurtBy.AttackData, ActiveFighterStates[hurtBy.Player])
+            HurtFighter(state, frame, hurtBy.AttackData, GameState.ActiveFighterStates[hurtBy.Player])
         end
     end
 
     -- update state with previous state and frame info
-    for i, state in pairs(ActiveFighterStates) do
-        ActiveFighterStates[i] = UpdateFighter(state, ActiveFighterFrames[i], PlayerControllers[i], i)
+    for i, state in pairs(GameState.ActiveFighterStates) do
+        GameState.ActiveFighterStates[i] = UpdateFighter(state, ActiveFighterFrames[i], PlayerControllers[i], i)
 
         -- check position for scrolling and wall clamping
         local sheet = ActiveFighterSheets[i]
-        local state = ActiveFighterStates[i]
+        local state = GameState.ActiveFighterStates[i]
 
         ActivePushBoxes[i] = GetFighterPushBox(state, sheet)
         local pbox = ActivePushBoxes[i]
@@ -228,7 +241,7 @@ function GameProgram:Update()
     end
     --local push = PUSHSPEED
     -- check push boxes
-    for i, state in pairs(ActiveFighterStates) do
+    for i, state in pairs(GameState.ActiveFighterStates) do
         --UpdatePushBox(state)
         local p1box = ActivePushBoxes[i]
         for j, box in pairs(ActivePushBoxes) do
@@ -257,6 +270,20 @@ function GameProgram:Update()
     local newZoom = ScreenWidth/(xRange + maxW*2)
     GameState.Zoom = Clamp(newZoom, MinZoom, MaxZoom)
 
+    -- adjust front fighter
+    if(ActiveFighterFrames[1].GoToFront and not ActiveFighterFrames[2].GoToFront) then
+        GameState.FrontFighter = 1
+    elseif(ActiveFighterFrames[2].GoToFront and not ActiveFighterFrames[1].GoToFront) then
+        GameState.FrontFighter = 2
+    -- if both want to go to front, then we decide based on current frame
+    elseif(ActiveFighterFrames[2].GoToFront and ActiveFighterFrames[1].GoToFront) then
+        if(GameState.CurrentFrame % 2 == 0) then
+            GameState.FrontFighter = 1
+        else
+            GameState.FrontFighter = 2
+        end
+    end
+
 end
 
 function StartGame()
@@ -264,6 +291,7 @@ function StartGame()
 
     AddActiveFighter(1, "Tony")
     AddActiveFighter(2, "Kit")
+    --AddActiveFighter(2, "Agent J")
 end
 
 function UpdateGame()

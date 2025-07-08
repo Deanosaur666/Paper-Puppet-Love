@@ -35,6 +35,10 @@ function BeginAction(fstate, fframe, actionName)
     fstate.CurrentFrame = 0
     fstate.StateFlags = action.StateFlags
     fstate.HurtTime = nil
+
+    if(bit.band(action.StateFlags, STATE_ATTACK_LEVEL) ~= 0) then
+        fframe.GoToFront = true
+    end
 end
 
 function ContinueAction(fstate, fframe, actionName)
@@ -82,6 +86,9 @@ function FighterFrame(fstate, fsheet, player)
             Player = player,
         }),
         XScale = xsc,
+
+        GoToFront = false,
+        GoToBack = false,
     }
 
     return fframe
@@ -118,7 +125,7 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
 
     local pose = GetAnimationFrame(action, fstate)
     if(pose == nil) then
-        BeginAction(fstate, fframe, "Idle")
+        BeginAction(fstate, fframe, action.NextAction or "Idle")
     end
 
     CheckActions(fstate, fframe, controller)
@@ -133,7 +140,9 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
     if(bit.band(fstate.StateFlags, STATE_CANMOVE) ~= 0) then
 
         local walked = false
-        if(ControllerInputDown(controller, FlipInput(fstate.Facing, BUTTON_LEFT))) then
+        if(ControllerInputDown(controller, BUTTON_GUARD)) then
+            ContinueAction(fstate, fframe, "Guard")
+        elseif(ControllerInputDown(controller, FlipInput(fstate.Facing, BUTTON_LEFT))) then
             dx = - fframe.Sheet.WalkBackSpeed*xsc
             ContinueAction(fstate, fframe, "BWalk")
             walked = true
@@ -150,6 +159,10 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
 
     if(fstate.HurtTime) then
         fstate.X = fstate.X + fstate.HurtKnockback / fstate.HurtTime
+    end
+
+    if(fstate.CurrentAction == "Guard" and not ControllerInputDown(controller, BUTTON_GUARD)) then
+        BeginAction(fstate, fframe, "Guard Drop")
     end
 
     -- create new fighter frame at the end, after updating state a bunch
@@ -188,15 +201,35 @@ function DrawFighter(fframe)
 end
 
 function HurtFighter(state, frame, attackData, attacker)
-    BeginAction(state, frame, "Hurt")
-    state.HurtTime = attackData.Stun
-    local knockback = attackData.Knockback
+
+    local hurtTime
+    local knockback
+    local freeze
+    -- not guarding
+    if(bit.band(state.StateFlags, STATE_GUARD) == 0) then
+        BeginAction(state, frame, "Hurt")
+        hurtTime = attackData.Stun
+        knockback = attackData.Knockback
+        attacker.StateFlags = bit.bor(attacker.StateFlags, STATE_ATTACK_HIT)
+        freeze = attackData.HitFreeze
+
+    -- guarding
+    else
+        BeginAction(state, frame, "Guard Stun")
+        hurtTime = attackData.GuardStun
+        knockback = attackData.GuardKnockback
+        freeze = attackData.GuardHitFreeze
+    end
+    
+    state.HurtTime = hurtTime
     attacker.StateFlags = bit.bor(attacker.StateFlags, STATE_ATTACK_CONTACT)
     if(not attacker.Facing) then
         knockback = -knockback
     end
     state.HurtKnockback = knockback
 
-    state.Freeze = attackData.HitFreeze
-    attacker.Freeze = attackData.HitFreeze
+    state.Freeze = freeze
+    attacker.Freeze = freeze
+
+    ActiveFighterFrames[attacker.Player].GoToFront = true
 end

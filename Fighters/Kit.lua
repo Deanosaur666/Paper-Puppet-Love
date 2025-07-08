@@ -35,6 +35,18 @@ kit.Hurt = AddAction(kit, "Hurt", "Hurt Head", nil, nil, {
     StateFlags = STATE_HURT,
 })
 
+kit.Guard = AddAction(kit, "Guard", "Guard", nil, nil, {
+    StateFlags = STATE_GUARD,
+})
+
+kit.GuardStun = AddAction(kit, "Guard Stun", "Guard Stun", nil, nil, {
+    StateFlags = STATE_GUARD,
+})
+
+kit.GuardDrop = AddAction(kit, "Guard Drop", "Guard Drop", nil, nil, {
+    StateFlags = STATE_CANATTACK,
+})
+
 local jab = AddAttack(kit, "Jab", "Punch", BUTTON_A, 0, 1, {
     StateFlags = SetStateAttackLevel(0, 1),
     ReqStateFlags = STATE_CANATTACK,
@@ -55,14 +67,37 @@ AddAttack(kit, "Cross", "Cross", BUTTON_A, 0, 1.5, {
     Recovery = 14,
 })
 
-AddAttack(kit, "Kick", "High Kick", BUTTON_B, 0, 3, {
+AddAttack(kit, "High Kick", "High Kick", BUTTON_B, BUTTON_LEFT, 3, {
+    StateFlags = SetStateAttackLevel(0, 2),
+    ReqStateFlags = STATE_CANATTACK,
+    CancelReqStateFlags = SetStateAttackPhase(0, PHASE_RECOVERY),
+    CancelMaxAttackLevel = ATTACK_LIGHT,
+    Startup = 10,
+    Active = 6,
+    Recovery = 14, -- 4 fake recovery frames
+    AnimStart = 1,
+})
+
+AddAttack(kit, "Far Kick", "Far Spin Kick", BUTTON_B, 0, 3, {
     StateFlags = SetStateAttackLevel(0, 2),
     ReqStateFlags = STATE_CANATTACK,
     CancelReqStateFlags = SetStateAttackPhase(0, PHASE_RECOVERY),
     CancelMaxAttackLevel = ATTACK_LIGHT,
     Startup = 12,
-    Active = 7,
-    Recovery = 14, -- 4 fake recovery frames
+    Active = 3,
+    Recovery = 16, 
+    AnimStart = 1,
+})
+
+AddAttack(kit, "Knee", "Knee", BUTTON_B, BUTTON_RIGHT, 3, {
+    StateFlags = SetStateAttackLevel(0, 2),
+    ReqStateFlags = STATE_CANATTACK,
+    CancelReqStateFlags = SetStateAttackPhase(0, PHASE_RECOVERY),
+    CancelMaxAttackLevel = ATTACK_LIGHT,
+    Startup = 13,
+    Active = 6,
+    Recovery = 8, -- 4 fake recovery frames
+    AnimStart = 1,
 })
 
 AddAttack(kit, "Crouch Punch", "Crouch Punch", BUTTON_A, BUTTON_DOWN, 1, {

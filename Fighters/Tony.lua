@@ -36,6 +36,18 @@ tony.Hurt = AddAction(tony, "Hurt", "Hurt Head", nil, nil, {
     StateFlags = STATE_HURT,
 })
 
+tony.Guard = AddAction(tony, "Guard", "Guard", nil, nil, {
+    StateFlags = STATE_GUARD,
+})
+
+tony.GuardStun = AddAction(tony, "Guard Stun", "Guard Stun", nil, nil, {
+    StateFlags = STATE_GUARD,
+})
+
+tony.GuardDrop = AddAction(tony, "Guard Drop", "Guard Drop", nil, nil, {
+    StateFlags = STATE_CANATTACK,
+})
+
 AddAttack(tony, "Jab", "Jab", BUTTON_A, 0, 1, {
     StateFlags = SetStateAttackLevel(0, ATTACK_LIGHT),
     ReqStateFlags = STATE_CANATTACK,

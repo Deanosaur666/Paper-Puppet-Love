@@ -70,7 +70,7 @@ local function encode_table(val, stack)
     -- Treat as array -- check keys are valid and it is not sparse
     local n = 0
     for k in pairs(val) do
-      if type(k) ~= "number" then
+      if type(k) ~= "number" and not tonumber(k) then
         print("ERROR. Value: " .. tostring(k) .. " is not a number. Wrong type: " .. type(k))
         error("invalid table: mixed or invalid key types")
       end
