@@ -335,8 +335,8 @@ function DrawAndPoseSkeleton(skeleton, pose, x, y, mx, my)
         elseif(MousePressed[2]) then
             -- shift for reset hitballs and sprite
             if(love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
-                fillArray(part.HitballFlags, HITBALL_HITTABLE)
-                fillArray(part.HitballScale, 1)
+                part.HitballFlags = fillArray({}, HITBALL_HITTABLE, #blueprint.Hitballs)
+                part.HitballScale = fillArray({}, 1, #blueprint.Hitballs)
                 part.SpriteIndex = nil
                 part.Layer = nil
                 SkeletonModified = true

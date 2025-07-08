@@ -29,8 +29,8 @@ function PartPose(skeleton, blueprintIndex)
 
     local blueprint = GetPartBluePrint(part, skeleton)
     local hitballs = #blueprint.Hitballs
-    fillArray(part.HitballFlags, HITBALL_HITTABLE, hitballs)
-    fillArray(part.HitballScale, 1, hitballs)
+    part.HitballFlags = fillArray({}, HITBALL_HITTABLE, hitballs)
+    part.HitballFlags = fillArray({}, 1, hitballs)
 
     return part
 end

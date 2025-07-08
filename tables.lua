@@ -37,7 +37,7 @@ function fillArray(t, val, len)
   for i, _ in ipairs(t) do
     t[i] = val
   end
-
+  return t
 end
 
 function tableMerge(t1, t2)

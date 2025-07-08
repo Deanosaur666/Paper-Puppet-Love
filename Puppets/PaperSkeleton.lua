@@ -27,5 +27,19 @@ function LoadSkeletons()
         for _, anim in ipairs(skeleton.Animations) do
             SkeletonAnimNameMap[skelName][anim.Name] = anim
         end
+        -- weird that we had to do this
+        --PurifyPoses(skeleton)
+    end
+end
+
+function PurifyPoses(skeleton) 
+    for _, anim in ipairs(skeleton.Animations) do
+        for _, frame in ipairs(anim.Frames) do
+            for _, part in pairs(frame.PartFrames) do
+                part.HitballFlags["2"] = nil
+                part.HitballScale["2"] = nil
+                
+            end
+        end
     end
 end
