@@ -290,6 +290,7 @@ function StartGame()
     GameState.CurrentFrame = 0
 
     AddActiveFighter(1, "Tony")
+    --AddActiveFighter(1, "Kit")
     AddActiveFighter(2, "Kit")
     --AddActiveFighter(2, "Agent J")
 end
