@@ -291,8 +291,8 @@ function StartGame()
 
     AddActiveFighter(1, "Tony")
     --AddActiveFighter(1, "Kit")
-    AddActiveFighter(2, "Kit")
-    --AddActiveFighter(2, "Agent J")
+    --AddActiveFighter(2, "Kit")
+    AddActiveFighter(2, "Agent J")
 end
 
 function UpdateGame()

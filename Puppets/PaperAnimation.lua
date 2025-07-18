@@ -186,6 +186,10 @@ function DrawPoseHitballs(pose, skeleton, x, y, rot, xscale, yscale)
         end
     end
 
+    -- draw the "center anchor"
+    lg.setColor(1.0, 1.0, 0)
+    lg.circle("line", skeleton.X or 0, skeleton.Y or 0, 15)
+
     lg.pop()
 end
 
