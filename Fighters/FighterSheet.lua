@@ -36,6 +36,12 @@ ATTACK_SPECIAL = 5
 ATTACK_EX = 6
 ATTACK_SUPER = 7
 
+-- ADD Custom stances...
+ATTACK_STANCE_SHIFT = 15 --??? IDK
+-- DEAN HELP ME!~!!!!!!!
+-- OK, we want bits after ATTACK_LEVEL  to be reserved for "attack stances"... which are used for follow-ups and stuff.
+-- we have 
+
 function GetStateAttackLevel(state)
     -- just get the attack level bits and shift them
     return bit.rshift(bit.band(state, STATE_ATTACK_LEVEL), STATE_ATTACK_LEVEL_SHIFT)
