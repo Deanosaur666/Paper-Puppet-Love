@@ -11,5 +11,6 @@ for _, value in ipairs(files) do
 end
 
 function PlaySFX(sound)
+    SFX[sound]:stop()
     SFX[sound]:play()
 end
