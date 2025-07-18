@@ -47,7 +47,7 @@ kit.GuardDrop = AddAction(kit, "Guard Drop", "Guard Drop", nil, nil, {
     StateFlags = STATE_CANATTACK,
 })
 
-local jab = AddAttack(kit, "Jab", "Punch", BUTTON_A, 0, 1, {
+local jab = AddAttack(kit, "Jab", "Punch", BUTTON_A, 0, 1, ATTACK_LIGHT, {
     StateFlags = SetStateAttackLevel(0, 1),
     ReqStateFlags = STATE_CANATTACK,
     Startup = 8,
@@ -58,7 +58,7 @@ local jab = AddAttack(kit, "Jab", "Punch", BUTTON_A, 0, 1, {
     AnimSpeed = 0.5,
 })
 
-AddAttack(kit, "Cross", "Cross", BUTTON_A, 0, 1.5, {
+AddAttack(kit, "Cross", "Cross", BUTTON_A, 0, 1.5, ATTACK_MEDIUM, {
     StateFlags = SetStateAttackLevel(0, ATTACK_MEDIUM),
     CancelReqStateFlags = SetStateAttackPhase(0, PHASE_RECOVERY),
     CancelMaxAttackLevel = ATTACK_LIGHT,
@@ -67,7 +67,7 @@ AddAttack(kit, "Cross", "Cross", BUTTON_A, 0, 1.5, {
     Recovery = 14,
 })
 
-AddAttack(kit, "High Kick", "High Kick", BUTTON_B, BUTTON_LEFT, 3, {
+AddAttack(kit, "High Kick", "High Kick", BUTTON_B, BUTTON_LEFT, 3, ATTACK_HEAVY, {
     StateFlags = SetStateAttackLevel(0, 2),
     ReqStateFlags = STATE_CANATTACK,
     CancelReqStateFlags = SetStateAttackPhase(0, PHASE_RECOVERY),
@@ -78,7 +78,7 @@ AddAttack(kit, "High Kick", "High Kick", BUTTON_B, BUTTON_LEFT, 3, {
     AnimStart = 1,
 })
 
-AddAttack(kit, "Far Kick", "Far Spin Kick", BUTTON_B, 0, 3, {
+AddAttack(kit, "Far Kick", "Far Spin Kick", BUTTON_B, 0, 3, ATTACK_SUPERHEAVY, {
     StateFlags = SetStateAttackLevel(0, 2),
     ReqStateFlags = STATE_CANATTACK,
     CancelReqStateFlags = SetStateAttackPhase(0, PHASE_RECOVERY),
@@ -89,7 +89,7 @@ AddAttack(kit, "Far Kick", "Far Spin Kick", BUTTON_B, 0, 3, {
     AnimStart = 1,
 })
 
-AddAttack(kit, "Knee", "Knee", BUTTON_B, BUTTON_RIGHT, 3, {
+AddAttack(kit, "Knee", "Knee", BUTTON_B, BUTTON_RIGHT, 3, ATTACK_HEAVY, {
     StateFlags = SetStateAttackLevel(0, 2),
     ReqStateFlags = STATE_CANATTACK,
     CancelReqStateFlags = SetStateAttackPhase(0, PHASE_RECOVERY),
@@ -100,8 +100,7 @@ AddAttack(kit, "Knee", "Knee", BUTTON_B, BUTTON_RIGHT, 3, {
     AnimStart = 1,
 })
 
-AddAttack(kit, "Crouch Punch", "Crouch Punch", BUTTON_A, BUTTON_DOWN, 1, {
-    StateFlags = SetStateAttackLevel(0, ATTACK_MEDIUM),
+AddAttack(kit, "Crouch Punch", "Crouch Punch", BUTTON_A, BUTTON_DOWN,1, ATTACK_LIGHT, {
     ReqStateFlags = STATE_CANATTACK,
     CancelReqStateFlags = SetStateAttackPhase(0, PHASE_RECOVERY),
     CancelMaxAttackLevel = ATTACK_LIGHT,

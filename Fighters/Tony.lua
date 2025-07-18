@@ -48,7 +48,7 @@ tony.GuardDrop = AddAction(tony, "Guard Drop", "Guard Drop", nil, nil, {
     StateFlags = STATE_CANATTACK,
 })
 
-AddAttack(tony, "Jab", "Jab", BUTTON_A, 0, 1, {
+AddAttack(tony, "Jab", "Jab", BUTTON_A, 0, 1, ATTACK_LIGHT, {
     StateFlags = SetStateAttackLevel(0, ATTACK_LIGHT),
     ReqStateFlags = STATE_CANATTACK,
     Startup = 8,
@@ -56,7 +56,7 @@ AddAttack(tony, "Jab", "Jab", BUTTON_A, 0, 1, {
     Recovery = 12,
 })
 
-AddAttack(tony, "Cross", "Cross", BUTTON_A, 0, 1.5, {
+AddAttack(tony, "Cross", "Cross", BUTTON_A, 0, 1.5, ATTACK_MEDIUM, {
     StateFlags = SetStateAttackLevel(0, ATTACK_MEDIUM),
     CancelReqStateFlags = SetStateAttackPhase(0, PHASE_RECOVERY),
     CancelMaxAttackLevel = ATTACK_LIGHT,
@@ -65,7 +65,7 @@ AddAttack(tony, "Cross", "Cross", BUTTON_A, 0, 1.5, {
     Recovery = 12,
 })
 
-AddAttack(tony, "Elbow", "Elbow", BUTTON_A, 0, 2, {
+AddAttack(tony, "Elbow", "Elbow", BUTTON_A, 0, 2, ATTACK_HEAVY, {
     StateFlags = SetStateAttackLevel(0, ATTACK_HEAVY),
     CancelReqStateFlags = SetStateAttackPhase(SetStateAttackLevel(0, ATTACK_MEDIUM), PHASE_RECOVERY),
     CancelMaxAttackLevel = ATTACK_MEDIUM,
@@ -74,7 +74,7 @@ AddAttack(tony, "Elbow", "Elbow", BUTTON_A, 0, 2, {
     Recovery = 12,
 })
 
-AddAttack(tony, "L Upper", "Left Uppercut", BUTTON_A, BUTTON_DOWN, 2, {
+AddAttack(tony, "L Upper", "Left Uppercut", BUTTON_A, BUTTON_DOWN, 2, ATTACK_MEDIUM, {
     StateFlags = SetStateAttackLevel(0, ATTACK_MEDIUM),
     ReqStateFlags = STATE_CANATTACK,
     CancelReqStateFlags = SetStateAttackPhase(0, PHASE_RECOVERY),
@@ -84,7 +84,7 @@ AddAttack(tony, "L Upper", "Left Uppercut", BUTTON_A, BUTTON_DOWN, 2, {
     Recovery = 10,
 })
 
-AddAttack(tony, "Kick", "Kick", BUTTON_B, 0, 3, {
+AddAttack(tony, "Kick", "Kick", BUTTON_B, 0, 3, ATTACK_HEAVY, {
     StateFlags = SetStateAttackLevel(0, ATTACK_HEAVY),
     ReqStateFlags = STATE_CANATTACK,
 
@@ -92,7 +92,7 @@ AddAttack(tony, "Kick", "Kick", BUTTON_B, 0, 3, {
     CancelMaxAttackLevel = ATTACK_MEDIUM,
 })
 
-AddAttack(tony, "Roundhouse", "Roundhouse", BUTTON_B, BUTTON_RIGHT, 3.5, {
+AddAttack(tony, "Roundhouse", "Roundhouse", BUTTON_B, BUTTON_RIGHT, 3.5, ATTACK_SUPERHEAVY, {
     StateFlags = SetStateAttackLevel(0, ATTACK_HEAVY),
     ReqStateFlags = STATE_CANATTACK,
 
@@ -100,7 +100,7 @@ AddAttack(tony, "Roundhouse", "Roundhouse", BUTTON_B, BUTTON_RIGHT, 3.5, {
     CancelMaxAttackLevel = ATTACK_MEDIUM,
 })
 
-AddAttack(tony, "Stomp", "Stomp", BUTTON_B, BUTTON_DOWN, 2.5, {
+AddAttack(tony, "Stomp", "Stomp", BUTTON_B, BUTTON_DOWN, 2.5, ATTACK_HEAVY, {
     StateFlags = SetStateAttackLevel(0, ATTACK_HEAVY),
     ReqStateFlags = STATE_CANATTACK,
 
