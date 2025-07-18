@@ -208,7 +208,7 @@ function GameProgram:Update()
         end
 
         if(hurtBy) then
-            HurtFighter(state, frame, hurtBy.AttackData, GameState.ActiveFighterStates[hurtBy.Player])
+            HurtFighter(state, frame, hurtBy.AttackData, GameState.ActiveFighterStates[hurtBy.Player], hurtBy)
         end
     end
 

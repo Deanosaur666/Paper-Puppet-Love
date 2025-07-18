@@ -200,13 +200,14 @@ function DrawFighter(fframe)
     DrawPose(fframe.Pose, fframe.Skeleton, spriteSet, tex, fstate.X, fstate.Y, 0, fframe.XScale, 1)
 end
 
-function HurtFighter(state, frame, attackData, attacker)
+function HurtFighter(state, frame, attackData, attacker, hitball)
 
     local hurtTime
     local knockback
     local freeze
     -- not guarding
     if(bit.band(state.StateFlags, STATE_GUARD) == 0) then
+        SFX["Hit"]:play()
         BeginAction(state, frame, "Hurt")
         hurtTime = attackData.Stun
         knockback = attackData.Knockback
@@ -215,6 +216,7 @@ function HurtFighter(state, frame, attackData, attacker)
 
     -- guarding
     else
+        SFX["Guard"]:play()
         BeginAction(state, frame, "Guard Stun")
         hurtTime = attackData.GuardStun
         knockback = attackData.GuardKnockback

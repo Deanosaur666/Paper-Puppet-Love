@@ -2,6 +2,7 @@ require "Math"
 PriorityQueue = require "PriorityQueue"
 require "Screens"
 require "sprites"
+require "sounds"
 require "tables"
 
 bit = require "bit"
