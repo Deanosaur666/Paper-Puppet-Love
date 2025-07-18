@@ -208,6 +208,9 @@ function HurtFighter(state, frame, attackData, attacker, hitball)
     -- not guarding
     if(bit.band(state.StateFlags, STATE_GUARD) == 0) then
         PlaySFX("Hit")
+
+        AddGFX("Hit", hitball.X, hitball.Y, 0, 30)
+
         BeginAction(state, frame, "Hurt")
         hurtTime = attackData.Stun
         knockback = attackData.Knockback
@@ -217,6 +220,9 @@ function HurtFighter(state, frame, attackData, attacker, hitball)
     -- guarding
     else
         PlaySFX("Guard")
+
+        AddGFX("Guard", hitball.X, hitball.Y, 0, 30)
+
         BeginAction(state, frame, "Guard Stun")
         hurtTime = attackData.GuardStun
         knockback = attackData.GuardKnockback
