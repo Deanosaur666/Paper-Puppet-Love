@@ -36,12 +36,6 @@ ATTACK_SPECIAL = 5
 ATTACK_EX = 6
 ATTACK_SUPER = 7
 
--- ADD Custom stances...
-ATTACK_STANCE_SHIFT = 15 --??? IDK
--- DEAN HELP ME!~!!!!!!!
--- OK, we want bits after ATTACK_LEVEL  to be reserved for "attack stances"... which are used for follow-ups and stuff.
--- we have 
-
 function GetStateAttackLevel(state)
     -- just get the attack level bits and shift them
     return bit.rshift(bit.band(state, STATE_ATTACK_LEVEL), STATE_ATTACK_LEVEL_SHIFT)
@@ -64,6 +58,23 @@ STATE_AERIAL = 2^10 -- if launched is aerial and hurt
 
 STATE_GUARD = 2^11
 
+
+-- custom stances
+STATE_ATTACK_STANCE = 15 * 2^12
+STATE_MAX_ATTACK_STANCE = 15
+STATE_ATTACK_STANCE_SHIFT = 12
+
+function GetStateAttackStance(state)
+    -- just get the stance bits and shift them
+    return bit.rshift(bit.band(state, STATE_ATTACK_STANCE), STATE_ATTACK_STANCE_SHIFT)
+end
+
+function SetStateAttackStance(state, stanceNum)
+    -- clear stance bits
+    state = bit.band(state, bit.bnot(STATE_ATTACK_STANCE))
+    stanceNum = Clamp(stanceNum, 0, STATE_MAX_ATTACK_STANCE)
+    return bit.bor(state, bit.lshift(stanceNum, STATE_ATTACK_STANCE_SHIFT))
+end
 
 
 -- stores all fighter sheets
