@@ -1,4 +1,4 @@
-local dir  = "Resources/sounds"
+local dir  = "Resources/sfx"
 local files = love.filesystem.getDirectoryItems(dir)
 
 SFX = {}
@@ -6,6 +6,10 @@ SFX = {}
 for _, value in ipairs(files) do
     local sound = love.audio.newSource(dir .. "/" ..value, "static")
     --spr:setFilter("nearest", "nearest")
-    value = string.sub(value, 5, -5)
+    value = string.sub(value, 1, -5)
     SFX[value] = sound
+end
+
+function PlaySFX(sound)
+    SFX[sound]:play()
 end
