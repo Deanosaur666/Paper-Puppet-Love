@@ -1,6 +1,15 @@
 
 local kit = BaseFighterSheet()
 
+require "CSV"
+
+local kitTable = LoadCSVTable("Sheets/KitAttacks.csv")
+for _,line in ipairs(kitTable) do
+    for index, value in pairs(line) do
+        print(index .. ":" .. value)
+    end
+end
+
 FighterSheets["Kit"] = kit
 
 kit.SkeletonIndex = "Kitv2Skel"
