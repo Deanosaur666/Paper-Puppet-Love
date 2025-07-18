@@ -207,7 +207,7 @@ function HurtFighter(state, frame, attackData, attacker, hitball)
     local freeze
     -- not guarding
     if(bit.band(state.StateFlags, STATE_GUARD) == 0) then
-        SFX["Hit"]:play()
+        PlaySFX("Hit")
         BeginAction(state, frame, "Hurt")
         hurtTime = attackData.Stun
         knockback = attackData.Knockback
@@ -216,7 +216,7 @@ function HurtFighter(state, frame, attackData, attacker, hitball)
 
     -- guarding
     else
-        SFX["Guard"]:play()
+        PlaySFX("Guard")
         BeginAction(state, frame, "Guard Stun")
         hurtTime = attackData.GuardStun
         knockback = attackData.GuardKnockback
