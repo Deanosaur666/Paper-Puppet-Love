@@ -9,7 +9,9 @@ GameState = {
 
     FrontFighter = 1,
 
-    ActiveFighterStates = {}
+    ActiveFighterStates = {},
+
+    GFX = {}
 }
 
 
@@ -138,6 +140,21 @@ function GameProgram:Draw()
             lg.pop()
         end
     end
+
+    -- draw gfx
+    local clearGFX = {}
+    for i, gfx in ipairs(GameState.GFX) do
+        DrawGFX(gfx)
+        if(gfx.Time > gfx.Lifetime) then
+            table.insert(clearGFX, i)
+        end
+    end
+    local offset = 0
+    for _, i in ipairs(clearGFX) do
+        table.remove(GameState.GFX, i - offset)
+        offset = offset + 1
+    end
+
 
 end
 
