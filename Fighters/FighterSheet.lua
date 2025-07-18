@@ -31,9 +31,10 @@ STATE_ATTACK_LEVEL_SHIFT = 4
 ATTACK_LIGHT = 1
 ATTACK_MEDIUM = 2
 ATTACK_HEAVY = 3
-ATTACK_SPECIAL = 4
-ATTACK_EX = 5
-ATTACK_SUPER = 6
+ATTACK_SUPERHEAVY = 4
+ATTACK_SPECIAL = 5
+ATTACK_EX = 6
+ATTACK_SUPER = 7
 
 function GetStateAttackLevel(state)
     -- just get the attack level bits and shift them
@@ -100,12 +101,21 @@ function AddAction(fighterSheet, actionName, animName, inputPressed, inputHeld, 
     return action
 end
 
-function AddAttack(fighterSheet, actionName, animName, inputPressed, inputHeld, power, props)
+function AddAttack(fighterSheet, actionName, animName, inputPressed, inputHeld, power, attackLevel, props)
     local action = Action(fighterSheet, animName)
+
+    action.StateFlags = SetStateAttackLevel(0, attackLevel)
+
+    -- attack cancels usually require recovery.
+    action.CancelReqStateFlags = SetStateAttackPhase(0, PHASE_RECOVERY)
+    action.CancelMaxAttackLevel = attackLevel - 1
+
+    action.ReqStateFlags = STATE_CANATTACK
     action.InputPressed = inputPressed
     action.InputHeld = inputHeld
     action.Name = actionName
     action.AttackData = AttackData_Power(power)
+    
     fighterSheet.Actions[actionName] = action
 
     action = tableMerge(action, props)
