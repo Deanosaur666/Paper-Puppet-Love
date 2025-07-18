@@ -6,6 +6,18 @@ Hit freeze
 
 Hitball Flags "2" : 0 in json should be reset
 
+~~~~~~~~~~~~~~~~~~~~~~~
+Attacks CSV
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Attacks have "stances" which will be a semicolon-seperated list of names
+We translate character-specific stances to unique numerical flags 
+"HURT" "GUARD" "RECOVERY" etc will be in the same spot in the CSV, but when parsing we will interpret them as non-stance state flags
+ReqStance in CSV will be a list we will convert into a "required state flags" bit-number thingy
+
+"Copy attack" will be used to copy data first from another attack, and then we will over-write with any unqiue data if necessary.
+(Used for different variant characters sharing data)
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 GAME
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -15,6 +27,8 @@ Canceling based on "Attack Class"
     Medium,
     Heavy,
     SuperHeavy,
+
+Currently the system is "reqStateFlags" 
 
 A "follow-up" is a special case, where regardless of move class, it will cancel from its previous attack.
 
