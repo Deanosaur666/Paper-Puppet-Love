@@ -2,9 +2,7 @@ Offset during animations (for moving)
 
 Draw the "center point" and "offset point" of a pose.
 
-Hit freeze
-
-Hitball Flags "2" : 0 in json should be reset
+Shake during hit freeze
 
 ~~~~~~~~~~~~~~~~~~~~~~~
 Attacks CSV
