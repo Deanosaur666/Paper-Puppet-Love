@@ -58,6 +58,7 @@ AddAttack(tony, "Jab", "Jab", BUTTON_A, 0, 1, ATTACK_LIGHT, {
 
 AddAttack(tony, "Cross", "Cross", BUTTON_A, 0, 1.5, ATTACK_MEDIUM, {
     StateFlags = SetStateAttackLevel(0, ATTACK_MEDIUM),
+    ReqStateFlags = 0,
     CancelReqStateFlags = SetStateAttackPhase(0, PHASE_RECOVERY),
     CancelMaxAttackLevel = ATTACK_LIGHT,
     Startup = 11,
@@ -67,6 +68,7 @@ AddAttack(tony, "Cross", "Cross", BUTTON_A, 0, 1.5, ATTACK_MEDIUM, {
 
 AddAttack(tony, "Elbow", "Elbow", BUTTON_A, 0, 2, ATTACK_HEAVY, {
     StateFlags = SetStateAttackLevel(0, ATTACK_HEAVY),
+    ReqStateFlags = 0,
     CancelReqStateFlags = SetStateAttackPhase(SetStateAttackLevel(0, ATTACK_MEDIUM), PHASE_RECOVERY),
     CancelMaxAttackLevel = ATTACK_MEDIUM,
     Startup = 16,

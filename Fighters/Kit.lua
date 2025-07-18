@@ -53,13 +53,11 @@ local jab = AddAttack(kit, "Jab", "Punch", BUTTON_A, 0, 1, ATTACK_LIGHT, {
     Startup = 8,
     Active = 3,
     Recovery = 10, -- 3 fake recovery frames?
-
-    AnimStart = 8,
-    AnimSpeed = 0.5,
 })
 
 AddAttack(kit, "Cross", "Cross", BUTTON_A, 0, 1.5, ATTACK_MEDIUM, {
     StateFlags = SetStateAttackLevel(0, ATTACK_MEDIUM),
+    ReqStateFlags = 0,
     CancelReqStateFlags = SetStateAttackPhase(0, PHASE_RECOVERY),
     CancelMaxAttackLevel = ATTACK_LIGHT,
     Startup = 10,
