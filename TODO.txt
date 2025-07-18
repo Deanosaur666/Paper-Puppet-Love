@@ -10,6 +10,15 @@ Hitball Flags "2" : 0 in json should be reset
 GAME
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Canceling based on "Attack Class"
+    Light,
+    Medium,
+    Heavy,
+    SuperHeavy,
+
+A "follow-up" is a special case, where regardless of move class, it will cancel from its previous attack.
+
+
 Crouching
 Guarding
 

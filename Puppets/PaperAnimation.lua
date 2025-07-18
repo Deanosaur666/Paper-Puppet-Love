@@ -5,6 +5,9 @@ function BlankPose()
         -- frame specific offset for the whole body
         X = nil,
         Y = nil,
+
+        OffsetX = nil,
+        OffesetY = nil,
     }
 end
 
@@ -110,7 +113,7 @@ function DrawPose(frame, skeleton, spriteset, texture, x, y, rot, xscale, yscale
     lg.push("all")
     lg.translate(x, y)
     lg.scale(xscale, yscale)
-    lg.translate(skeleton.X or 0, skeleton.Y or 0)
+    lg.translate((skeleton.X or 0), (skeleton.Y or 0))
     lg.rotate(rot)
 
 
@@ -155,6 +158,21 @@ function DrawPoseHitballs(pose, skeleton, x, y, rot, xscale, yscale)
     lg.scale(xscale, yscale)
     lg.rotate(rot)
 
+    -- draw the "center anchor"
+    lg.setColor(1.0, 1.0, 1.0, 0.5)
+    lg.circle("line", -skeleton.X or 0, -skeleton.Y or 0, 20)
+    lg.setColor(1.0, 1.0, 0, 0.5)
+    lg.circle("fill", -skeleton.X or 0, -skeleton.Y or 0, 20)
+
+    if(pose.OffsetX ~= nil) then
+        lg.setColor(1.0, 1.0, 1.0, 0.5)
+        lg.circle("line", (-skeleton.X or 0) + pose.OffsetX, (-skeleton.Y or 0) + pose.OffsetY, 15)
+        lg.setColor(1.0, 0.5, 0.5, 0.5)
+        lg.circle("line", (-skeleton.X or 0) + pose.OffsetX, (-skeleton.Y or 0) + pose.OffsetY, 15)
+    end
+
+    -- now the actual hit balls
+
     for p, part in ipairs(pose.PartFrames) do
         local blueprint = GetPartBluePrint(part, skeleton)
         for i, _ in ipairs(blueprint.Hitballs) do
@@ -186,9 +204,7 @@ function DrawPoseHitballs(pose, skeleton, x, y, rot, xscale, yscale)
         end
     end
 
-    -- draw the "center anchor"
-    lg.setColor(1.0, 1.0, 0)
-    lg.circle("line", skeleton.X or 0, skeleton.Y or 0, 15)
+    
 
     lg.pop()
 end
