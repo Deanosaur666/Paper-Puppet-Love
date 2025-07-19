@@ -197,7 +197,15 @@ function DrawFighter(fframe)
     local spriteSet = SpriteSets[fframe.Sheet.SpriteSetIndex]
     local tex = SpriteSheets[fframe.Sheet.TextureIndex]
 
-    DrawPose(fframe.Pose, fframe.Skeleton, spriteSet, tex, fstate.X, fstate.Y, 0, fframe.XScale, 1)
+    local xoffset = 0
+    local yoffset = 0
+
+    if(fstate.Freeze and fstate.Freeze > 0 and fstate.HurtTime and fstate.HurtTime > 0) then
+        xoffset = ((GameState.CurrentFrame % 3) - 1)*8
+        --yoffset = xoffset/2
+    end
+
+    DrawPose(fframe.Pose, fframe.Skeleton, spriteSet, tex, fstate.X + xoffset, fstate.Y + yoffset, 0, fframe.XScale, 1)
 end
 
 function HurtFighter(state, frame, attackData, attacker, hitball)
