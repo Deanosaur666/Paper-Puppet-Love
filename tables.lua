@@ -1,4 +1,4 @@
-function stringsplit(line, sep, parse)
+function stringsplit(line, sep, parse, removeSpaces)
 	local front = 1
 	local back = nil
 
@@ -13,6 +13,9 @@ function stringsplit(line, sep, parse)
 		back = string.find(line, sep, front or 1)
 
 		local str = string.sub(line, front, (back or 0)-1)
+    if(removeSpaces) then
+      str = string.gsub(str, "%s+", "")
+    end
 		local val = str
 		--table.insert(t, str)
 		if(parse) then
