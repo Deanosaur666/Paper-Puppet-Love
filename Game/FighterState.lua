@@ -142,7 +142,7 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
         local walked = false
         if(ControllerInputDown(controller, BUTTON_GUARD)) then
             ContinueAction(fstate, fframe, "Guard")
-        elseif(ControllerInputDown(controller, BUTTON_DOWN)) then
+        elseif(ControllerInputDown(controller, BUTTON_DOWN) or fstate.CurrentAction == "Crouch Down") then
             if(fstate.CurrentAction ~= "Crouch") then
                 ContinueAction(fstate, fframe, "Crouch Down")
             else
