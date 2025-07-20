@@ -32,6 +32,25 @@ tony.BWalk = AddAction(tony, "BWalk", "Walk", nil, nil,
     AnimSpeed = 0.8,
 })
 
+tony.Crouch = AddAction(tony, "Crouch", "Crouch", nil, nil,
+{
+    StateFlags = STATE_IDLE_CROUCHING,
+    AnimLoop = true,
+})
+
+tony.CrouchDown = AddAction(tony, "Crouch Down", "Crouch Down", nil, nil,
+{
+    StateFlags = STATE_IDLE_CROUCHING,
+    NextAction = "Crouch"
+})
+
+tony.CrouchUp = AddAction(tony, "Crouch Up", "Crouch Down", nil, nil,
+{
+    AnimReverse = true,
+    StateFlags = STATE_IDLE,
+    NextAction = "Idle"
+})
+
 tony.Hurt = AddAction(tony, "Hurt", "Hurt Head", nil, nil, {
     StateFlags = STATE_HURT,
 })

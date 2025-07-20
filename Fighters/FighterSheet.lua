@@ -55,14 +55,17 @@ STATE_ATTACK_HIT = 2^8
 
 STATE_HURT = 2^9
 STATE_AERIAL = 2^10 -- if launched is aerial and hurt
+STATE_CROUCHING = 2^11
 
-STATE_GUARD = 2^11
+STATE_IDLE_CROUCHING = bit.bor(STATE_IDLE, STATE_CROUCHING)
+
+STATE_GUARD = 2^12
 
 
 -- custom stances
-STATE_ATTACK_STANCE = 31 * 2^12
+STATE_ATTACK_STANCE = 31 * 2^13
 STATE_MAX_ATTACK_STANCE = 31
-STATE_ATTACK_STANCE_SHIFT = 12
+STATE_ATTACK_STANCE_SHIFT = 13
 
 function GetStateAttackStance(state)
     -- just get the stance bits and shift them
