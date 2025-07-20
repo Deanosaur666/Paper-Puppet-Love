@@ -38,6 +38,24 @@ kit.BWalk = AddAction(kit, "BWalk", "Walk", nil, nil,
     AnimSpeed = 0.8,
 })
 
+kit.Crouch = AddAction(kit, "Crouch", "Crouch", nil, nil,
+{
+    StateFlags = STATE_IDLE_CROUCHING,
+    AnimLoop = true,
+})
+
+kit.CrouchDown = AddAction(kit, "Crouch Down", "Crouch Down", nil, nil,
+{
+    StateFlags = STATE_IDLE_CROUCHING,
+    NextAction = "Crouch"
+})
+
+kit.CrouchUp = AddAction(kit, "Crouch Up", "Crouch Down", nil, nil,
+{
+    AnimReverse = true,
+    StateFlags = STATE_IDLE,
+    NextAction = "Idle"
+})
 
 
 kit.Hurt = AddAction(kit, "Hurt", "Hurt Head", nil, nil, {

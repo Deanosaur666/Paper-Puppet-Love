@@ -142,6 +142,12 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
         local walked = false
         if(ControllerInputDown(controller, BUTTON_GUARD)) then
             ContinueAction(fstate, fframe, "Guard")
+        elseif(ControllerInputDown(controller, BUTTON_DOWN)) then
+            if(fstate.CurrentAction ~= "Crouch") then
+                ContinueAction(fstate, fframe, "Crouch Down")
+            else
+                ContinueAction(fstate, fframe, "Crouch")
+            end
         elseif(ControllerInputDown(controller, FlipInput(fstate.Facing, BUTTON_LEFT))) then
             dx = - fframe.Sheet.WalkBackSpeed*xsc
             ContinueAction(fstate, fframe, "BWalk")
@@ -151,6 +157,8 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
             ContinueAction(fstate, fframe, "FWalk")
             walked = true
         -- TODO: Crouching
+        elseif(fstate.CurrentAction == "Crouch Up" or fstate.CurrentAction == "Crouch") then
+            ContinueAction(fstate, fframe, "Crouch Up")
         else
             ContinueAction(fstate, fframe, "Idle")
         end
@@ -201,7 +209,7 @@ function DrawFighter(fframe)
     local yoffset = 0
 
     if(fstate.Freeze and fstate.Freeze > 0 and fstate.HurtTime and fstate.HurtTime > 0) then
-        xoffset = ((GameState.CurrentFrame % 3) - 1)*8
+        xoffset = ((GameState.CurrentFrame % 3) - 1)*5
         --yoffset = xoffset/2
     end
 
