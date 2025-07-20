@@ -1,33 +1,4 @@
-function stringsplit(inputstr, sep)
-  sep = sep or "%s"
-  local t = {}
-  for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
-    table.insert(t, str)
-  end
-  return t
-end
-
-function stringsplit2(line, sep)
-  local front = 1
-  local back = nil
-
-  sep = sep or "%s"
-  local t = {}
-
-  repeat
-      back = string.find(line, sep, front or 1)
-
-      local str = string.sub(line, front, (back or 0)-1)
-      table.insert(t, str)
-
-      front = (back or front) + 1
-
-  until back == nil
-
-  return t
-end
-
-function stringsplit3(line, sep, parse)
+function stringsplit(line, sep, parse)
 	local front = 1
 	local back = nil
 
