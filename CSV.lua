@@ -2,47 +2,48 @@
 function SplitCSVLine(line)
 	local values = {}
 
-	--[[
-	for value in line:gmatch("[^,]+") do -- Note: We won't match empty values.
-		-- Convert the value string to other Lua types in a "smart" way.
-		if     tonumber(value)  then  table.insert(values, tonumber(value)) -- Number.
-		elseif value == "true"  then  table.insert(values, true)            -- Boolean.
-		elseif value == "false" then  table.insert(values, false)           -- Boolean.
-		else                          table.insert(values, value)           -- String.
-		end
-	end
-	]]
-	local startIndex = 1
-	local nextComma = nil
-	repeat
-		nextComma = string.find(line, ",", startIndex+1 or 1)
-		print("Next Comma" .. tostring(nextComma))
-
-		if(nextComma ~= nil and nextComma > startIndex) then
-			local str = string.sub(line, startIndex, nextComma-1)
-			if (tonumber(str))  then 
-				table.insert(values, tonumber(str)) -- Number.
-			elseif (str == "true")  then
-				table.insert(values, true)            -- Boolean.
-			elseif (str == "false") then
-				table.insert(values, false)           -- Boolean.
-			elseif(str == "") then
-				table.insert(values, nil)
-			elseif(str == ",") then
-				table.insert(values, nil)
-				--startIndex = startIndex - 1
-			else
-				table.insert(values, str)           -- String.
-			end
-
-			startIndex = nextComma + 1
-		else
-			nextComma = nil
-		end
-
-	until nextComma == nil
+	values = stringsplit2(line, ",")
 
 	return values
+end
+
+function stringsplit2(line, sep, parse)
+	local front = 1
+	local back = nil
+
+	sep = sep or "%s"
+	local t = {}
+
+	parse = parse or false
+
+	local index = 1
+
+	repeat
+		back = string.find(line, sep, front or 1)
+
+		local str = string.sub(line, front, (back or 0)-1)
+		local val = str
+		--table.insert(t, str)
+		if(parse) then
+			if(tonumber(str)) then
+				val = tonumber(str)
+			elseif(str == "") then
+				val = nil
+			elseif(string.lower(str) == "false") then
+				val = false
+			elseif(string.lower(str) == "true") then
+				val = true
+			end
+		end
+
+		t[index] = val
+
+		front = (back or front) + 1
+
+		index = index + 1
+	until back == nil
+
+	return t
 end
 
 function LoadCSVFile(filename)
@@ -50,6 +51,7 @@ function LoadCSVFile(filename)
 	for line in love.filesystem.lines(filename) do
         
 		table.insert(csv, SplitCSVLine(line))
+		--table.insert(csv, stringsplit2(line, ","))
 	end
 	return csv
 end
@@ -78,4 +80,24 @@ function CSVToTables(csv)
     end
 
     return tableData
+end
+
+
+-- takes the converted CSV table and tries to turn it into a valid table of attacks
+function ParseAttackTable(table, fighter)
+	local stances = {}
+	local lastFighterRow = nil
+
+	local myAttacks = {}
+
+	
+	
+	for row, line in ipairs(table) do
+		if(line.FighterIndex == fighter and lastFighterRow == nil) then
+			lastFighterRow = line.FighterIndex
+		elseif(line.FighterIndex ~= nil) then
+
+		end
+
+	end
 end

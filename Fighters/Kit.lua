@@ -14,6 +14,8 @@ for _,line in ipairs(kitTable) do
     end
 end
 
+
+
 FighterSheets["Kit"] = kit
 
 kit.SkeletonIndex = "Kitv2Skel"
