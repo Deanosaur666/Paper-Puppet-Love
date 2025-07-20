@@ -20,6 +20,15 @@ ReqStance in CSV will be a list we will convert into a "required state flags" bi
 GAME
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Acceleration in hurt movement
+Launch
+Hops
+Dash
+Charging attacks
+
+Health and guard bar
+Guard break
+
 Canceling based on "Attack Class"
     Light,
     Medium,
@@ -29,14 +38,6 @@ Canceling based on "Attack Class"
 Currently the system is "reqStateFlags" 
 
 A "follow-up" is a special case, where regardless of move class, it will cancel from its previous attack.
-
-
-Crouching
-Guarding
-
-Hurt states
-
-Dashing
 
 "Delayed" controller for online play
     In MojoFighter, we basically just add our inputs a few frames "into the future"
