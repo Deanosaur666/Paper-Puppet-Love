@@ -1,4 +1,4 @@
-function stringsplit(line, sep, parse, removeSpaces)
+function stringsplit(line, sep, parse)
 	local front = 1
 	local back = nil
 
@@ -10,14 +10,11 @@ function stringsplit(line, sep, parse, removeSpaces)
 	local index = 1
 
 	repeat
-		back = string.find(line, sep, front or 1)
+		sepstart, sepend = string.find(line, sep, front or 1)
+		back = sepstart
 
 		local str = string.sub(line, front, (back or 0)-1)
-    if(removeSpaces) then
-      str = string.gsub(str, "%s+", "")
-    end
 		local val = str
-		--table.insert(t, str)
 		if(parse) then
 			if(tonumber(str)) then
 				val = tonumber(str)
@@ -32,7 +29,7 @@ function stringsplit(line, sep, parse, removeSpaces)
 
 		t[index] = val
 
-		front = (back or front) + 1
+		front = (sepend or front) + 1
 
 		index = index + 1
 	until back == nil
