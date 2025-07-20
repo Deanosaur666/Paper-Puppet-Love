@@ -52,7 +52,10 @@ function ParseAttackTable(table, fighter)
 	
 	-- we run through and catalog every stance existing in the sheet
 	for row, line in ipairs(table) do
+		print(row)
+		print(line.Name)
 		if(line.ReqStances ~= nil and line.ReqStances ~= "") then
+			print(line.ReqStances)
 			local stanceFrom = stringsplit(line.ReqStances, ";", true, true)
 			print(stanceFrom)
 			for _, sf in ipairs(stanceFrom) do
