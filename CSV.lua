@@ -31,8 +31,8 @@ function CSVToTables(csv)
     local tableHeader = csv[1]
     local tableData = {}
     for i = 2, #csv, 1 do
+		tableData[i-1] = {}
         for column, value in ipairs(csv[i]) do
-            tableData[i-1] = {}
             tableData[i-1][tableHeader[column]] = value
 
 			--print("Index: " .. tableHeader[column] .. "; Value: "  .. tostring(value))
@@ -44,14 +44,14 @@ end
 
 
 -- takes the converted CSV table and tries to turn it into a valid table of attacks
-function ParseAttackTable(table, fighter)
+function ParseAttackTable(t, fighter)
 	local stances = {}
 
 	local myAttacks = {}
 
 	
 	-- we run through and catalog every stance existing in the sheet
-	for row, line in ipairs(table) do
+	for row, line in ipairs(t) do
 		print(row)
 		print(line.Name)
 		if(line.ReqStances ~= nil and line.ReqStances ~= "") then

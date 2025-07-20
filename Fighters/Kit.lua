@@ -7,14 +7,14 @@ local kitTable = LoadCSVTable("Sheets/KitAttacks.csv")
 
 --kitTable[1] = {Hello = 1, Goodbye = 2, GoodEvening = 3,}
 
---[[
+
 for _,line in ipairs(kitTable) do
     --print("Line: " .. tostring(line) )
     for index, value in pairs(line) do
         print(index .. ":" .. value)
     end
 end
---]]
+
 
 ParseAttackTable(kitTable, kit)
 
