@@ -2,12 +2,12 @@
 function SplitCSVLine(line)
 	local values = {}
 
-	values = stringsplit2(line, ",")
+	values = stringsplit3(line, ",", true)
 
 	return values
 end
 
-function stringsplit2(line, sep, parse)
+function stringsplit3(line, sep, parse)
 	local front = 1
 	local back = nil
 
