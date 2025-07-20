@@ -19,7 +19,7 @@ function stringsplit(line, sep, parse)
 			if(tonumber(str)) then
 				val = tonumber(str)
 			elseif(str == "") then
-				val = nil
+				val = ""
 			elseif(string.lower(str) == "false") then
 				val = false
 			elseif(string.lower(str) == "true") then
