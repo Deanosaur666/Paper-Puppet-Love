@@ -2,48 +2,9 @@
 function SplitCSVLine(line)
 	local values = {}
 
-	values = stringsplit3(line, ",", true)
+	values = stringsplit(line, ",", true)
 
 	return values
-end
-
-function stringsplit3(line, sep, parse)
-	local front = 1
-	local back = nil
-
-	sep = sep or "%s"
-	local t = {}
-
-	parse = parse or false
-
-	local index = 1
-
-	repeat
-		back = string.find(line, sep, front or 1)
-
-		local str = string.sub(line, front, (back or 0)-1)
-		local val = str
-		--table.insert(t, str)
-		if(parse) then
-			if(tonumber(str)) then
-				val = tonumber(str)
-			elseif(str == "") then
-				val = nil
-			elseif(string.lower(str) == "false") then
-				val = false
-			elseif(string.lower(str) == "true") then
-				val = true
-			end
-		end
-
-		t[index] = val
-
-		front = (back or front) + 1
-
-		index = index + 1
-	until back == nil
-
-	return t
 end
 
 function LoadCSVFile(filename)
@@ -51,7 +12,6 @@ function LoadCSVFile(filename)
 	for line in love.filesystem.lines(filename) do
         
 		table.insert(csv, SplitCSVLine(line))
-		--table.insert(csv, stringsplit2(line, ","))
 	end
 	return csv
 end
