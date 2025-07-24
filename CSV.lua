@@ -123,6 +123,25 @@ function ParseAttackTable(t, fighter)
 			atk.Active = line.Active
 			atk.Recovery = line.Recovery
 
+			atk.FollowupFrom = line.FollowupFrom
+
+			-- todo: parse stances
+
+
+			---------
+			if(line.AnimLoop ~= "") then
+				atk.AnimLoop = line.AnimLoop
+			end
+			if(line.AnimSpeed ~= "") then
+				atk.AnimSpeed = line.AnimSpeed
+			end
+			if(line.AnimStart ~= "") then
+				atk.AnimStart = line.AnimStart
+			end
+			if(line.AnimEnd ~= "") then
+				atk.AnimEnd = line.AnimEnd
+			end
+
 			
 		end
 	end

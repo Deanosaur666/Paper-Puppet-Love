@@ -190,6 +190,12 @@ function CanPerformAction(action, fstate, controller, buffer)
     local canPerform = bit.band(fstate.StateFlags, action.ReqStateFlags) == action.ReqStateFlags and action.ReqStateFlags ~= 0
     local canCancel = bit.band(fstate.StateFlags, action.CancelReqStateFlags) == action.CancelReqStateFlags  and action.CancelReqStateFlags ~= 0
         and GetStateAttackLevel(fstate.StateFlags) <= action.CancelMaxAttackLevel
+
+    -- if followupFrom is set to something, it must also be true
+    if(action.FollowupFrom ~= "" and action.FollowupFrom ~= nil) then
+        canPerform = fstate.CurrentAction == action.FollowupFrom and bit.band(fstate.StateFlags, PHASE_RECOVERY) ~= 0
+        canCancel = canCancel and fstate.CurrentAction == action.FollowupFrom
+    end
     
     -- right now we don't worry about any sort of cancel cost
     return canPerform or canCancel
