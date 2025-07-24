@@ -29,7 +29,6 @@ Add basic "startup step" movement
 GAME
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Acceleration in hurt movement
 Launch
 Hops
 Dash
