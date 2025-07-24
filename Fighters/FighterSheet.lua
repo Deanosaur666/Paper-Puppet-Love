@@ -111,6 +111,15 @@ function BaseFighterSheet()
         -- friction
         BaseFriction = 2,
         StunFriction = 3,
+        Gravity = 2,
+
+        -- hopping
+        FHopHeight = 60,
+        NHopHeight = 60,
+        BHopHeight = 60,
+        
+        FHopSpeed = 30,
+        BHopSpeed = 24,
     }
 end
 

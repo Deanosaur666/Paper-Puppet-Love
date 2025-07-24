@@ -32,6 +32,17 @@ tony.BWalk = AddAction(tony, "BWalk", "Walk", nil, nil,
     AnimSpeed = 0.8,
 })
 
+tony.Hop = AddAction(tony, "Hop", "Hop", nil, nil, {
+    StateFlags = STATE_AERIAL,
+    AnimLoop = true,
+    LandAction = "Hop Land",
+})
+
+
+tony.HopLand = AddAction(tony, "Hop Land", "Hop Land", nil, nil, {
+    
+})
+
 tony.Crouch = AddAction(tony, "Crouch", "Crouch", nil, nil,
 {
     StateFlags = STATE_IDLE_CROUCHING,

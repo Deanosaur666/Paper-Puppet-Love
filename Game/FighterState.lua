@@ -115,6 +115,8 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
         fframe = FighterFrame(fstate, fsheet, player)
     end
 
+    fsheet = fframe.Sheet
+
     fstate.CurrentFrame = fstate.CurrentFrame + 1
     local action = fframe.Action
     if(action.Startup and action.Active and action.Recovery) then
@@ -148,6 +150,36 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
         local walked = false
         if(ControllerInputDown(controller, BUTTON_GUARD)) then
             ContinueAction(fstate, fframe, "Guard")
+        
+        -- hop
+        elseif(ControllerInputDown(controller, BUTTON_UP)) then
+            
+            local gravity = fsheet.Gravity
+            
+            -- forward hop
+            if(ControllerInputDown(controller, FlipInput(fstate.Facing, BUTTON_RIGHT))) then
+                fstate.XVelocity = fsheet.FHopSpeed*xsc
+                fstate.XAccel = 0
+                fstate.YVelocity = -GetVelocity(fsheet.FHopHeight, gravity)
+                fstate.YAccel = gravity
+
+            -- back hop
+            elseif(ControllerInputDown(controller, FlipInput(fstate.Facing, BUTTON_LEFT))) then
+                fstate.XVelocity = -fsheet.BHopSpeed*xsc
+                fstate.XAccel = 0
+                fstate.YVelocity = -GetVelocity(fsheet.BHopHeight, gravity)
+                fstate.YAccel = gravity
+
+
+            -- neutral hop
+            else
+                fstate.YVelocity = -GetVelocity(fsheet.NHopHeight, gravity)
+                fstate.YAccel = gravity
+                
+            end
+
+            BeginAction(fstate, fframe, "Hop")
+
         elseif(ControllerInputDown(controller, BUTTON_DOWN) or fstate.CurrentAction == "Crouch Down") then
             if(fstate.CurrentAction ~= "Crouch") then
                 ContinueAction(fstate, fframe, "Crouch Down")
@@ -158,7 +190,7 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
             dx = - fframe.Sheet.WalkBackSpeed*xsc
             ContinueAction(fstate, fframe, "BWalk")
             walked = true
-        elseif(ControllerInputDown(controller, FlipInput(fstate.Facing, BUTTON_RIGHT)) and bit.band(fstate.StateFlags, STATE_CANMOVE) ~= 0) then
+        elseif(ControllerInputDown(controller, FlipInput(fstate.Facing, BUTTON_RIGHT))) then
             dx = fframe.Sheet.WalkForwardSpeed*xsc
             ContinueAction(fstate, fframe, "FWalk")
             walked = true
@@ -178,6 +210,21 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
         if(Sign(fstate.XVelocity) ~= xvelsign) then
             fstate.XVelocity = 0
             fstate.XAccel = 0
+        end
+    end
+
+    if(fstate.YVelocity ~= 0) then
+        fstate.Y = fstate.Y + fstate.YVelocity
+        fstate.YVelocity = fstate.YVelocity + fstate.YAccel
+
+        -- landing
+        if(fstate.Y >= 0) then
+            fstate.Y = 0
+            fstate.YVelocity = 0
+            fstate.XVelocity = 0
+            if(action.LandAction) then
+                BeginAction(fstate, fframe, action.LandAction)
+            end
         end
     end
 
