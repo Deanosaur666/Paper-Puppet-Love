@@ -1,0 +1,5 @@
+Name,CopyAttack,Animation,ReqStances,FollowupFrom,Stances,NextAction,ButtonPressed,ButtonHeld,AttackLevel,Power,Startup,Active,Recovery,AnimLoop,AnimSpeed,AnimStart,AnimEnd,StepDistance,StepStart
+Jab,,Jab,,,,,A,,Light,1,8,1,12,,,,,,
+Cross,,Cross,,Jab,,,A,,Medium,1.5,11,10,12,,,,,20,
+Elbow,,Elbow,,,,,A,Right,Heavy,2,16,14,12,,,,,50,16
+"L Upper",,"Left Uppercut",,,,,A,Down,Medium,2,,,,,,,,,
