@@ -1,8 +1,15 @@
+
+
 Offset during animations (for moving)
+
+Offset should push the pushbox forwards, as well
 
 Draw the "center point" and "offset point" of a pose.
 
 Shake during hit freeze
+
+How should cancels work?
+    Cancel rules are on a per-attack basis..?
 
 ~~~~~~~~~~~~~~~~~~~~~~~
 Attacks CSV
@@ -76,3 +83,16 @@ Animation editor
     Copy animation with just starting frame (attack from idle, for example)
 
     Filter or sort animations
+
+
+
+
+
+
+
+
+--------JIMBO Notes/Complaints------------
+Blarg
+
+I don't like the way cancel flags are arbitrary. Some moves COULD cancel on contact, and some might not.
+XAccel being in state makes 

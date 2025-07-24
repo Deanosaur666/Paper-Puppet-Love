@@ -129,6 +129,14 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
         end
     end
 
+    if(fstate.CurrentFrame == action.StepStart and action.StepDistance ~= 0) then
+        fstate.XVelocity = GetVelocity(action.StepDistance, fframe.Sheet.BaseFriction)
+        if(not fstate.Facing) then
+            fstate.XVelocity = -fstate.XVelocity
+            fstate.XAccel = fframe.Sheet.BaseFriction
+        end
+    end
+
     local pose = GetAnimationFrame(action, fstate)
     if(pose == nil) then
         BeginAction(fstate, fframe, action.NextAction or "Idle")
