@@ -191,9 +191,11 @@ function CanPerformAction(action, fstate, controller, buffer)
     local canCancel = bit.band(fstate.StateFlags, action.CancelReqStateFlags) == action.CancelReqStateFlags  and action.CancelReqStateFlags ~= 0
         and GetStateAttackLevel(fstate.StateFlags) <= action.CancelMaxAttackLevel
 
-    -- if followupFrom is set to something, it must also be true
+    -- if followupFrom is set...
     if(action.FollowupFrom ~= "" and action.FollowupFrom ~= nil) then
+        -- if we're in the correct action's recovery....
         canPerform = fstate.CurrentAction == action.FollowupFrom and bit.band(fstate.StateFlags, PHASE_RECOVERY) ~= 0
+        -- OR, if we can cancel, and are in the same action (perhaps active frames)
         canCancel = canCancel and fstate.CurrentAction == action.FollowupFrom
     end
     

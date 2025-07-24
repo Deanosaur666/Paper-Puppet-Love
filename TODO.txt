@@ -16,6 +16,8 @@ ReqStance in CSV will be a list we will convert into a "required state flags" bi
 "Copy attack" will be used to copy data first from another attack, and then we will over-write with any unqiue data if necessary.
 (Used for different variant characters sharing data)
 
+Add basic "startup step" movement
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 GAME
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
