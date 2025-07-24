@@ -142,7 +142,17 @@ function ParseAttackTable(t, fighter)
 				atk.AnimEnd = line.AnimEnd
 			end
 
-			
+			if(line.StepStart == "") then
+				atk.StepStart = 1 -- frame 0 will be skipped...
+			else
+				atk.StepStart = line.StepStart
+			end
+
+			if(line.StepDistance == "") then
+				atk.StepDistance = 0
+			else
+				atk.StepDistance = line.StepDistance
+			end
 		end
 	end
 
