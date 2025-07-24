@@ -1,8 +1,9 @@
 
 
 Offset during animations (for moving)
-
+    How do we make sure it is the same between frames?
 Offset should push the pushbox forwards, as well
+    -Kit's far kick especially needs this....
 
 Draw the "center point" and "offset point" of a pose.
 

@@ -106,6 +106,10 @@ function ParseAttackTable(t, fighter)
 		print("Stance: " .. value)
 	end
 
+	-- global "stances"
+	local gStances = {}
+	gStances["idle"] = STATE_IDLE
+
 	
 	-- TODO: ReqStateFlags?
 
