@@ -94,3 +94,7 @@ end
 function Clamp(n, lower, upper)
     return math.min(math.max(n, lower), upper)
 end
+
+function GetVelocity(dist, fric)
+	return math.sqrt(math.abs((2*fric)*dist)) * Sign(dist)
+end

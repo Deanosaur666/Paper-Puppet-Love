@@ -13,6 +13,12 @@ function FighterState(props)
         X = 0,
         Y = 0,
 
+        XVelocity = 0,
+        YVelocity = 0,
+
+        XAccel = 0,
+        YAccel = 0,
+
         StateFlags = 0,
 
         -- facing right
@@ -165,8 +171,14 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
     end
     fstate.X = fstate.X + dx
 
-    if(fstate.HurtTime) then
-        fstate.X = fstate.X + fstate.HurtKnockback / fstate.HurtTime
+    if(fstate.XVelocity ~= 0) then
+        fstate.X = fstate.X + fstate.XVelocity
+        local xvelsign = Sign(fstate.XVelocity)
+        fstate.XVelocity = fstate.XVelocity - fstate.XAccel*xvelsign
+        if(Sign(fstate.XVelocity) ~= xvelsign) then
+            fstate.XVelocity = 0
+            fstate.XAccel = 0
+        end
     end
 
     if(fstate.CurrentAction == "Guard" and not ControllerInputDown(controller, BUTTON_GUARD)) then
@@ -250,7 +262,9 @@ function HurtFighter(state, frame, attackData, attacker, hitball)
     if(not attacker.Facing) then
         knockback = -knockback
     end
-    state.HurtKnockback = knockback
+    
+    state.XVelocity = GetVelocity(knockback, frame.Sheet.StunFriction)
+    state.XAccel = frame.Sheet.StunFriction
 
     state.Freeze = freeze
     attacker.Freeze = freeze

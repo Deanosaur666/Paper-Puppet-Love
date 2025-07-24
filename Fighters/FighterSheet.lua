@@ -107,6 +107,10 @@ function BaseFighterSheet()
         PBW = 160,
         PBY = -500,
         PBH = 500,
+
+        -- friction
+        BaseFriction = 2,
+        StunFriction = 3,
     }
 end
 
