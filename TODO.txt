@@ -95,4 +95,5 @@ Animation editor
 Blarg
 
 I don't like the way cancel flags are arbitrary. Some moves COULD cancel on contact, and some might not.
-XAccel being in state makes 
+
+State flags? Do they need to be in state? Or in fframe?
