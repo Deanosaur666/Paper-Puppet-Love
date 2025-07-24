@@ -16,15 +16,14 @@ for _,line in ipairs(kitTable) do
 end
 
 
-ParseAttackTable(kitTable, kit)
-
-
-
 FighterSheets["Kit"] = kit
 
 kit.SkeletonIndex = "Kitv2Skel"
 kit.TextureIndex = "Kit v2.png"
 kit.SpriteSetIndex = "Kitv2Sprite"
+
+
+ParseAttackTable(kitTable, kit)
 
 kit.IdleAnimation = "Idle"
 
@@ -84,6 +83,7 @@ kit.GuardDrop = AddAction(kit, "Guard Drop", "Guard Drop", nil, nil, {
     StateFlags = STATE_CANATTACK,
 })
 
+--[[
 local jab = AddAttack(kit, "Jab", "Punch", BUTTON_A, 0, 1, ATTACK_LIGHT, {
     StateFlags = SetStateAttackLevel(0, 1),
     ReqStateFlags = STATE_CANATTACK,
@@ -143,3 +143,4 @@ AddAttack(kit, "Crouch Punch", "Crouch Punch", BUTTON_A, BUTTON_DOWN,1, ATTACK_L
     Active = 1,
     Recovery = 8,
 })
+--]]

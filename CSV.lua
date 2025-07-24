@@ -43,6 +43,30 @@ function CSVToTables(csv)
 end
 
 
+ButtonByName = {}
+ButtonByName[""] = 0
+ButtonByName["a"] = BUTTON_A
+ButtonByName["b"] = BUTTON_B
+ButtonByName["s"] = BUTTON_S
+
+ButtonByName["up"] = BUTTON_UP
+ButtonByName["upright"] = BUTTON_UPRIGHT
+ButtonByName["right"] = BUTTON_RIGHT
+ButtonByName["downright"] = BUTTON_DOWNRIGHT
+ButtonByName["down"] = BUTTON_DOWN
+ButtonByName["downleft"] = BUTTON_DOWNLEFT
+ButtonByName["left"] = BUTTON_LEFT
+ButtonByName["upleft"] = BUTTON_UPLEFT
+
+AttackLevelByName = {}
+AttackLevelByName["light"] = ATTACK_LIGHT
+AttackLevelByName["medium"] = ATTACK_MEDIUM
+AttackLevelByName["heavy"] = ATTACK_HEAVY
+AttackLevelByName["superheavy"] = ATTACK_SUPERHEAVY
+AttackLevelByName["special"] = ATTACK_SPECIAL
+AttackLevelByName["ex"] = ATTACK_EX
+AttackLevelByName["super"] = ATTACK_SUPER
+
 -- takes the converted CSV table and tries to turn it into a valid table of attacks
 function ParseAttackTable(t, fighter)
 	local stances = {}
@@ -81,6 +105,37 @@ function ParseAttackTable(t, fighter)
 	for index, value in ipairs(stances) do
 		print("Stance: " .. value)
 	end
+
+	
+	-- TODO: ReqStateFlags?
+
+	-- now we get to the attacks
+	for row, line in ipairs(t) do
+		if(line.Name ~= "" and line.Animation ~= "") then
+
+			local button = ButtonByName[string.lower(line.ButtonHeld)]
+			local attackLevel = AttackLevelByName[string.lower(line.AttackLevel)]
+
+			local atk = AddAttack(fighter, line.Name, line.Animation, ButtonByName[string.lower(line.ButtonPressed)], 
+				button, line.Power, attackLevel, {})
+
+			atk.Startup = line.Startup
+			atk.Active = line.Active
+			atk.Recovery = line.Recovery
+
+			
+		end
+	end
+
+	--[[
+	local jab = AddAttack(kit, "Jab", "Punch", BUTTON_A, 0, 1, ATTACK_LIGHT, {
+    StateFlags = SetStateAttackLevel(0, 1),
+    ReqStateFlags = STATE_CANATTACK,
+    Startup = 8,
+    Active = 3,
+    Recovery = 10, -- 3 fake recovery frames?
+	})
+]]
 end
 
 function tableContains(table, value)
