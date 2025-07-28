@@ -1,8 +1,6 @@
 
 local kit = BaseFighterSheet()
 
-require "CSV"
-
 local kitTable = LoadCSVTable("Sheets/KitAttacks.csv")
 
 --kitTable[1] = {Hello = 1, Goodbye = 2, GoodEvening = 3,}

@@ -4,6 +4,7 @@ require "Screens"
 require "sprites"
 require "sounds"
 require "tables"
+require "CSV"
 
 bit = require "bit"
 utf8 = require("utf8")
