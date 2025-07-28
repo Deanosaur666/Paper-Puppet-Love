@@ -124,7 +124,7 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
     local pose = GetAnimationFrame(action, fstate)
     if(pose == nil) then
         local triggered = ActivateTrigger(fstate, fframe, "end")
-        print("End Trigger! " .. fstate.CurrentAction)
+        
         if(not triggered) then 
             BeginAction(fstate, fframe, action.NextAction or "Idle")
         end
@@ -132,6 +132,17 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
     end
 
     CheckActions(fstate, fframe, controller)
+
+    local currentAction = fsheet.Actions[fstate.CurrentAction]
+    -- check triggers
+    -- release trigger
+    
+    if(currentAction.InputPressed ~= nil) then
+       
+        if(not ControllerInputDown(controller, currentAction.InputPressed)) then
+            ActivateTrigger(fstate, fframe, "release")
+        end
+    end
 
     local xsc = 1
     if(not fstate.Facing) then

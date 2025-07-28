@@ -1,6 +1,8 @@
 
 Gut out reqStateFlags
 
+Actions have "InputPressed" not "ButtonPressed" as in the CSV. This could be confusing...
+
 Offset during animations (for moving)
     How do we make sure it is the same between frames?
 Offset should push the pushbox forwards, as well
