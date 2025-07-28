@@ -78,6 +78,11 @@ tony.GuardDrop = AddAction(tony, "Guard Drop", "Guard Drop", nil, nil, {
     StateFlags = STATE_CANATTACK,
 })
 
+local csv = LoadCSVTable("Sheets/Tony.csv")
+ParseAttackTable(csv, tony)
+
+--[[
+
 AddAttack(tony, "Jab", "Jab", BUTTON_A, 0, 1, ATTACK_LIGHT, {
     StateFlags = SetStateAttackLevel(0, ATTACK_LIGHT),
     ReqStateFlags = STATE_CANATTACK,
@@ -139,4 +144,7 @@ AddAttack(tony, "Stomp", "Stomp", BUTTON_B, BUTTON_DOWN, 2.5, ATTACK_HEAVY, {
     CancelReqStateFlags = SetStateAttackPhase(STATE_ATTACK_CONTACT, PHASE_RECOVERY),
     CancelMaxAttackLevel = ATTACK_MEDIUM,
 })
+
+]]--
+
 

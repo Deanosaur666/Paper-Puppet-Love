@@ -123,6 +123,8 @@ function ParseAttackTable(t, fighter)
 			local button = ButtonByName[string.lower(line.ButtonHeld)]
 			local attackLevel = AttackLevelByName[string.lower(line.Level)]
 
+			--print(string.lower(line.Level))
+			--print(attackLevel)
 			local atk = AddAttack(fighter, line.Name, line.Animation, ButtonByName[string.lower(line.ButtonPressed)], 
 				button, line.Power, attackLevel, {})
 
