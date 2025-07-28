@@ -47,6 +47,33 @@ function CanPerformAction(action, fstate)
     return canPerform or canCancel
 end
 
-function ActivateTrigger(currentAction, trigger)
+function ActivateTrigger(fstate, fframe, trigger)
+    local sheet = fframe.Sheet
+    local currentAction = fstate.currentAction
+
+
+end
+
+function CheckActions(fstate, fframe, controller)
+    local bufferLength = 10
     
+    bufferLength = math.min(bufferLength, GameState.CurrentFrame - controller.LastBuffered)
+
+    local actions = fframe.Sheet.Actions
+    local perform = nil
+    local biggestInput = 0
+    for name, action in pairs(actions) do
+        local input = bit.bor(action.InputPressed or 0, action.InputHeld or 0)
+
+        if(ActionInputted(action, fstate, controller,bufferLength) and CanPerformAction(action, fstate) and input >= biggestInput) then
+            perform = name
+            biggestInput = input
+        end
+    end
+
+    if(perform ~= nil) then
+        -- do buffer cutoff
+        controller.LastBuffered = controller.BufferTime
+        BeginAction(fstate, fframe, perform)
+    end
 end

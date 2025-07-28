@@ -161,25 +161,6 @@ function ParseAttackTable(t, fighter)
 			defSet(atk, line, "StepDistance")
 			defSet(atk, line, "JumpHeight")
 
-			--[[
-			if(line.StepStart == "") then
-				atk.StepStart = 1 -- frame 0 will be skipped...
-			else
-				atk.StepStart = line.StepStart
-			end
-
-			if(line.StepDistance == "") then
-				atk.StepDistance = 0
-			else
-				atk.StepDistance = line.StepDistance
-			end
-
-			if(line.JumpHeight == "") then
-				atk.JumpHeight = 0
-			else
-				atk.JumpHeight = line.JumpHeight
-			end
-			]]
 		end
 	end
 
