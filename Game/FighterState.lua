@@ -214,6 +214,8 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
             fstate.XVelocity = 0
             if(action.LandAction) then
                 BeginAction(fstate, fframe, action.LandAction)
+            else
+                ActivateTrigger(fstate, fframe, "landing")
             end
         end
     end
@@ -224,30 +226,6 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
 
     -- create new fighter frame at the end, after updating state a bunch
     return fstate
-end
-
-function CheckActions(fstate, fframe, controller)
-    local bufferLength = 10
-    
-    bufferLength = math.min(bufferLength, GameState.CurrentFrame - controller.LastBuffered)
-
-    local actions = fframe.Sheet.Actions
-    local perform = nil
-    local biggestInput = 0
-    for name, action in pairs(actions) do
-        local input = bit.bor(action.InputPressed or 0, action.InputHeld or 0)
-
-        if(ActionInputted(action, fstate, controller,bufferLength) and CanPerformAction(action, fstate) and input >= biggestInput) then
-            perform = name
-            biggestInput = input
-        end
-    end
-
-    if(perform ~= nil) then
-        -- do buffer cutoff
-        controller.LastBuffered = controller.BufferTime
-        BeginAction(fstate, fframe, perform)
-    end
 end
 
 function DrawFighter(fframe)
