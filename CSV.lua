@@ -69,6 +69,9 @@ AttackLevelByName["super"] = ATTACK_SUPER
 
 -- takes the converted CSV table and tries to turn it into a valid table of attacks
 function ParseAttackTable(t, fighter)
+	-- we don't actually uses "stances" anymore...
+	
+	--[[
 	local stances = {}
 
 	local myAttacks = {}
@@ -109,7 +112,7 @@ function ParseAttackTable(t, fighter)
 	-- global "stances"
 	local gStances = {}
 	gStances["idle"] = STATE_IDLE
-
+	--]]
 	
 	-- TODO: ReqStateFlags?
 
@@ -118,7 +121,7 @@ function ParseAttackTable(t, fighter)
 		if(line.Name ~= "" and line.Animation ~= "") then
 
 			local button = ButtonByName[string.lower(line.ButtonHeld)]
-			local attackLevel = AttackLevelByName[string.lower(line.AttackLevel)]
+			local attackLevel = AttackLevelByName[string.lower(line.Level)]
 
 			local atk = AddAttack(fighter, line.Name, line.Animation, ButtonByName[string.lower(line.ButtonPressed)], 
 				button, line.Power, attackLevel, {})
@@ -127,12 +130,30 @@ function ParseAttackTable(t, fighter)
 			atk.Active = line.Active
 			atk.Recovery = line.Recovery
 
-			atk.FollowupFrom = line.FollowupFrom
+			atk.Trigger = line.Trigger
+			atk.TriggerFrom = line.TriggerFrom
 
 			-- todo: parse stances
 
 
-			---------
+			-- function for parsing basic shit with defaults
+			local defSet = function (atk, line, key, def)
+				if(def == nil) then
+					def = 0
+				end
+				if(line[key] ~= "") then
+					atk[key] = line[key]
+				else
+					atk[key] = def
+				end
+			end
+			
+			defSet(atk, line, "AnimLoop", false)
+			defSet(atk, line, "AnimSpeed", 1)
+			defSet(atk, line, "AnimStart", 0)
+			defSet(atk, line, "AnimEnd", -1)
+
+			--[[
 			if(line.AnimLoop ~= "") then
 				atk.AnimLoop = line.AnimLoop
 			end
@@ -145,7 +166,13 @@ function ParseAttackTable(t, fighter)
 			if(line.AnimEnd ~= "") then
 				atk.AnimEnd = line.AnimEnd
 			end
+			--]]
 
+			defSet(atk, line, "StepStart", 1)
+			defSet(atk, line, "StepDistance")
+			defSet(atk, line, "JumpHeight")
+
+			--[[
 			if(line.StepStart == "") then
 				atk.StepStart = 1 -- frame 0 will be skipped...
 			else
@@ -157,6 +184,13 @@ function ParseAttackTable(t, fighter)
 			else
 				atk.StepDistance = line.StepDistance
 			end
+
+			if(line.JumpHeight == "") then
+				atk.JumpHeight = 0
+			else
+				atk.JumpHeight = line.JumpHeight
+			end
+			]]
 		end
 	end
 

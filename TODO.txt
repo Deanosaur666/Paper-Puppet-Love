@@ -7,8 +7,6 @@ Offset should push the pushbox forwards, as well
 
 Draw the "center point" and "offset point" of a pose.
 
-Shake during hit freeze
-
 How should cancels work?
     Cancel rules are on a per-attack basis..?
 

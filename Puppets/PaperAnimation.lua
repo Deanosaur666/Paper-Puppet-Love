@@ -231,7 +231,7 @@ function GetAnimationFrame(action, fstate)
     local endOffset = 0
     
     if(action.AnimStart ~= nil) then
-        if(action.AnimEnd ~= nil) then
+        if(action.AnimEnd ~= nil and action.AnimEnd ~= -1) then
             endOffset = duration - action.AnimEnd
             duration = action.AnimEnd - action.AnimStart
         else
