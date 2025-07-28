@@ -96,6 +96,18 @@ function ParseAttackTable(t, fighter)
 	
 	-- TODO: ReqStateFlags?
 
+	-- function for parsing basic shit with defaults
+	local defSet = function (atk, line, key, def)
+		if(def == nil) then
+			def = 0
+		end
+		if(line[key] ~= "") then
+			atk[key] = line[key]
+		else
+			atk[key] = def
+		end
+	end
+
 	-- now we get to the attacks
 	for row, line in ipairs(t) do
 		if(line.Name ~= "" and line.Animation ~= "") then
@@ -113,9 +125,9 @@ function ParseAttackTable(t, fighter)
 			local atk = AddAttack(fighter, line.Name, line.Animation, ButtonByName[string.lower(line.ButtonPressed)], 
 				button, line.Power, attackLevel, {})
 
-			atk.Startup = line.Startup
-			atk.Active = line.Active
-			atk.Recovery = line.Recovery
+			defSet(atk, line, "Startup")
+			defSet(atk, line, "Active")
+			defSet(atk, line, "Recovery")
 
 			atk.Trigger = line.Trigger
 			atk.TriggerFrom = line.TriggerFrom
@@ -123,17 +135,7 @@ function ParseAttackTable(t, fighter)
 			-- todo: parse stances
 
 
-			-- function for parsing basic shit with defaults
-			local defSet = function (atk, line, key, def)
-				if(def == nil) then
-					def = 0
-				end
-				if(line[key] ~= "") then
-					atk[key] = line[key]
-				else
-					atk[key] = def
-				end
-			end
+			
 			
 			defSet(atk, line, "AnimLoop", false)
 			defSet(atk, line, "AnimSpeed", 1)
