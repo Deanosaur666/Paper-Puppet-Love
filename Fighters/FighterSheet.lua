@@ -1,5 +1,3 @@
-require "Actions"
-
 -- state flags
 STATE_CANMOVE = 2^0
 STATE_CANATTACK = 2^1

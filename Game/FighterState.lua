@@ -254,7 +254,8 @@ function CheckActions(fstate, fframe, controller)
     local biggestInput = 0
     for name, action in pairs(actions) do
         local input = bit.bor(action.InputPressed or 0, action.InputHeld or 0)
-        if(CanPerformAction(action, fstate, controller, bufferLength) and input >= biggestInput) then
+
+        if(ActionInputted(action, fstate, controller,bufferLength) and CanPerformAction(action, fstate) and input >= biggestInput) then
             perform = name
             biggestInput = input
         end
