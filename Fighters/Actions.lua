@@ -49,15 +49,18 @@ end
 
 -- just go through every action, and see if the trigger matches
 function ActivateTrigger(fstate, fframe, trigger)
-    local sheet = fframe.Sheet
+    --local sheet = fframe.Sheet
     local currentAction = fstate.currentAction
 
     local actions = fframe.Sheet.Actions
 
     for name, action in pairs(actions) do
-        if(action.TriggerFrom == currentAction and action.Trigger) then
+        
+        if(action.TriggerFrom == currentAction and action.Trigger == trigger) then
+            print("Trigger activated")
             if(fstate.CurrentFrame >= action.TriggerStart and (fstate.CurrentFrame <= action.TriggerEnd or action.TriggerEnd == -1)) then
                 BeginAction(fstate, fframe, name)
+                print("Trigger activated")
                 return true
             end
             

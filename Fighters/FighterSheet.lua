@@ -189,6 +189,10 @@ function Action(fighterSheet, animName, props)
         InputHeld = nil,
 
         AttackData = nil,
+
+        Trigger = "",
+		TriggerStart = 0,
+		TriggerEnd = -1,
     }
     
     for k, v in pairs(props) do

@@ -131,12 +131,19 @@ function ParseAttackTable(t, fighter)
 
 			-- todo: parse if trigger is an array in csv and then use it for tstart,tend
 
-			local tArgs = stringsplit(line.Trigger, ":", true)
+			if(line.Trigger ~= "") then
+				local tArgs = stringsplit(line.Trigger, ":", true)
 			
-			atk.Trigger = tArgs[1]
-			atk.TriggerStart = tArgs[2] or 0
-			atk.TriggerEnd = tArgs[3] or -1
+				atk.Trigger = string.lower(tArgs[1])
+				atk.TriggerStart = tArgs[2] or 0
+				atk.TriggerEnd = tArgs[3] or -1
+			else
+				atk.Trigger = ""
+				atk.TriggerStart = 0
+				atk.TriggerEnd = -1
+			end
 			
+
 			atk.TriggerFrom = line.TriggerFrom
 
 
