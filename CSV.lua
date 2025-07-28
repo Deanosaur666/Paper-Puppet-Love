@@ -129,8 +129,18 @@ function ParseAttackTable(t, fighter)
 			defSet(atk, line, "Active")
 			defSet(atk, line, "Recovery")
 
-			atk.Trigger = line.Trigger
+			-- todo: parse if trigger is an array in csv and then use it for tstart,tend
+
+			local tArgs = stringsplit(line.Trigger, ":", true)
+			
+			atk.Trigger = tArgs[1]
+			atk.TriggerStart = tArgs[2] or 0
+			atk.TriggerEnd = tArgs[3] or -1
+			
 			atk.TriggerFrom = line.TriggerFrom
+
+
+			
 
 			-- todo: parse stances
 

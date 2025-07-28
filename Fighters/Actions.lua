@@ -47,11 +47,24 @@ function CanPerformAction(action, fstate)
     return canPerform or canCancel
 end
 
+-- just go through every action, and see if the trigger matches
 function ActivateTrigger(fstate, fframe, trigger)
     local sheet = fframe.Sheet
     local currentAction = fstate.currentAction
 
+    local actions = fframe.Sheet.Actions
 
+    for name, action in pairs(actions) do
+        if(action.TriggerFrom == currentAction and action.Trigger) then
+            if(fstate.CurrentFrame >= action.TriggerStart and (fstate.CurrentFrame <= action.TriggerEnd or action.TriggerEnd == -1)) then
+                BeginAction(fstate, fframe, name)
+                return true
+            end
+            
+        end
+    end
+
+    return false
 end
 
 function CheckActions(fstate, fframe, controller)

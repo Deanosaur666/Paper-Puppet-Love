@@ -123,7 +123,11 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
 
     local pose = GetAnimationFrame(action, fstate)
     if(pose == nil) then
-        BeginAction(fstate, fframe, action.NextAction or "Idle")
+        local triggered = ActivateTrigger(fstate, fframe, "end")
+        if(not triggered) then 
+            BeginAction(fstate, fframe, action.NextAction or "Idle")
+        end
+        
     end
 
     CheckActions(fstate, fframe, controller)
@@ -215,7 +219,7 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
             if(action.LandAction) then
                 BeginAction(fstate, fframe, action.LandAction)
             else
-                ActivateTrigger(fstate, fframe, "landing")
+                ActivateTrigger(fstate, fframe, "land")
             end
         end
     end
