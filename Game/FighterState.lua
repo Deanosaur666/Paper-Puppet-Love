@@ -35,24 +35,6 @@ function FighterState(props)
     return state
 end
 
-function BeginAction(fstate, fframe, actionName)
-    local action = fframe.Sheet.Actions[actionName]
-    fstate.CurrentAction = actionName
-    fstate.CurrentFrame = 0
-    fstate.StateFlags = action.StateFlags
-    fstate.HurtTime = nil
-
-    if(bit.band(action.StateFlags, STATE_ATTACK_LEVEL) ~= 0) then
-        fframe.GoToFront = true
-    end
-end
-
-function ContinueAction(fstate, fframe, actionName)
-    if(fstate.CurrentAction ~= actionName) then
-        BeginAction(fstate, fframe, actionName)
-    end
-end
-
 function FighterFrame(fstate, fsheet, player)
     local skeletonName = fsheet.SkeletonIndex
     local skeleton = Skeletons[skeletonName]
@@ -135,8 +117,8 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
         fstate.XVelocity = GetVelocity(action.StepDistance, fframe.Sheet.BaseFriction)
         if(not fstate.Facing) then
             fstate.XVelocity = -fstate.XVelocity
-            fstate.XAccel = fframe.Sheet.BaseFriction
         end
+        fstate.XAccel = fframe.Sheet.BaseFriction
     end
 
     local pose = GetAnimationFrame(action, fstate)

@@ -1,4 +1,22 @@
 
+function BeginAction(fstate, fframe, actionName)
+    local action = fframe.Sheet.Actions[actionName]
+    fstate.CurrentAction = actionName
+    fstate.CurrentFrame = 0
+    fstate.StateFlags = action.StateFlags
+    fstate.HurtTime = nil
+
+    if(bit.band(action.StateFlags, STATE_ATTACK_LEVEL) ~= 0) then
+        fframe.GoToFront = true
+    end
+end
+
+function ContinueAction(fstate, fframe, actionName)
+    if(fstate.CurrentAction ~= actionName) then
+        BeginAction(fstate, fframe, actionName)
+    end
+end
+
 function ActionInputted(action, fstate, controller, buffer)
      local inputted = true
 
