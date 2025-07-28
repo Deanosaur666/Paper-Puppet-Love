@@ -1,8 +1,8 @@
-Name,Animation,Trigger,TriggerFrom,ButtonPressed,ButtonHeld,Power,Level,Startup,Active,Recovery,AnimStart,AnimEnd,AnimSpeed,AnimLoop,StepDistance,StepStart,JumpHeight,"Meter Cost",Event
+Name,Animation,Trigger,TriggerFrom,ButtonPressed,ButtonHeld,Power,Level,Startup,Active,Recovery,AnimStart,AnimEnd,AnimSpeed,AnimLoop,StepDistance,StepStart,JumpHeight,Meter Cost,Event
 Jab,Jab,,,A,,1,Light,8,1,12,,,,,,,,,
 Cross,Cross,Followup,Jab,A,,1,Light,11,10,12,,,,,50,,,,
 Elbow,Elbow,,,S,,4,Special,16,14,12,,,,,150,17,,,
-"L Upper","Left Uppercut",,,A,Down,2,Medium,12,15,10,,,,,,,,,
+L Upper,Left Uppercut,,,A,Down,2,Medium,12,15,10,,,,,,,,,
 Kick,Kick,,,B,,3,Heavy,,,,,,,,,,,,
 Roundhouse,Roundhouse,,,B,Right,3.5,Superheavy,,,,,,,,,,,,
 Stomp,Stomp,,,B,Down,2.5,Heavy,,,,,,,,,,,,

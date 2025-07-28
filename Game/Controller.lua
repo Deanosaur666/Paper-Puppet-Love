@@ -33,6 +33,21 @@ BUTTON_LAST = BUTTON_CANCEL
 
 MAX_INPUTS = 100
 
+ButtonByName = {}
+ButtonByName[""] = 0
+ButtonByName["a"] = BUTTON_A
+ButtonByName["b"] = BUTTON_B
+ButtonByName["s"] = BUTTON_S
+
+ButtonByName["up"] = BUTTON_UP
+ButtonByName["upright"] = BUTTON_UPRIGHT
+ButtonByName["right"] = BUTTON_RIGHT
+ButtonByName["downright"] = BUTTON_DOWNRIGHT
+ButtonByName["down"] = BUTTON_DOWN
+ButtonByName["downleft"] = BUTTON_DOWNLEFT
+ButtonByName["left"] = BUTTON_LEFT
+ButtonByName["upleft"] = BUTTON_UPLEFT
+
 function FlipInput(facing, input)
     -- no change if facing right
     if(facing) then

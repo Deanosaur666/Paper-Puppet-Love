@@ -43,29 +43,9 @@ function CSVToTables(csv)
 end
 
 
-ButtonByName = {}
-ButtonByName[""] = 0
-ButtonByName["a"] = BUTTON_A
-ButtonByName["b"] = BUTTON_B
-ButtonByName["s"] = BUTTON_S
 
-ButtonByName["up"] = BUTTON_UP
-ButtonByName["upright"] = BUTTON_UPRIGHT
-ButtonByName["right"] = BUTTON_RIGHT
-ButtonByName["downright"] = BUTTON_DOWNRIGHT
-ButtonByName["down"] = BUTTON_DOWN
-ButtonByName["downleft"] = BUTTON_DOWNLEFT
-ButtonByName["left"] = BUTTON_LEFT
-ButtonByName["upleft"] = BUTTON_UPLEFT
 
-AttackLevelByName = {}
-AttackLevelByName["light"] = ATTACK_LIGHT
-AttackLevelByName["medium"] = ATTACK_MEDIUM
-AttackLevelByName["heavy"] = ATTACK_HEAVY
-AttackLevelByName["superheavy"] = ATTACK_SUPERHEAVY
-AttackLevelByName["special"] = ATTACK_SPECIAL
-AttackLevelByName["ex"] = ATTACK_EX
-AttackLevelByName["super"] = ATTACK_SUPER
+
 
 -- takes the converted CSV table and tries to turn it into a valid table of attacks
 function ParseAttackTable(t, fighter)
@@ -122,6 +102,11 @@ function ParseAttackTable(t, fighter)
 
 			local button = ButtonByName[string.lower(line.ButtonHeld)]
 			local attackLevel = AttackLevelByName[string.lower(line.Level)]
+			if(attackLevel == nil) then
+				print("No attack level...")
+				print(line.Level)
+				print(tostring(AttackLevelByName["light"]))
+			end
 
 			--print(string.lower(line.Level))
 			--print(attackLevel)

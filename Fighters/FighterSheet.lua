@@ -36,6 +36,15 @@ ATTACK_SPECIAL = 5
 ATTACK_EX = 6
 ATTACK_SUPER = 7
 
+AttackLevelByName = {}
+AttackLevelByName["light"] = ATTACK_LIGHT
+AttackLevelByName["medium"] = ATTACK_MEDIUM
+AttackLevelByName["heavy"] = ATTACK_HEAVY
+AttackLevelByName["superheavy"] = ATTACK_SUPERHEAVY
+AttackLevelByName["special"] = ATTACK_SPECIAL
+AttackLevelByName["ex"] = ATTACK_EX
+AttackLevelByName["super"] = ATTACK_SUPER
+
 function GetStateAttackLevel(state)
     -- just get the attack level bits and shift them
     return bit.rshift(bit.band(state, STATE_ATTACK_LEVEL), STATE_ATTACK_LEVEL_SHIFT)
