@@ -385,6 +385,14 @@ function AnimationEditor()
 
         y = y + dy
 
+        local copyButton = ClickableButton(x, y, w, h, {
+            LPressed = prog.CopyAnimation,
+        })
+
+        DrawCheckButton(self, copyButton, "(Copy Animation)", mx, my)
+
+        y = y + dy
+
         local deleteAnimButton = ClickableButton(x, y, w, h, {
             LPressed = self.DeleteAnimation,
         })
@@ -514,6 +522,21 @@ function AnimationEditor()
         CurrentFrameIndex = 1
 
         table.insert(anim.Frames, BlankPose())
+        
+        SkeletonModified = true
+        
+        --SaveSkeleton()
+    end
+
+    function prog:CopyAnimation()
+
+        local skeleton = CurrentSkeleton()
+        local anim = deepcopy(prog.CurrentAnimation)
+        table.insert(skeleton.Animations, anim)
+
+        CurrentAnimationIndex = #skeleton.Animations
+
+        CurrentFrameIndex = 1
         
         SkeletonModified = true
         
