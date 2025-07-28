@@ -193,6 +193,7 @@ function Action(fighterSheet, animName, props)
         Trigger = "",
 		TriggerStart = 0,
 		TriggerEnd = -1,
+        TriggerFrom = "",
     }
     
     for k, v in pairs(props) do
