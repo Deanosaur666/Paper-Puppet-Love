@@ -41,10 +41,18 @@ function CanPerformAction(action, fstate)
         end
     end
 
+    local cancelMaxAtkLevel = action.AttackLevel - 1
+    local cancelReqFlags = bit.bor(STATE_ATTACK_CONTACT)
+    local reqFlags = STATE_CANATTACK
 
-    local canPerform = bit.band(fstate.StateFlags, action.ReqStateFlags) == action.ReqStateFlags and action.ReqStateFlags ~= 0
-    local canCancel = bit.band(fstate.StateFlags, action.CancelReqStateFlags) == action.CancelReqStateFlags  and action.CancelReqStateFlags ~= 0
-        and GetStateAttackLevel(fstate.StateFlags) <= action.CancelMaxAttackLevel
+    local canCancel = bit.band(fstate.StateFlags, cancelReqFlags) == cancelReqFlags -- and action.CancelReqStateFlags ~= 0
+        and GetStateAttackLevel(fstate.StateFlags) <= cancelMaxAtkLevel
+
+    local canPerform = bit.band(fstate.StateFlags, reqFlags) == reqFlags --and action.ReqStateFlags ~= 0
+
+    --local canPerform = bit.band(fstate.StateFlags, action.ReqStateFlags) == action.ReqStateFlags and action.ReqStateFlags ~= 0
+    --local canCancel = bit.band(fstate.StateFlags, action.CancelReqStateFlags) == action.CancelReqStateFlags  and action.CancelReqStateFlags ~= 0
+    --    and GetStateAttackLevel(fstate.StateFlags) <= action.CancelMaxAttackLevel
     
     -- right now we don't worry about any sort of cancel cost
     return canPerform or canCancel

@@ -143,13 +143,18 @@ end
 function AddAttack(fighterSheet, actionName, animName, inputPressed, inputHeld, power, attackLevel, props)
     local action = Action(fighterSheet, animName)
 
+    action.AttackLevel = attackLevel
+
     action.StateFlags = SetStateAttackLevel(0, attackLevel)
 
     -- attack cancels usually require recovery.
+    --[[
     action.CancelReqStateFlags = SetStateAttackPhase(0, PHASE_RECOVERY)
     action.CancelMaxAttackLevel = attackLevel - 1
 
     action.ReqStateFlags = STATE_CANATTACK
+    ]]
+
     action.InputPressed = inputPressed
     action.InputHeld = inputHeld
     action.Name = actionName

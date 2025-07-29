@@ -181,15 +181,6 @@ function ParseAttackTable(t, fighter)
 		end
 	end
 
-	--[[
-	local jab = AddAttack(kit, "Jab", "Punch", BUTTON_A, 0, 1, ATTACK_LIGHT, {
-    StateFlags = SetStateAttackLevel(0, 1),
-    ReqStateFlags = STATE_CANATTACK,
-    Startup = 8,
-    Active = 3,
-    Recovery = 10, -- 3 fake recovery frames?
-	})
-]]
 end
 
 function tableContains(table, value)
