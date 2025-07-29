@@ -2,6 +2,7 @@ Name,Animation,AnimStart,AnimEnd,AnimSpeed,AnimLoop,AnimReverse
 Idle,Idle,,,,TRUE,
 Fwalk,Walk,,,,TRUE,
 Bwalk,Walk,,,0.8,TRUE,TRUE
+Hop Start,Hop Land,,,,,
 Hop,Hop,,,,TRUE,
 Hop Land,Hop Land,,,,,
 Crouch,Crouch,,,,TRUE,
