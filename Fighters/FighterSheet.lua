@@ -108,9 +108,6 @@ function BaseFighterSheet()
         -- this includes attacks
         Actions = {},
 
-        ForwardWalkSpeed = 10,
-        BackWalkSpeed = 8,
-
         -- pushbox
         PBX = -80,
         PBW = 160,
@@ -118,7 +115,7 @@ function BaseFighterSheet()
         PBH = 500,
 
         -- friction
-        BaseFriction = 2,
+        BaseFriction = 3,
         StunFriction = 3,
         Gravity = 2,
 
