@@ -127,6 +127,8 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
     end
 
     local pose = GetAnimationFrame(action, fstate)
+    
+    -- end of action
     if(pose == nil) then
         local triggered = ActivateTrigger(fstate, fframe, "end")
         
@@ -136,7 +138,7 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
             -- handling hops
             if(next == "Hop") then
                 local gravity = fsheet.Gravity
-                
+
                 if(fstate.CurrentAction == "N Hop Start") then
                     fstate.YVelocity = -GetVelocity(fsheet.NHopHeight, gravity)
                     fstate.YAccel = gravity
