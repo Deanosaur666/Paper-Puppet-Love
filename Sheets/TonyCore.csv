@@ -1,0 +1,13 @@
+Name,Animation,AnimStart,AnimEnd,AnimSpeed,AnimLoop,AnimReverse
+Idle,Idle,,,,TRUE,
+Fwalk,Walk,,,,TRUE,
+Bwalk,Walk,,,0.8,TRUE,TRUE
+Hop,Hop,,,,TRUE,
+Hop Land,Hop Land,,,,,
+Crouch,Crouch,,,,TRUE,
+Crouch Down,Crouch Down,,,,,
+Crouch Up,Crouch Down,,,,,TRUE
+Hurt,Hurt Head,,,,,
+Guard,Guard,,,,,
+Guard Stun,Guard Stun,,,,,
+Guard Drop,Guard Drop,,,,,
