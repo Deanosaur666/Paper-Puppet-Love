@@ -32,7 +32,15 @@ tony.BWalk = AddAction(tony, "BWalk", "Walk", nil, nil,
     AnimSpeed = 0.8,
 })
 
-tony.HopStart = AddAction(tony, "Hop Start", "Hop Land", nil, nil, {
+AddAction(tony, "N Hop Start", "Hop Land", nil, nil, {
+    NextAction = "Hop",
+})
+
+AddAction(tony, "F Hop Start", "Hop Land", nil, nil, {
+    NextAction = "Hop",
+})
+
+AddAction(tony, "B Hop Start", "Hop Land", nil, nil, {
     NextAction = "Hop",
 })
 
