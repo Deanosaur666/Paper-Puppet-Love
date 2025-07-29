@@ -42,7 +42,7 @@ function CanPerformAction(action, fstate)
     end
 
     local cancelMaxAtkLevel = action.AttackLevel - 1
-    local cancelReqFlags = bit.bor(PHASE_RECOVERY)
+    local cancelReqFlags = bit.bor(STATE_ATTACK_CONTACT)
     local reqFlags = STATE_CANATTACK
 
     local canCancel = bit.band(fstate.StateFlags, cancelReqFlags) == cancelReqFlags -- and action.CancelReqStateFlags ~= 0
