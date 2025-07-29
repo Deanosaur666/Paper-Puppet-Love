@@ -36,8 +36,11 @@ function CanPerformAction(action, fstate)
     if(action.TriggerFrom ~= "" and action.TriggerFrom ~= nil) then
         if(fstate.CurrentAction ~= action.TriggerFrom) then
             return false
+        elseif(action.Trigger == "" or action.Trigger == "input") then
+            return true
         end
     end
+
 
     local canPerform = bit.band(fstate.StateFlags, action.ReqStateFlags) == action.ReqStateFlags and action.ReqStateFlags ~= 0
     local canCancel = bit.band(fstate.StateFlags, action.CancelReqStateFlags) == action.CancelReqStateFlags  and action.CancelReqStateFlags ~= 0
