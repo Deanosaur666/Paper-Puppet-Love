@@ -1,4 +1,6 @@
 
+Is recovery and "fake idle" (after recovery, still in animation) working?
+
 Gut out reqStateFlags
 
 Actions have "InputPressed" not "ButtonPressed" as in the CSV. This could be confusing...

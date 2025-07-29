@@ -36,8 +36,13 @@ function CanPerformAction(action, fstate)
     if(action.TriggerFrom ~= "" and action.TriggerFrom ~= nil) then
         if(fstate.CurrentAction ~= action.TriggerFrom) then
             return false
+        -- we are in the correct action
         elseif(action.Trigger == "" or action.Trigger == "input") then
             return true
+        elseif(action.Trigger == "followup") then
+            local flag = SetStateAttackPhase(0, PHASE_RECOVERY)
+            return bit.band(fstate.StateFlags, flag) == flag
+        
         end
     end
 

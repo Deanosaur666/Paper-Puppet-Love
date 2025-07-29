@@ -147,14 +147,6 @@ function AddAttack(fighterSheet, actionName, animName, inputPressed, inputHeld, 
 
     action.StateFlags = SetStateAttackLevel(0, attackLevel)
 
-    -- attack cancels usually require recovery.
-    --[[
-    action.CancelReqStateFlags = SetStateAttackPhase(0, PHASE_RECOVERY)
-    action.CancelMaxAttackLevel = attackLevel - 1
-
-    action.ReqStateFlags = STATE_CANATTACK
-    ]]
-
     action.InputPressed = inputPressed
     action.InputHeld = inputHeld
     action.Name = actionName
@@ -177,11 +169,7 @@ function Action(fighterSheet, animName, props)
         NextAction = nil,
 
         StateFlags = 0,
-        ReqStateFlags = 0,
-
-        -- flags needed for a cancel
-        CancelReqStateFlags = 0,
-        CancelMaxAttackLevel = 0,
+        
 
         Startup = nil,
         Active = nil,
