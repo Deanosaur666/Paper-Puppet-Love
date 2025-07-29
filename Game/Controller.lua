@@ -38,6 +38,7 @@ ButtonByName[""] = 0
 ButtonByName["a"] = BUTTON_A
 ButtonByName["b"] = BUTTON_B
 ButtonByName["s"] = BUTTON_S
+ButtonByName["g"] = BUTTON_GUARD
 
 ButtonByName["up"] = BUTTON_UP
 ButtonByName["upright"] = BUTTON_UPRIGHT

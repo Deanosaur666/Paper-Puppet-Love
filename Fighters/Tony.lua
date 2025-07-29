@@ -78,7 +78,7 @@ tony.GuardDrop = AddAction(tony, "Guard Drop", "Guard Drop", nil, nil, {
     StateFlags = STATE_CANATTACK,
 })
 
-local csv = LoadCSVTable("Sheets/Tony.csv")
+local csv = LoadCSVTable("Sheets/TonyAttacks.csv")
 ParseAttackTable(csv, tony)
 
 --[[
