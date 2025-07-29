@@ -99,6 +99,11 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
 
     fsheet = fframe.Sheet
 
+    local xsc = 1
+    if(not fstate.Facing) then
+        xsc = -1
+    end
+
     fstate.CurrentFrame = fstate.CurrentFrame + 1
     local action = fframe.Action
     if(action.Startup and action.Active and action.Recovery) then
@@ -125,8 +130,30 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
     if(pose == nil) then
         local triggered = ActivateTrigger(fstate, fframe, "end")
         
-        if(not triggered) then 
-            BeginAction(fstate, fframe, action.NextAction or "Idle")
+        if(not triggered) then
+            local next = action.NextAction
+            
+            -- handling hops
+            if(next == "Hop") then
+                local gravity = fsheet.Gravity
+                
+                if(fstate.CurrentAction == "N Hop Start") then
+                    fstate.YVelocity = -GetVelocity(fsheet.NHopHeight, gravity)
+                    fstate.YAccel = gravity
+                elseif(fstate.CurrentAction == "F Hop Start") then
+                    fstate.XVelocity = fsheet.FHopSpeed*xsc
+                    fstate.XAccel = 0
+                    fstate.YVelocity = -GetVelocity(fsheet.FHopHeight, gravity)
+                    fstate.YAccel = gravity
+                elseif(fstate.CurrentAction == "B Hop Start") then
+                    fstate.XVelocity = -fsheet.BHopSpeed*xsc
+                    fstate.XAccel = 0
+                    fstate.YVelocity = -GetVelocity(fsheet.BHopHeight, gravity)
+                    fstate.YAccel = gravity
+                end
+            end
+
+            BeginAction(fstate, fframe, next or "Idle")
         end
         
     end
@@ -144,11 +171,6 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
         end
     end
 
-    local xsc = 1
-    if(not fstate.Facing) then
-        xsc = -1
-    end
-
     local dx = 0
 
     if(bit.band(fstate.StateFlags, STATE_CANMOVE) ~= 0) then
@@ -160,31 +182,19 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
         -- hop
         elseif(ControllerInputDown(controller, BUTTON_UP)) then
             
-            local gravity = fsheet.Gravity
-            
             -- forward hop
             if(ControllerInputDown(controller, FlipInput(fstate.Facing, BUTTON_RIGHT))) then
-                fstate.XVelocity = fsheet.FHopSpeed*xsc
-                fstate.XAccel = 0
-                fstate.YVelocity = -GetVelocity(fsheet.FHopHeight, gravity)
-                fstate.YAccel = gravity
+                BeginAction(fstate, fframe, "F Hop Start")
 
             -- back hop
             elseif(ControllerInputDown(controller, FlipInput(fstate.Facing, BUTTON_LEFT))) then
-                fstate.XVelocity = -fsheet.BHopSpeed*xsc
-                fstate.XAccel = 0
-                fstate.YVelocity = -GetVelocity(fsheet.BHopHeight, gravity)
-                fstate.YAccel = gravity
-
+                BeginAction(fstate, fframe, "B Hop Start")
 
             -- neutral hop
             else
-                fstate.YVelocity = -GetVelocity(fsheet.NHopHeight, gravity)
-                fstate.YAccel = gravity
+                BeginAction(fstate, fframe, "N Hop Start")
                 
             end
-
-            BeginAction(fstate, fframe, "Hop")
 
         elseif(ControllerInputDown(controller, BUTTON_DOWN) or fstate.CurrentAction == "Crouch Down") then
             if(fstate.CurrentAction ~= "Crouch") then
