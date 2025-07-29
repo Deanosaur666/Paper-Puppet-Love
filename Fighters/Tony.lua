@@ -32,6 +32,12 @@ tony.BWalk = AddAction(tony, "BWalk", "Walk", nil, nil,
     AnimSpeed = 0.8,
 })
 
+tony.HopStart = AddAction(tony, "Hop Start", "Hop Land", nil, nil, {
+    NextAction = "Hop",
+})
+
+-- if we do hop startup, how will hop know which hop it is?
+
 tony.Hop = AddAction(tony, "Hop", "Hop", nil, nil, {
     StateFlags = STATE_AERIAL,
     AnimLoop = true,
