@@ -37,8 +37,6 @@ Canceling based on "Attack Class"
     Heavy,
     SuperHeavy,
 
-Currently the system is "reqStateFlags" 
-
 A "follow-up" is a special case, where regardless of move class, it will cancel from its previous attack.
 
 "Delayed" controller for online play
