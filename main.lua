@@ -87,6 +87,11 @@ end
 function love.keypressed(key, scancode, isrepeat)
     CurrentProgram:KeyPressed(key, scancode, isrepeat)
     KeysPressed[key] = true
+
+    if(key == "f11") then
+        print("FULLSCREEN")
+        love.window.setFullscreen(not love.window.getFullscreen())
+    end
 end
 
 function love.textinput(t)
