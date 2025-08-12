@@ -80,3 +80,30 @@ kit.GuardStun = AddAction(kit, "Guard Stun", "Guard Stun", nil, nil, {
 kit.GuardDrop = AddAction(kit, "Guard Drop", "Guard Drop", nil, nil, {
     StateFlags = STATE_CANATTACK,
 })
+
+
+
+AddAction(kit, "N Hop Start", "Hop Land", nil, nil, {
+    NextAction = "Hop",
+})
+
+AddAction(kit, "F Hop Start", "Hop Land", nil, nil, {
+    NextAction = "Hop",
+})
+
+AddAction(kit, "B Hop Start", "Hop Land", nil, nil, {
+    NextAction = "Hop",
+})
+
+-- if we do hop startup, how will hop know which hop it is?
+
+kit.Hop = AddAction(kit, "Hop", "Hop", nil, nil, {
+    StateFlags = STATE_AERIAL,
+    AnimLoop = true,
+    LandAction = "Hop Land",
+})
+
+
+kit.HopLand = AddAction(kit, "Hop Land", "Hop Land", nil, nil, {
+    
+})
