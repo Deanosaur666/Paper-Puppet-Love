@@ -101,6 +101,10 @@ function GameProgram:Draw()
     local lg = love.graphics
     lg.clear(0.3, 0.3, 0.3)
 
+    lg.print(string.format("Average Update MS: %.3f", AverageUpdateMS), 10, 10)
+
+    lg.print(string.format("FPS: %.3f", love.timer.getFPS()), 10, 40)
+
     lg.translate(ScreenWidth/2, ScreenHeight*0.6)
     lg.scale(GameState.Zoom)
     lg.translate(-GameState.ScrollX, -GameState.ScrollY)
@@ -171,6 +175,32 @@ function GetFighterPushBox(state, sheet)
 end
 
 function GameProgram:Update()
+    
+    -- for performance tracking
+    local lastMS = LastUpdateMS
+    LastUpdateMS = love.timer.getTime()
+
+    local msDiff = ((LastUpdateMS)-lastMS)*1000
+    table.insert(UpdateMSTrack, 1, msDiff)
+    if(#UpdateMSTrack > 101) then
+        if(GameState.CurrentFrame % 10 == 0) then
+            local total = 0
+            for i = 1, 100, 1 do
+                total = total + UpdateMSTrack[i]
+            end
+            total = total/100
+
+            AverageUpdateMS = total
+        end
+
+
+        if(#UpdateMSTrack > 500) then
+            table.remove(UpdateMSTrack, 500)
+        end
+    end
+
+    
+    -- logical game frame
     GameState.CurrentFrame = GameState.CurrentFrame + 1
 
     Leftwall = GameState.ScrollX - (ScreenWidth/2)/GameState.Zoom + WallMargin
@@ -305,6 +335,10 @@ end
 
 function StartGame()
     GameState.CurrentFrame = 0
+
+    LastUpdateMS = love.timer.getTime()
+    UpdateMSTrack = {}
+    AverageUpdateMS = 0
 
     AddActiveFighter(1, "Tony")
     --AddActiveFighter(1, "Kit")

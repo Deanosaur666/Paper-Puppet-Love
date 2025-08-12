@@ -1,8 +1,6 @@
 
 Is recovery and "fake idle" (after recovery, still in animation) working?
 
-Gut out reqStateFlags
-
 Actions have "InputPressed" not "ButtonPressed" as in the CSV. This could be confusing...
 
 Offset during animations (for moving)
@@ -11,9 +9,6 @@ Offset should push the pushbox forwards, as well
     -Kit's far kick especially needs this....
 
 Draw the "center point" and "offset point" of a pose.
-
-How should cancels work?
-    Cancel rules are on a per-attack basis..?
 
 ~~~~~~~~~~~~~~~~~~~~~~~
 Attacks CSV
