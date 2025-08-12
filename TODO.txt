@@ -1,5 +1,8 @@
 
-Is recovery and "fake idle" (after recovery, still in animation) working?
+Try and Give Kit some more fancy moves!!!
+Give Kit a chargeable move
+
+Press ESC when in game to return to editor, please
 
 Actions have "InputPressed" not "ButtonPressed" as in the CSV. This could be confusing...
 
@@ -13,8 +16,15 @@ Draw the "center point" and "offset point" of a pose.
 ~~~~~~~~~~~~~~~~~~~~~~~
 Attacks CSV
 ~~~~~~~~~~~~~~~~~~~~~~~
+Implement JumpHeight
 
 Make triggers work fancier
+
+Triggers needed:
+Guarded
+contact
+Hit 
+
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 GAME
