@@ -115,7 +115,7 @@ function UpdateFighter(fstate, fframe, controller, player, fsheet)
             fstate.StateFlags = SetStateAttackPhase(fstate.StateFlags, PHASE_RECOVERY)
         else
             -- TODO: fake idle
-            fstate.StateFlags = STATE_IDLE
+            fstate.StateFlags = STATE_CANATTACK
         end
     end
 
