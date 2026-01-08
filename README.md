@@ -1,5 +1,5 @@
 # Paper Puppet Love
 
-This project uses the [Love2D](https://www.love2d.org/) engine.
+A fighting game system using paper-puppet style animation. This project uses the [Love2D](https://www.love2d.org/) engine. This project has been suspended.
 
-<img width="1000" height="1000" alt="image" src="https://github.com/Deanosaur666/Paper-Puppet-Love/blob/main/Resources/sprites/sheets/Tony%20W.png?raw=true" />
+![Tony](/Resources/sprites/sheets/Tony%20W.png)
